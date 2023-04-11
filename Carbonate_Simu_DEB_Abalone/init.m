@@ -13,7 +13,7 @@ function simu = init
   %--------------------------------------------------------------
   
   %% Load and unpack parameters
-  filename = '/Users/lagosjime/Documents/Work/UBO - Brest/Haliotis_tuberculata/results_Haliotis_tuberculata.mat';
+  filename = 'results_Haliotis_tuberculata.mat';
   res = load(filename);
   par  = res.par;          % get primary parameters
   cPar = parscomp_st(par); % get compound parameters
