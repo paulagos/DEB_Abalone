@@ -47,7 +47,7 @@ function tEVHRSO = indiv(simu)
       tEVHRSO = [tEVHRSO; [t, EVHRSO]]; % append to output
       E_Hc = EVHRSO(end, 3);
       
-      if E_Hc >= E_Hp %; E_Hp
+     if E_Hc >= E_Hp %; E_Hp
           EVHRSO(end,4) = 0;
       end
       

@@ -23,15 +23,17 @@ function simu = init
   %% set inital simulation times
   t0 = 1;             % initial time % January 1st
   tm = 15 * 365;      % final time  
-  ts = t0;            % spawning time
-  
-  %% Choose if environment is constant or variable
-  
+  ts = t0;            % spawning time 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%    Choose if environment is constant or variable
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
   envT   = 2;   % 1 = T constant,    2 = T variable
   envX   = 2;   % 1 = constant food, 2 = variable food
   envCO2 = 2;   % 1 = contant pCO2,  2 = variable pCO2
   
-  % Color for plots
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% Color for plots
  if     envT == 1 && envX == 1 && envCO2 == 1
 	col = 'k'; 
  elseif envT == 2 && envX == 2 && envCO2 == 2
@@ -46,9 +48,9 @@ function simu = init
     col = 'b';
  end
 
-  % initial forcing variable
+  %% initial forcing variable
   T = 20 + 273.15;
-  f = 0.99;
+  f = 0.6;
   CO2 = 380;
   
   % Initial states
