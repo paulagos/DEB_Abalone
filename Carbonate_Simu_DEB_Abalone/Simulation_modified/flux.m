@@ -133,7 +133,8 @@ if E_H < E_Hb
     pX = 0;                                                                        % feeding
     pA = 0;                                                                        % assimilation (eq. 2.3 p.35)
     pM = (p_M * V + q * min(max(pCO2 - CM_L, 0), max(CM_H - pCO2, 0)) * V^(2/3)) * c_T; % Somatic maintenance                                                            % Maturiry maintenance (eq.2.19 p.47)
-    pJ = V * ((1 - kap) / kap) * p_M * c_T; 
+  %  pJ = V * ((1 - kap) / kap) * p_M * c_T; 
+    pJ = k_JT * E_H;
     pC = (E/V) * (E_G * v * V^(2/3) + p_M * V) / (kap * E/V + E_G) * c_T;         % Mobilisation (eq. 2.12 p.37)
     pG = kap * pC - pM;                                                            % Growth
     pR = (1 - kap) * pC - pJ;                                                      % Reproduction (eq.2.55 p.69)
@@ -142,7 +143,8 @@ else
     pX = f * p_XmT * V^(2/3);                                                      % feeding
     pA = kap_X * pX;                                                               % Assimilation (eq.2.3 page 36)
     pM = (p_M * V + q * min(max(pCO2 - CM_L, 0), max(CM_H - pCO2, 0)) * V^(2/3)) * c_T; % Somatic maintenance
-    pJ = V * ((1 - kap) / kap) * p_M * c_T;                              % Maturiry maintenance (eq.2.19 p.47) 
+    % pJ = V * ((1 - kap) / kap) * p_M * c_T;                              % Maturiry maintenance (eq.2.19 p.47) 
+    pJ = k_JT * E_H;
     pC = (E/V) * (E_G * v * V^(2/3) + p_M * V) / (kap * E/V + E_G) * c_T;        % Reserve mobilization
     pG = kap * pC - pM;                                                            % Growth
     pR = (1 - kap) * pC - pJ;                                                      % Reproduction (eq.2.55 p.69)
