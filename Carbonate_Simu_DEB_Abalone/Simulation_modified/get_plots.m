@@ -1,0 +1,360 @@
+function get_plots(simu, j)
+
+
+% Construct the filename based on the scenario
+filename = '/Users/lagosjime/Documents/Work/UBO_Brest/Haliotis_tuberculata/results_Haliotis_tuberculata2.mat';
+
+% Load parameter values
+res = load(filename);
+par  = res.par;          % get primary parameters
+cPar = parscomp_st(par); % get compound parameters
+
+% time , environmental forcing
+t = simu.tEVHRSO(:,1);
+
+if simu.envX == 1
+    X = repmat(simu.Xinit, length(t),1);
+else
+    X = food(t);
+end
+
+if simu.envT == 1
+    T = repmat(simu.Tinit, length(t), 1) - 273; % in DegC
+else
+    
+    T = temp(t) - 273.15;
+end
+
+if simu.envpCO2 == 1
+    pCO2 = repmat(simu.pCO2init, length(t), 1);
+    
+else
+    pCO2 = acid(t);
+end
+
+% For period 2031 - 2050 scenarios (RCP2, RCP3 RCP4)
+if simu.RCP == "RCP2"  % period 2031 - 2050
+    T = T + t * 0.64 / (365 * 10);
+    pCO2 = pCO2 + t * 10 / (365 * 10);
+end
+
+if simu.RCP == "RCP3" % period 2031 - 2050
+    T = T + t * 0.95 / (365 * 10);
+    pCO2 = pCO2 + t * 15 / (365 * 10);
+end
+
+if simu.RCP == "RCP4" % period 2031 - 2050
+    T = T + t * 1.5 / (365 * 10);
+    pCO2 = pCO2 + t * 120 / (365 *10);
+end
+
+
+%% state variables
+E   = simu.tEVHRSO(:,2); % Energy reserves
+V   = simu.tEVHRSO(:,3); % structural volume
+E_H = simu.tEVHRSO(:,4); % maturity
+E_R = simu.tEVHRSO(:,5); % reproduction buffer
+V_S = simu.tEVHRSO(:,6); % shell volume
+
+%% spawning date indices
+i_sp = find(and((E_R == 0),(E_H >= par.E_Hp)));
+i_sp = i_sp - 1 ; % look at the preceding line with E_R value before spawning
+
+%% temperature correction
+c_T2  = exp(par.T_A / par.T_ref - par.T_A/ 297.8);
+
+%% Functional response
+f  = X ./ (X + cPar.K);
+
+%% Model fluxes
+pX  = simu.tFluxes(:,2);  
+pA  = simu.tFluxes(:,3); 
+pM  = simu.tFluxes(:,4);  
+pJ  = simu.tFluxes(:,5);  
+pC  = simu.tFluxes(:,6);  
+pG  = simu.tFluxes(:,7); 
+pR  = simu.tFluxes(:,8);
+pD  = simu.tFluxes(:,9);
+pLR = simu.tFluxes(:,10);
+pLV = simu.tFluxes(:,11);
+
+%% Larval age at birth and metamorphosis
+pars_tj = [cPar.g; cPar.k; cPar.l_T; cPar.v_Hb; cPar.v_Hj; cPar.v_Hp];
+[t_j, ~, t_b, l_j, ~, l_b, ~, ~, ~, ~] = get_tj(pars_tj, 0.98);
+
+aT_b = t_b / cPar.k_M / c_T2;    % d, age at birth at f and T
+L_b = cPar.L_m * l_b;             % cm, structural length at birth at f (post-metamorphosis)
+Lw_b = L_b / par.del_L;          % cm, total length at birth at f (post-metamorphosis)
+Ww_b = L_b^3 * (1 + cPar.w * cPar.g);  % g, wet-weight at birth
+
+tT_j = t_j / cPar.k_M / c_T2;    % d, age at metamorphosis
+L_j = cPar.L_m * l_j;             % cm, structural length at metam
+Lw_j = L_j / par.del_L;          % cm, total lenght at metamorphosis at f
+Ww_j = L_j^3 * (1 + 0.1 * cPar.w);  % g, wet-weight at metam
+
+%% observable quantities
+e    = simu.obs(:,2); % Scaled reserve energy
+L_w  = simu.obs(:,3); % Physical length
+Ww_V = simu.obs(:,4); % Total wet-weight
+E_w  = simu.obs(:,5); % Total energy content
+F    = simu.obs(:,6); % Fecundity
+G_Ww = simu.obs(:,7); % Gonad wet weight
+
+%% graph 1
+nfig = 1; % number of figures
+for i = 1:nfig
+    figure(i)
+    set(gcf,'PaperPositionMode','manual');
+    set(gcf,'PaperUnits','in');
+    set(gca,'Fontsize', 12)    
+    % Adjust the figure size, if needed
+    set(gcf, 'Position', [100, 100, 800, 600]);
+end
+
+ line_styles = {'-', '--', ':', '-.'}; % Line styles for IPCC scenarios
+ colors = {"#D95319","#A2142F", "#7E2F8E", "#77AC30"};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Plots for model fluxes %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+figure(1)
+subplot(3, 4, 1)
+hold on
+plot( t, pX, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Feeding')
+legend('Current','RCP2.6','RCP4.5','RCP8.5', 'location', 'best'),
+xlabel('Time (d)')
+ylabel('pX')
+
+subplot(3, 4, 2)
+hold on
+plot( t, pA, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Assimilation')
+xlabel('Time (d)')
+ylabel('pA')
+
+subplot(3, 4, 3)
+hold on
+plot( t, pM, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Somatic maintenance')
+xlabel('Time (d)')
+ylabel('pM')
+
+subplot(3, 4, 4)
+hold on
+plot( t, pC, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Mobilization')
+xlabel('Time (d)')
+ylabel('pC')
+
+subplot(3, 4, 5)
+hold on
+plot( t, pJ, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Maturiry maintenance')
+xlabel('Time (d)')
+ylabel('pJ')
+
+subplot(3, 4, 6)
+hold on
+plot( t, pJ, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Mobilisation')
+xlabel('Time (d)')
+ylabel('pC')
+
+subplot(3, 4, 7)
+hold on
+plot( t, pG, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Growth')
+xlabel('Time (d)')
+ylabel('pG')
+
+subplot(3, 4, 8)
+hold on
+plot( t, pR, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Reproduction')
+xlabel('Time (d)')
+ylabel('pG')
+
+subplot(3, 4, 9)
+hold on
+plot( t, pD, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Dissipation')
+xlabel('Time (d)')
+ylabel('pG')
+
+subplot(3, 4, 10)
+hold on
+plot( t, pLR , simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('pLR')
+xlabel('Time (d)')
+ylabel('pLR ')
+
+subplot(3, 4, 11)
+hold on
+plot( t, pLV, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('pLV')
+xlabel('Time (d)')
+ylabel('pLV')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Plots for Enviromental conditions %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure(2)
+subplot(1, 3, 1)
+hold on
+plot( t, T, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Temperature')
+xlabel('Time (d)')
+ylabel('T (°C)')
+axis([0 t(end) 0 25])
+
+subplot(1, 3, 2)
+hold on
+plot( t, f , simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Food')
+xlabel('Time (d)')
+ylabel('Food density')
+
+subplot(1, 3, 3)
+hold on
+plot( t, pCO2, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('pCO2 levels')
+xlabel('Time (d)')
+ylabel('pCO2')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Plots for State variables  %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure(3)
+subplot(2, 4, 1)
+hold on
+plot( t, e, [simu.col '-'], 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})
+title('Scaled reserve density (e)')
+xlabel('Time (d)')
+ylabel('e (-)')
+
+subplot(2, 4, 2)
+hold on
+plot(t, E,  simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j}) % Joules, Reserve energy
+title('Reserve energy [E]')
+xlabel('Time (d)')
+ylabel('E (Joules)')
+
+subplot(2, 4, 3)
+hold on
+plot(t, V, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j}) % cm^3, Structural volume
+title('Structural volume')
+xlabel('Time (d)')
+ylabel('V (cm^3)')
+
+subplot(2, 4, 4)
+hold on
+plot(t, E_H, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})  % J, cumulated energy inversted into maturity
+title('Energy invested into maturation')
+xlabel('Time (d)')
+ylabel('E_H (J)')
+
+subplot(2, 4, 5)
+hold on
+plot(t, E_R, simu.col , 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j}) % Joules, Reproduction buffer
+title('Reproduction buffer')
+xlabel('Time (d)')
+ylabel('E_R (J)')
+
+subplot(2, 4, 6)
+hold on
+plot(t, V_S, simu.col , 'Linewidth',1.5, 'LineStyle', line_styles{j}, 'Color', colors{j}) % cm^3, Shell structural volume
+title('Shell volume')
+xlabel('Time (d)')
+ylabel('Shell volume (cm^3)')
+
+subplot(2, 4, 7)
+hold on
+plot(t, E_w, simu.col , 'Linewidth', 1.5, 'LineStyle', line_styles{j}, 'Color', colors{j}) % J/g, Total energy content
+title('Energy content (J/g)')
+xlabel('Time (d)')
+ylabel('E_w (J.g^{-1})')
+
+saveas(gcf, 'fig_DEB_standard.jpg', 'jpg')
+% other ways to save the graph
+% saveas(gcf, 'fig_DEB_standard.eps', 'psc2')
+% print -djpeg90 fig_DEB_standard.jpg
+
+
+% graphs 2
+nfig = 1; % number of figures
+for i = 1:nfig
+    figure(i)
+    set(gcf,'PaperPositionMode','manual');
+    set(gcf,'PaperUnits','in');
+    set(gcf,'PaperPosition',[0 0 14 10]);
+    set(gca,'Fontsize', 14)
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Plots for observable quantities %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%% Total lenghts %%%%%%%%
+figure(4)
+subplot(1, 4, 1)
+hold on
+plot(t, L_w, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{j}, 'Color', colors{j}) % cm, physical length
+xlabel('Time (d)')
+ylabel('Total length (cm)')
+v = axis;
+text((v(2)-v(1)) * 0.07 + v(1), (v(4)-v(3)) *.9 + v(3), '(c)','Fontsize',12)
+
+%%%%%%%%% Fecundity %%%%%%%%
+subplot(1, 4, 2)
+hold on
+plot(t, F, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{j}, 'Color', colors{j}) % Fecundity = egg number = kap_R * E_R / E_0
+xlabel('Time (d)')
+ylabel('Fecundity (# Eggs)')
+v = axis;
+text((v(2)-v(1)) * 0.07 + v(1), (v(4)-v(3)) *.9 + v(3), '(c)','Fontsize',12)
+
+%%%%%%%%% wet-weights %%%%%%%%
+subplot(1, 4, 3)
+hold on
+plot(t, Ww_V, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})  % g, total wet-weight, same water content in structure and reserves
+xlabel('Time (d)')
+ylabel('Total wet-weight (g)')
+
+%%%%%% Gonad Weigth %%%%%%%%%
+subplot(1, 4, 4)
+hold on
+plot(t, G_Ww, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{j}, 'Color', colors{j})  % g, total wet-weight, same water content in structure and reserves
+xlabel('Time (d)')
+ylabel('Gonad wet-weight (g)')
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Plots for larva %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% Total lenghts %%%%%%%%
+figure(5)
+subplot(1, 2, 1)
+hold on
+plot(t, L_w, simu.col, 'Linewidth', 1.6) % cm, physical length
+xline (tT_j, '--.r', 'Predicted age at metamorphosis')
+axis([0 5 0 0.05])
+xlabel('Time (d)')
+ylabel('Larva length (cm)')
+v = axis;
+text((v(2)-v(1)) * 0.07 + v(1), (v(4)-v(3)) *.9 + v(3), '(a)','Fontsize',18)
+
+%%%%%%%%% wet-weights %%%%%%%%
+subplot(1, 2, 2)
+hold on
+plot(t, Ww_V, simu.col, 'Linewidth', 1.6)  % g, total wet-weight, same water content in structure and reserves
+xline (tT_j, '--.r', 'Predicted age at metamorphosis')
+axis([0 5 0 0.000005])
+xlabel('Time (d)')
+ylabel('Larva wet-weight (g)')
+v = axis;
+text((v(2)-v(1)) * 0.07 + v(1), (v(4)-v(3)) *.9 + v(3), '(b)','Fontsize',18)
+sgtitle('Larval growth')
+
+end
+
