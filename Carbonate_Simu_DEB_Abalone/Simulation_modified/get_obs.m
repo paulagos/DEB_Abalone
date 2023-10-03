@@ -1,4 +1,4 @@
-function obs = get_obs(simu)
+function obs = get_obs(simu, gen)
   %---------------------------------------------------------------
   % Compute physical length, weight, fecundity, and energy content from state variables
   %  
@@ -18,7 +18,7 @@ function obs = get_obs(simu)
   % 2023/03/21 - PaulI F. Lagos
   %-------------------------------------------------------------
   %% unpack parameters, state variables
-  filename = '/Users/lagosjime/Documents/Work/UBO_Brest/Haliotis_tuberculata/results_Haliotis_tuberculata2.mat';
+  filename = '/Users/lagosjime/Documents/Work/UBO_Brest/Haliotis_tuberculata/DEB_Haliotis_control/results_Haliotis_tuberculata.mat';
   res = load(filename);
   par  = res.par;          % get primary parameters
   cPar = parscomp_st(par); % get compound parameters
@@ -26,11 +26,10 @@ function obs = get_obs(simu)
   vars_pull(cPar);
 
 %% State variables
-t   = simu.tEVHRSO(:,1); % days,     Time
-E   = simu.tEVHRSO(:,2); % Joules,   Reserve energy
-V   = simu.tEVHRSO(:,3); % cm^3,     Structural volume
-E_R = simu.tEVHRSO(:,5); % Joules,   Reproduction buffer
-V_S = simu.tEVHRSO(:,6); % cm^3,     Shell structural volume
+t   = simu.tEVHR(:,1, gen); % days,     Time
+E   = simu.tEVHR(:,2, gen); % Joules,   Reserve energy
+V   = simu.tEVHR(:,3, gen); % cm^3,     Structural volume
+E_R = simu.tEVHR(:,5, gen); % Joules,   Reproduction buffer
 
 % Non-observable quantities
 E_m = cPar.p_Am ./ par.v;                % [Em], J m^-3, maximun reserve density
@@ -47,7 +46,7 @@ E_V       = mu_V * d_V / w_V * V;        % Joules, Energy content of structure
 E_w       = (E_V + E + E_R) ./ Ww_V;     % J/g, Total energy content 
 
 % Observable quantities (eggs number)
-F         = kap_R * E_R / simu.EVHRSO_init(1);  % Fecundity = egg number = kap_R * E_R / E_0
+F         = kap_R * E_R / simu.EVHR_init(1);  % Fecundity = egg number = kap_R * E_R / E_0
 
 % Observable quantities (Gonad wet weight)
 G_Ww      =  E_R * (w_E / (d_E * mu_E));          % g, gonad wet-weight
