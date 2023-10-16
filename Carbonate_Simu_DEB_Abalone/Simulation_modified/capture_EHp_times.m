@@ -13,12 +13,36 @@ function captured_EHp = capture_EHp_times()
 % 13/10/2023 - Paulo F. Lagos
 %---------------------------------------------------------------
 %% Load and unpack parameters
-filename = '/Users/lagosjime/Documents/Work/UBO_Brest/Haliotis_tuberculata/DEB_Haliotis_control/results_Haliotis_tuberculata.mat';
-res = load(filename);
-par  = res.par;          % get primary parameters
-cPar = parscomp_st(par); % get compound parameters
-vars_pull(par);
+% filename = '/Users/lagosjime/Documents/Work/UBO_Brest/Haliotis_tuberculata/DEB_Haliotis_control/results_Haliotis_tuberculata.mat';
+% res = load(filename);
+% par  = res.par;          % get primary parameters
+% cPar = parscomp_st(par); % get compound parameters
+% vars_pull(par);
+% vars_pull(cPar);
+
+% Prompt the user to select the .mat file
+[filename, path] = uigetfile('*.mat', 'Select the .mat file');
+
+if filename == 0
+    % User canceled the selection
+    disp('File selection canceled.');
+    return;
+end
+
+% Construct the full file path
+fullFilePath = fullfile(path, filename);
+
+% Load the data
+data = load(fullFilePath);
+
+% Extract primary and compound parameters
+par = data.par;
+cPar = parscomp_st(par);
+
+% Pull the variables into the workspace
+vars_pull(par, cPar);
 vars_pull(cPar);
+
 
 % Define arrays for different environemntal conditions
 food_array = linspace(-50, 0, 10); % kap_X

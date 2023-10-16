@@ -3,13 +3,38 @@ function get_plots(simu, j, h, gen_number)
 % choose plots
 doLarvalPlot = 0; % chose if do the larval plots 0 = false; 1 = true
 
-% Construct the filename based on the scenario
-filename = '/Users/lagosjime/Documents/Work/UBO_Brest/Haliotis_tuberculata/DEB_Haliotis_control/results_Haliotis_tuberculata.mat';
+% % Construct the filename based on the scenario
+% filename = '/Users/lagosjime/Documents/Work/UBO_Brest/Haliotis_tuberculata/DEB_Haliotis_control/results_Haliotis_tuberculata.mat';
+% 
+% % Load parameter values
+% res = load(filename);
+% par  = res.par;          % get primary parameters
+% cPar = parscomp_st(par); % get compound parameters
 
-% Load parameter values
-res = load(filename);
-par  = res.par;          % get primary parameters
-cPar = parscomp_st(par); % get compound parameters
+
+% Prompt the user to select the .mat file
+[filename, path] = uigetfile('*.mat', 'Select the .mat file');
+
+if filename == 0
+    % User canceled the selection
+    disp('File selection canceled.');
+    return;
+end
+
+% Construct the full file path
+fullFilePath = fullfile(path, filename);
+
+% Load the data
+data = load(fullFilePath);
+
+% Extract primary and compound parameters
+par = data.par;
+cPar = parscomp_st(par);
+
+% Pull the variables into the workspace
+vars_pull(par, cPar);
+vars_pull(cPar);
+
 
 for gen = 1:gen_number
     
