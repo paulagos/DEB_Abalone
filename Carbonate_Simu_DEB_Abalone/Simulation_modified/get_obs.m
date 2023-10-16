@@ -31,24 +31,17 @@ E   = simu.tEVHR(:,2, gen); % Joules,   Reserve energy
 V   = simu.tEVHR(:,3, gen); % cm^3,     Structural volume
 E_R = simu.tEVHR(:,5, gen); % Joules,   Reproduction buffer
 
-% Non-observable quantities
-E_m = cPar.p_Am ./ par.v;                % [Em], J m^-3, maximun reserve density
-e   = E ./ (V * E_m);                    % e,          -, scaled reserve density
-
-% Observable quantities (lenghts)
-L_w       = V.^(1/3) / del_M;           % cm, physical length
-
-% Observable quantities (total wet-weights)
+% Observable quantities
+L_w       =  V.^(1/3) / del_M;                  % cm, physical length
 Ww_V      =  d_V * V + (E + E_R) * w_E / mu_E;  % g, total wet-weight
+F         =  kap_R * E_R / simu.EVHR_init(1);   % Fecundity = egg number = kap_R * E_R / E_0
+G_Ww      =  E_R * (w_E / (d_E * mu_E));        % g, gonad wet-weight
+GSI       =  G_Ww ./ (Ww_V - G_Ww);              % -, Gonado somatic index (GSI)
 
-% Observable quantities (Energy)
+% Non-observable quantities
+E_m       = cPar.p_Am ./ par.v;          % [Em], J m^-3, maximun reserve density
+e         = E ./ (V * E_m);              % e,          -, scaled reserve density
 E_V       = mu_V * d_V / w_V * V;        % Joules, Energy content of structure
 E_w       = (E_V + E + E_R) ./ Ww_V;     % J/g, Total energy content 
 
-% Observable quantities (eggs number)
-F         = kap_R * E_R / simu.EVHR_init(1);  % Fecundity = egg number = kap_R * E_R / E_0
-
-% Observable quantities (Gonad wet weight)
-G_Ww      =  E_R * (w_E / (d_E * mu_E));          % g, gonad wet-weight
-
-obs = [t, e, L_w, Ww_V, E_w, F, G_Ww];
+obs = [t, e, L_w, Ww_V, E_w, F, G_Ww, GSI];

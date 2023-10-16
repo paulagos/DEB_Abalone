@@ -39,24 +39,15 @@ v     = par.v;
 % life stages: E_H is the cumulated energy from reserve invested in maturation
 E_Hb = par.E_Hb;      % J, E_H^b, maturity at birth
 E_Hp = par.E_Hp;      % J, E_H^p, maturity at puberty
-l_T  = cPar.l_T;
-v_Hb = cPar.v_Hb;
-v_Hj = cPar.v_Hj;
-v_Hp = cPar.v_Hp;
 
 % Additional parameters
 K      = cPar.p_Am / (par.kap_X * par.F_m); % 22, same unit as food, half-saturation coefficient
-g      = cPar.g;        % -, ﻿energy investment ratio
-k_M    = cPar.k_M;      % 26
 k_J    = par.k_J; 
 E_G    = par.E_G;
 d_V    = par.d_V;   
-kap_LR = par.kap_LR;   % yield of reproduction tissue lysis
-kap_LV = par.kap_LV;   % yield of structural  tissue lysis
+kap_LR = 0.79;   % yield of reproduction tissue lysis
+kap_LV = 0.79;   % yield of structural  tissue lysis
 rho_V  = par.rho_V ;   % J g^-1, energy content of 1g of structure 
-k      = k_J / k_M;    % ratio of maturity and somatic maintenance rate coeff
-L_m    = cPar.L_m;     % cm, maximun lenght
-del_M  = par.del_M;    % -, shape coefficient for adults
 
 % pCO2 correction parameters 
 CM_H = par.CM_H;  % uatm, Higher pCO2 boundary for maintenace cost
@@ -138,67 +129,55 @@ kap_X = min(1, kap_X + simu.foodQ);
 if E_H < E_Hb
     pX = 0;                                                                        % J d-1, feeding
     pA = 0;                                                                        % J d-1, assimilation (eq. 2.3 p.35)
-    pM = (p_M * V + q * min(max(pCO2 - CM_L, 0), max(CM_H - pCO2, 0)) * V^(2/3)) * c_T; % J d-1,  Somatic maintenance
+    pM = (p_M * V + q * min(max(pCO2 - CM_L, 0), (CM_H -  CM_L)) * V^(2/3)) * c_T; % J d-1,  Somatic maintenance
     pJ = k_JT * E_H;                                                               % J d-1, Maturiry maintenance (eq.2.19 p.47) 
     pC = (E/V) * (E_G * v * V^(2/3) + p_M * V) / (kap * E/V + E_G) * c_T;          % J d-1, Reserve mobilization
     pG = kap * pC - pM;                                                            % J d-1, Growth
     pR = (1 - kap) * pC - pJ;                                                      % J d-1, Reproduction (eq.2.55 p.69)
     pD = pM + pJ + (1 - kap_R) * pR;                                               % J d-1, Dissipation
 else
-    pX = f * p_XmT * V^(2/3);                                                      % J d-1, feeding
-    pA = kap_X * pX;                                                               % J d-1, Assimilation (eq.2.3 page 36)
-    pM = (p_M * V + q * min(max(pCO2 - CM_L, 0), max(CM_H - pCO2, 0)) * V^(2/3)) * c_T; % J d-1, Somatic maintenance
-    pJ = k_JT * E_H;                                                               % J d-1, Maturiry maintenance (eq.2.19 p.47) 
-    pC = (E/V) * (E_G * v * V^(2/3) + p_M * V) / (kap * E/V + E_G) * c_T;          % J d-1, Reserve mobilization
-    pG = kap * pC - pM;                                                            % J d-1, Growth
-    pR = (1 - kap) * pC - pJ;                                                      % J d-1, Reproduction (eq.2.55 p.69)
-    pD = pM + pJ + (1 - kap_R) * pR;                                               % J d-1,Dissipation
+    pX = f * p_XmT * V^(2/3);                                                   % J d-1, feeding
+    pA = kap_X * pX;                                                            % J d-1, Assimilation (eq.2.3 page 36)
+    pM = (p_M * V + q * min(max(pCO2 - CM_L, 0), (CM_H -  CM_L)) * V^(2/3)) * c_T;  % J d-1, Somatic maintenance
+    pJ = k_JT * E_H;                                                                    % J d-1, Maturiry maintenance (eq.2.19 p.47) 
+    pC = (E/V) * (E_G * v * V^(2/3) + p_M * V) / (kap * E/V + E_G) * c_T;       % J d-1, Reserve mobilization
+    pG = kap * pC - pM;                                                         % J d-1, Growth
+    pR = (1 - kap) * pC - pJ;                                                   % J d-1, Reproduction (eq.2.55 p.69)
+    pD = pM + pJ + (1 - kap_R) * pR;                                            % J d-1, Dissipation
 end
 
-pLR    = 1 / kap_LR * (pM - kap * pC - ((1 - kap) * pC - pJ));
-pLV    = 1 / kap_LV * (pM - kap * pC - ((1 - kap) * pC - pJ));
+pLR    = (1 / kap_LR) * (pM - kap * pC - ((1 - kap) * pC - pJ));
+pLV    = (1 / kap_LV) * (pM - kap * pC - ((1 - kap) * pC - pJ));
+
 kap_pC = kap * pC;
 
 %% Differential equations
  
-dE = pA - pC; % dE/dt energy reserves
-dV = pG / E_G; % dV/dt structural volume
-
-if E_H < E_Hp
-    dH = pR; % dEH/dt maturity
-    dR = 0;  % dER/dt reproduction
+    dE = pA - pC; % dE/dt energy reserves
     
-else
-    dH = 0;  % dEH/dt maturity
-    dR = pR; % dR/dt reproduction
-end
+    if kap * pC < pM % if in starvation, fraction from mobilization does not cover somatic maintenacce costs.
+ 
+        dH = 0; % there is no maturation flux
+        
+        if V >= V_p && E_R >= pLR % if volume is larger that volume at puberty and reproduction buffer is larger than the amount of energy taken from the reproduction buffer to cover somatic maintenance
+            dV = 0;     % dV/dt structural volume
+            dR = -pLR;  % dR/dt reproduction buffer     
+        else
+            dV = -pLV / (rho_V * d_V);
+            dR = 0;
+        end
+        
+    else
+        dV = pG / E_G; % dV/dt structural volume
 
-%
-%     dE = pA - pC; % dE/dt energy reserves
-%     
-%     if kap * pC < pM % if in starvation, fraction from mobilization does not cover somatic maintenacce costs.
-%  
-%         dH = 0; % there is no maturation flux
-%         
-%         if V >= V_p && E_R >= pLR % if volume is larger that volume at puberty and reproduction buffer is larger than the amount of energy taken from the reproduction buffer to cover somatic maintenance
-%             dV = 0;     % dV/dt structural volume
-%             dR = -pLR;  % dR/dt reproduction buffer     
-%         else
-%             dV = -pLV / (rho_V * d_V);
-%             dR = 0;
-%         end
-%         
-%     else
-%         dV = pG / E_G; % dV/dt structural volume
-% 
-%         if E_H < E_Hp
-%             dH = pR; % dEH/dt maturity
-%             dR = 0;  % dER/dt reproduction
-%         else
-%             dH = 0;  % dEH/dt maturity
-%             dR = pR; % dR/dt reproduction
-%         end
-%     end
+        if E_H < E_Hp
+            dH = pR; % dEH/dt maturity
+            dR = 0;  % dER/dt reproduction
+        else
+            dH = 0;  % dEH/dt maturity
+            dR = pR; % dR/dt reproduction
+        end
+    end
     
     if fluxOut
         d = [pX; pA; pM; pJ; pC; pG; pR; pD; pLR; pLV; kap_pC];

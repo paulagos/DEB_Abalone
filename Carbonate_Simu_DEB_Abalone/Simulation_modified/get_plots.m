@@ -64,6 +64,16 @@ for gen = 1:gen_number
     %% temperature correction
     c_T2  = exp(par.T_A / par.T_ref - par.T_A/ 297.8);
     
+%     s_A = exp(par.T_A/ par.T_ref - par.T_A ./ T);  % Arrhenius factor
+%     
+%     s_L_ratio = (1 + exp(par.T_AL/ par.T_ref - par.T_AL/ par.T_L)) ./ ...
+%         (1 + exp(par.T_AL ./ T   - par.T_AL / par.T_L));
+%     
+%     s_H_ratio = (1 + exp(par.T_AH / par.T_H - par.T_AH/ par.T_ref)) ./ ...
+%         (1 + exp(par.T_AH / par.T_H - par.T_AH ./ T  ));
+%     
+%     c_T = s_A .* ((T <= par.T_ref) .* s_L_ratio + (T > par.T_ref) .* s_H_ratio);
+    
     %% Functional response
     f  = X ./ (X + cPar.K);
     
@@ -83,7 +93,7 @@ for gen = 1:gen_number
     %% Larval age at birth and metamorphosis
     if doLarvalPlot
         pars_tj = [cPar.g; cPar.k; cPar.l_T; cPar.v_Hb; cPar.v_Hj; cPar.v_Hp];
-        [t_j, ~, t_b, l_j, ~, l_b, ~, ~, ~, ~] = get_tj(pars_tj, par.f);
+        [t_j, ~, t_b, l_j, ~, l_b, ~, ~, ~, ~] = get_tj(pars_tj, f);
         
         aT_b = t_b / cPar.k_M / c_T2;    % d, age at birth at f and T
         L_b = cPar.L_m * l_b;             % cm, structural length at birth at f (post-metamorphosis)
@@ -94,6 +104,7 @@ for gen = 1:gen_number
         L_j = cPar.L_m * l_j;             % cm, structural length at metam
         Lw_j = L_j / par.del_L;          % cm, total lenght at metamorphosis at f
         Ww_j = L_j^3 * (1 + 0.1 * cPar.w);  % g, wet-weight at metam
+        
     end
     %% observable quantities
     e    = simu.obs(:,2, gen); % Scaled reserve energy
@@ -103,8 +114,8 @@ for gen = 1:gen_number
     F    = simu.obs(:,6, gen); % Fecundity
     G_Ww = simu.obs(:,7, gen); % Gonad wet weight
     
-    %% graph 1
-    nfig = 1; % number of figures
+        %% graph 1
+    Enfig = 1; % number of figures
     for i = 1:nfig
         figure(i)
         set(gcf,'PaperPositionMode','manual');
@@ -115,18 +126,17 @@ for gen = 1:gen_number
     end
     
     line_styles = {'-', '--', ':', '-.'}; % Line styles for IPCC scenarios
-    colors = ["#77AC30", "#7E2F8E", "#D95319","#A2142F"];
+    colors = ["#77AC30", "#0072BD", "#7E2F8E" ,"#A2142F"];
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%% Plots for model fluxes %%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  
     figure(1)
     subplot(3, 4, 1)
     hold on
     plot(t, pX, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
     title('Feeding')
-    legend('Current','RCP2.6','RCP4.5','RCP8.5', 'location', 'best'),
+    %legend('Current','RCP2.6','RCP4.5','RCP8.5', 'location', 'best'),
     xlabel('Time (d)')
     ylabel('pX')
     
@@ -200,6 +210,17 @@ for gen = 1:gen_number
     xlabel('Time (d)')
     ylabel('kap * pC')
     
+    subplot(3, 4, 12)
+    p1 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{1});
+    hold on;
+    p2 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{2});
+    p3 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{3});
+    p4 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{4});
+    
+    legend('Current','RCP2.6','RCP4.5','RCP8.5', 'location', 'best');
+
+    set(gca, 'visible', 'off');
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%% Plots for Enviromental conditions %%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,14 +235,14 @@ for gen = 1:gen_number
     
     subplot(3, 1, 2)
     hold on
-    plot(t, f , simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t/365, f , simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
     title('Food')
     xlabel('Time (years)')
     ylabel('Food density')
     
     subplot(3, 1, 3)
     hold on
-    plot(t, pCO2, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t/365, pCO2, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
     title('pCO2 levels')
     xlabel('Time (years)')
     ylabel('pCO2')
@@ -232,42 +253,42 @@ for gen = 1:gen_number
     figure(3)
     subplot(2, 4, 1)
     hold on
-    plot( t, e, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t/365, e, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
     title('Scaled reserve density (e)')
     xlabel('Time (d)')
     ylabel('e (-)')
     
     subplot(2, 4, 2)
     hold on
-    plot(t, E,  simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % Joules, Reserve energy
+    plot(t/365, E,  simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % Joules, Reserve energy
     title('Reserve energy [E]')
     xlabel('Time (d)')
     ylabel('E (Joules)')
     
     subplot(2, 4, 3)
     hold on
-    plot(t, V, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % cm^3, Structural volume
+    plot(t/365, V, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % cm^3, Structural volume
     title('Structural volume')
     xlabel('Time (d)')
     ylabel('V (cm^3)')
     
     subplot(2, 4, 4)
     hold on
-    plot(t, E_H, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})  % J, cumulated energy inversted into maturity
+    plot(t/365, E_H, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})  % J, cumulated energy inversted into maturity
     title('Energy invested into maturation')
     xlabel('Time (d)')
     ylabel('E_H (J)')
     
     subplot(2, 4, 5)
     hold on
-    plot(t, E_R, simu.col , 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % Joules, Reproduction buffer
+    plot(t/365, E_R, simu.col , 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % Joules, Reproduction buffer
     title('Reproduction buffer')
     xlabel('Time (d)')
     ylabel('E_R (J)')
     
     subplot(2, 4, 6)
     hold on
-    plot(t, E_w, simu.col , 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % J/g, Total energy content
+    plot(t/365, E_w, simu.col , 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % J/g, Total energy content
     title('Energy content (J/g)')
     xlabel('Time (d)')
     ylabel('E_w (J.g^{-1})')
@@ -323,12 +344,7 @@ for gen = 1:gen_number
     plot(t/365, G_Ww, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})  % g, total wet-weight, same water content in structure and reserves
     xlabel('Time (years)')
     ylabel('Gonad wet-weight (g)')
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%% One year growth from 2023 to  2037  %%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    
+        
     
     if doLarvalPlot
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -354,6 +370,7 @@ for gen = 1:gen_number
         ylabel('Larva wet-weight (mg)')
         sgtitle('Larval growth')
     end
+    
    
 end
 end

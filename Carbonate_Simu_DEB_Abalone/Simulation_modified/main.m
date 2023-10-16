@@ -20,11 +20,10 @@
 % 2023/03/12 - Paulo F. Lagos
 %---------------------------------------------------------------
 
-clear all
 close all
 
 RCP_scenarios = {'RCP1','RCP2','RCP3','RCP4'};
-Food_quality  = [-0.4, -0.2, 0];
+Food_quality  = [-40, -20, 0];
 variable_env  = [1,2];
 gen_number    = [2];
 
@@ -38,7 +37,7 @@ for h = 1:length(Food_quality)
             varEnv = variable_env(j);
             
             %% 1 - initialize time, parameters, etc
-            simu = init(RCP, varEnv, envFoodQ, gen_number);
+            simu = init(RCP, varEnv, envFoodQ, gen_number):%, pCO2, temp);
             
             for k = 1:gen_number
                 
@@ -77,3 +76,6 @@ for h = 1:length(Food_quality)
         
     end
 end
+
+
+
