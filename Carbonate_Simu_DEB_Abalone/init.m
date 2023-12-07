@@ -1,4 +1,4 @@
-function simu = init
+function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number) %, pco2, temp)
   %---------------------------------------------------------------
   % Define simulation and individual features
   %  
@@ -13,67 +13,79 @@ function simu = init
   %--------------------------------------------------------------
   
   %% Load and unpack parameters
-  filename = 'results_Haliotis_tuberculata.mat';
-  res = load(filename);
+  res = load(filename); 
   par  = res.par;          % get primary parameters
   cPar = parscomp_st(par); % get compound parameters
-  vars_pull(par); 
-  vars_pull(cPar);
+
+  % Set parameter variables
+  [V_Hb, g, k_J, k_M, v]    = deal(cPar.V_Hb, cPar.g, par.k_J, cPar.k_M, par.v);
+  [T_ref, p_Am, kap_X, F_m] = deal(par.T_ref, cPar.p_Am, par.kap_X, par.F_m);
   
-  %% set inital simulation times
-  t0 = 1;             % initial time % January 1st
-  tm = 15 * 365;      % final time  
+  % set simulation times
+  t0 = 0;             % initial time % January 1st
+  tm = 20 * 365;      % final time 
   ts = t0;            % spawning time 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%    Choose if environment is constant or variable
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
-
-  envT   = 2;   % 1 = T constant,    2 = T variable
-  envX   = 2;   % 1 = constant food, 2 = variable food
-  envCO2 = 2;   % 1 = contant pCO2,  2 = variable pCO2
   
- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %% Color for plots
- if     envT == 1 && envX == 1 && envCO2 == 1
-	col = 'k'; 
- elseif envT == 2 && envX == 2 && envCO2 == 2
-	col = 'r' ;
- elseif envT == 1 && envX == 2 && envCO2 == 1
-    col = 'g';
- elseif envT == 2 && envX == 2 && envCO2 == 1
-    col = 'c';
- elseif envT == 2 && envX == 1 && envCO2 == 1
-    col = 'm';
- else
-    col = 'b';
- end
-
-  %% initial forcing variable
-  T = 20 + 273.15;
-  f = 0.6;
-  CO2 = 380;
+  % Set environment flags
+  envT    = varEnv;  
+  envX    = varEnv;   
+  envpCO2 = varEnv;   
+  envSSP  = SSP;
   
-  % Initial states
-  pars_UE0 = [V_Hb; g; k_J; k_M; v];
+  % Define plot color based on environment
+  col = getColor(envT, envX, envpCO2);
+  
+  % contant environemantal conditions
+  T    = 14 + 273.15; %14 + 273.15 or  %temp + 273.15; %
+  f    = 0.999;
+  pCO2 = 420; % pco2 ;
+  
+  % SSP scenarios applied to in-situ environmental data
+   [ssp_temp, ssp_pco2] = forcing_deb(location, SSP);
+   
+  % Calculate initial states
+  pars_UE0     = [V_Hb; g; k_J; k_M; v];
   [U_E0, ~, ~] = initial_scaled_reserve(f, pars_UE0);
-  
-  E_0  = U_E0 * p_Am;     % J, initial reserve energy E_0 = U_E0 * p_Am 
-  V_0  = 1e-8;                   % cm^3, initial structural volume
-  E_H0 = 0;                      % J, initial cum. energy invested into maturation
-  E_R0 = 0;                      % J, initial reproduction buffer
-  E_S0 = 0;                      % cm^3, initial shell structural volume
-  O_P0 = 0;                      % initial shell opacity
-  K    = p_Am / (kap_X * F_m);   % same unit as food, half-saturation coefficient
- 
-  %simu.par = set_par;
-  simu.t0      = t0;
-  simu.tm      = tm;
-  simu.ts      = ts;
-  simu.envT    = envT;
-  simu.envX    = envX;
-  simu.envCO2  = envCO2;
-  simu.Tinit   = T;
-  simu.Xinit   = f.* K ./ (1 - f);
-  simu.CO2init = CO2;
-  simu.EVHRSO_init = [E_0 ; V_0 ; E_H0; E_R0; E_S0; O_P0];
+  E_0          = U_E0 * p_Am;            % J, initial reserve energy E_0 = U_E0 * p_Am
+  V_0          = 1e-8;                   % cm^3, initial structural volume
+  E_H0         = 0;                      % J, initial cum. energy invested into maturation
+  E_R0         = 0;                      % J, initial reproduction buffer
+  K            = p_Am / (kap_X * F_m);   % same unit as food, half-saturation coefficient
+        
+  % Set simulation parameters in the 'simu' structure
+  simu.t0       = t0;
+  simu.tm       = tm;
+  simu.ts       = ts;
+  simu.envT     = envT;
+  simu.SSP      = envSSP;
+  simu.foodQ    = envFoodQ;
+  simu.envX     = envX;
+  simu.envpCO2  = envpCO2;
+  simu.Tinit    = T;
+  simu.Xinit    = f.* K ./ (1 - f);
+  simu.pCO2init  = pCO2;
+  simu.tempData  = ssp_temp;
+  simu.pco2Data  = ssp_pco2;
+  simu.EVHR_init = [E_0 ; V_0 ; E_H0; E_R0];
+  simu.tEVHR     = zeros(tm+1,length(simu.EVHR_init)+1, gen_number);
   simu.col = col;
+  
+end
+  
+  function col = getColor(envT, envX, envpCO2)
+    % Determine plot color based on environment conditions
+    if envT == 1 && envX == 1 && envpCO2 == 1
+        col = 'k';
+    elseif envT == 2 && envX == 2 && envpCO2 == 2
+        col = 'r';
+    elseif envT == 1 && envX == 2 && envpCO2 == 1
+        col = 'g';
+    elseif envT == 2 && envX == 2 && envpCO2 == 1
+        col = 'c';
+    elseif envT == 2 && envX == 1 && envpCO2 == 1
+        col = 'm';
+    else
+        col = 'b';
+    end
+    
+  end
