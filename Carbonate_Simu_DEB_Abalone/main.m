@@ -27,7 +27,7 @@ switch username
     case 'paulo'
         filename = '/Users/lagosjime/Documents/Work/UBO_Brest/Haliotis_tuberculata/DEB_Haliotis_control/results_Haliotis_tuberculata.mat';
     case 'laure'
-        filename = 'to be defined by Laure';
+        filename = 'Documents/GitHub/DEB_Abalone/Carbonate_Simu_DEB_Abalone/results_Haliotis_tuberculata.mat';
     case 'jonathan'
         filename = 'to be defined by Jonathan';
 end
