@@ -23,7 +23,10 @@ metaData.email_cur   = {'sta@akvaplan.niva.no'};
 metaData.date_acc    = [2019 01 09]; 
 %
 %% Zero-variate data
-data.ab = 1.04;     units.ab = 'd';    label.ab = 'age at birth';               bibkey.ab = 'Wessel2018';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         females
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+data.ab = 0.7;     units.ab = 'd';    label.ab = 'age at birth';               bibkey.ab = 'Wessel2018';
 temp.ab = C2K(17);  units.temp.ab = 'K'; label.temp.ab = 'temperature';
   comment.ab = 'We asusme a feeding larval stage, beginning at late trocophore stage (19hpf to 24hpf). However, is likely larva do not need to  eat until metamorphosis has occured (9 dpf approx)';
 
@@ -63,6 +66,11 @@ data.Lw0 = 0.0150;    units.Lw0 = 'cm';     label.Lw0 = 'egg diameter';  bibkey.
 %  data.Ri  = 391103 * 2 / 365; units.Ri  = '#/d'; label.Ri = 'max reproduction rate';   bibkey.Ri  = 'Bilbao2010';
 %    temp.Ri = C2K(15); units.temp.Ri = 'K'; label.temp.Ri = 'temperature';
 %    comment.Ri = 'Mean number of oocytes in one batch 391.103. Could be twice as much if the spawning occurs two times per year or more. the maximun batch fecundity is 691.566 oocytes per female';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         Males
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %% Uni-variate data
 %
@@ -675,15 +683,15 @@ data.LWw_roussel = [... % Length (cm) ~ total weigth (g)
 9.0	0.13
 9.0	0.12
 9.0	0.14
-9.0	0.13
-9.0	0.11
-9.0	0.12
-9.0	0.12
-10.0	0.16
-10.0	0.16
-10.0	0.17
-10.0	0.13
-10.0	0.13
+9.0	 0.13
+9.0	 0.11
+9.0	 0.12
+9.0	 0.12
+10.0 0.16
+10.0 0.16
+10.0 0.17
+10.0 0.13
+10.0 0.13
 10.0	0.14
 10.0	0.13
 10.0	0.13
@@ -2193,29 +2201,29 @@ temp.LWw_roussel = C2K(21);  units.temp.LWw_roussel = 'K'; label.temp.LWw_rousse
 bibkey.LWw_roussel = 'Roussel2019';
 comment.LWw_roussel = '10 to 34 months old abalone from france Haliotis';
 %
-data.LN = [... lenght ~ Number of eggs
-36.04	53333.33
-38.95	87037.04
-40.97	151851.85
-41.02	115555.56
-42.99	188148.15
-44.97	182962.96
-45.95	245185.19
-47.98	177777.78
-52.12	328148.15
-56.02	312592.59
-57.01	507037.04
-59.03	595185.19
-59.08	634074.07
-62.04	691111.11
-];
-data.LN(:,1) = data.LN(:,1)/10; % convert length from mm to cm
-data.LN(:,2) = data.LN(:,2) * 3; % Assuming two spawning events per year
-units.LN   = {'cm', '#eggs'};  label.LN = {'Total length', 'Total Fecundity'};  
-temp.LN    = C2K(21);  units.temp.LN = 'K'; label.temp.LN = 'temperature';
-bibkey.LN = 'Bilbao2010';
-comment.LN = 'Data from Fig.7, H.tuberculata females between 37 to 47mm from the Canary island, using equation is F = 3187*e^0.0881*SL and temperatures occilation between 19 to 23 deg C';
-%
+% data.LN = [... lenght ~ Number of eggs
+% 36.04	53333.33
+% 38.95	87037.04
+% 40.97	151851.85
+% 41.02	115555.56
+% 42.99	188148.15
+% 44.97	182962.96
+% 45.95	245185.19
+% 47.98	177777.78
+% 52.12	328148.15
+% 56.02	312592.59
+% 57.01	507037.04
+% 59.03	595185.19
+% 59.08	634074.07
+% 62.04	691111.11
+% ];
+% data.LN(:,1) = data.LN(:,1)/10; % convert length from mm to cm
+% data.LN(:,2) = data.LN(:,2) * 3; % Assuming two spawning events per year
+% units.LN   = {'cm', '#eggs'};  label.LN = {'Total length', 'Total Fecundity'};  
+% temp.LN    = C2K(21);  units.temp.LN = 'K'; label.temp.LN = 'temperature';
+% bibkey.LN = 'Bilbao2010';
+% comment.LN = 'Data from Fig.7, H.tuberculata females between 37 to 47mm from the Canary island, using equation is F = 3187*e^0.0881*SL and temperatures occilation between 19 to 23 deg C';
+% %
 Avignon2020 = [...% experimental time(d) ~ lenght(mm) ~ total wet-weight(g)     
 0    48.49  16.17  
 6    50.50  17.87
@@ -2232,12 +2240,12 @@ pCO2.tL_Avignon = 439; units.pCO2.tL_Avignon = 'μatm'; label.pCO2.tL_Avignon = 
 bibkey.tL_Avignon = 'Avignon2020';
 comment.tL_Avignon = 'Control data (pH = 8.0) from experiments in adult abalone (~600 days old) of average weight 16.2 g and lenght 48.5 mm fed ad libitum for 6 months';
 
-data.tW_Avignon = Avignon2020(:,[1 3]); % time(cm) ~ total weight(g) at pH = 8.0
-units.tW_Avignon = {'d', 'g'}; label.tW_Avignon = {'time', 'total wet-weight'};  
-temp.tW_Avignon = C2K(14.4); units.temp.tW_Avignon = 'K'; label.temp.tW_Avignon = 'temperature';
-pCO2.tW_Avignon = 439; units.pCO2.tW_Avignon = 'μatm'; label.pCO2.tW_Avignon = 'pCO2';
-bibkey.tW_Avignon = 'Avignon2020';
-comment.tW_Avignon = 'Control data (pH = 8.0) from experiments in adult abalone of average (~600 days old) weight 16.2 g and lenght 48.5 mm fed ad libitum for 6 months';
+% data.tW_Avignon = Avignon2020(:,[1 3]); % time(cm) ~ total weight(g) at pH = 8.0
+% units.tW_Avignon = {'d', 'g'}; label.tW_Avignon = {'time', 'total wet-weight'};  
+% temp.tW_Avignon = C2K(14.4); units.temp.tW_Avignon = 'K'; label.temp.tW_Avignon = 'temperature';
+% pCO2.tW_Avignon = 439; units.pCO2.tW_Avignon = 'μatm'; label.pCO2.tW_Avignon = 'pCO2';
+% bibkey.tW_Avignon = 'Avignon2020';
+% comment.tW_Avignon = 'Control data (pH = 8.0) from experiments in adult abalone of average (~600 days old) weight 16.2 g and lenght 48.5 mm fed ad libitum for 6 months';
 %
 % Roussel2019 growth of males and females under a diet of Saccorhiza polyschides
 M = 1; % Males
@@ -2275,17 +2283,29 @@ Roussel2019_sl = [... % (1)total lenght(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 3.40	M	0.46	7.61
 3.00	M	0.31	5.01
 ];
-data.LGw_sl = sort(Roussel2019_sl(:,[1 3])); % total length(cm) ~ gonad weight(g)
-units.LGw_sl = {'cm', 'g'}; label.LGw_sl = {'total length', 'gonad weight'};  
-temp.LGw_sl = C2K(14.4); units.temp.LGw_sl = 'K'; label.temp.LGw_sl = 'temperature';
-bibkey.LGw_sl = 'Roussel2019';
-comment.LGw_sl = 'one year old adult female and male abalone fed for 11 months with a diet of Saccorhiza polyschides ';
+data.LGw_sl_f = sort(Roussel2019_sl(Roussel2019_sl(:,2)==2 ,[1 3])); % Females total length(cm) ~ gonad weight(g)
+units.LGw_sl_f = {'cm', 'g'}; label.LGw_sl_f = {'total length', 'Females gonad weight'};  
+temp.LGw_sl_f = C2K(14.4); units.temp.LGw_sl_f = 'K'; label.temp.LGw_sl_f = 'temperature';
+bibkey.LGw_sl_f = 'Roussel2019';
+comment.LGw_sl_f = 'one year old adult female and male abalone fed for 11 months with a diet of Saccorhiza polyschides ';
 %
-data.LWw_sl = sort(Roussel2019_sl(:,[1 4])); % total length(cm) ~ total weight(g)
-units.LWw_sl = {'cm', 'g'}; label.LWw_sl = {'total length', 'total weight'};  
-temp.LWw_sl = C2K(14.4); units.temp.LWw_sl = 'K'; label.temp.LWw_sl = 'temperature';
-bibkey.LWw_sl = 'Roussel2019';
-comment.LWw_sl = 'one year old adult female and male abalone fed for 11 months with a diet of Saccorhiza polyschides';
+data.LWw_sl_f = sort(Roussel2019_sl(Roussel2019_sl(:,2)==2,[1 4])); % Females total length(cm) ~ total weight(g)
+units.LWw_sl_f = {'cm', 'g'}; label.LWw_sl_f = {'total length', 'Feamles total weight'};  
+temp.LWw_sl_f = C2K(14.4); units.temp.LWw_sl_f = 'K'; label.temp.LWw_sl_f = 'temperature';
+bibkey.LWw_sl_f = 'Roussel2019';
+comment.LWw_sl_f = 'one year old adult female and male abalone fed for 11 months with a diet of Saccorhiza polyschides';
+%
+data.LGw_sl_m = sort(Roussel2019_sl(Roussel2019_sl(:,2)==1 ,[1 3])); % Males total length(cm) ~ gonad weight(g)
+units.LGw_sl_m = {'cm', 'g'}; label.LGw_sl_m = {'total length', 'Males gonad weight'};  
+temp.LGw_sl_m = C2K(14.4); units.temp.LGw_sl_m = 'K'; label.temp.LGw_sl_m = 'temperature';
+bibkey.LGw_sl_m = 'Roussel2019';
+comment.LGw_sl_m = 'one year old adult males abalone fed for 11 months with a diet of Saccorhiza polyschides ';
+%
+data.LWw_sl_f = sort(Roussel2019_sl(Roussel2019_sl(:,2)==1,[1 4])); % Males total length(cm) ~ total weight(g)
+units.LWw_sl_f = {'cm', 'g'}; label.LWw_sl_f = {'total length', 'Males total weight'};  
+temp.LWw_sl_f = C2K(14.4); units.temp.LWw_sl_f = 'K'; label.temp.LWw_sl_f = 'temperature';
+bibkey.LWw_sl_f = 'Roussel2019';
+comment.LWw_sl_f = 'one year old adult male abalone fed for 11 months with a diet of Saccorhiza polyschides';
 %
 Roussel2019_pp = [... % (1)total length(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) total weight(g)
 4.30	F	1.02	15.88
