@@ -22,7 +22,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   TC_aj      = tempcorr(temp.aj, T_ref, pars_T);
   TC_tW      = tempcorr(temp.tW, T_ref, pars_T);
 %   TC_LN      = tempcorr(temp.LN, T_ref, pars_T);
-  TC_roussel = tempcorr(temp.LGw_ee, T_ref, pars_T);
+  TC_roussel = tempcorr(temp.LGw_ee_female, T_ref, pars_T);
   TC_LW0     = tempcorr(temp.Lw0, T_ref, pars_T);
   
   % parameter sets
@@ -33,10 +33,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   
  
   %% Zero-variate data
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %     Females
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+  %
   % initial
   U_E0  = initial_scaled_reserve(f, pars_UE0); % d.cm^2, initial scaled reserve
   p_TAm = p_Am * TC_LW0;                       %, J/d.cm^2, {p_Am}, spec. temperature correted assimilation flux
@@ -59,7 +56,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   aT_j = t_j / k_M / TC_aj;           % d,  time at metamorphosis
   L_j  = L_m * l_j;                   % cm, structural length at metam
   Lw_j = L_j / del_L;                 % cm, total lenght at metamorphosis at f
-  s_M = l_j / l_b;                    % -, acceleration factor for larva   
+  s_M  = l_j / l_b;                    % -, acceleration factor for larva   
     
   % puberty 
   aT_p = t_p  / k_M / TC_ap;          % d, time at puberty at f and T
@@ -80,36 +77,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
 %   % reproduction
 %   RT_i = TC_Ri * reprod_rate_j(L_i, f, pars_R);   % #/d, ultimate reproduction rate at T
 
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %     Males
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  p_Am_m = z_m * p_M / kap;             % J/d.cm^2, {p_Am} spec assimilation flux
-  E_m_m  = p_Am_m / v;                  % J/cm^3, reserve capacity [E_m]
-  g_m    = E_G / (kap * E_m_m);         % -, energy investment ratio
-  m_Em_m = y_E_V * E_m_m / E_G;         % mol/mol, reserve capacity
-  ome_m  = m_Em_m * w_E / w_V;          % -, contribution of reserve to weight
-  L_mm   = v / k_M / g_m;               % cm, max struct length
-  
-  pars_tj   = [g_m; k; l_T; v_Hb; v_Hj; v_Hp];
-  [t_jm, t_pm, t_bm, l_jm, l_pm, l_bm, l_im, ~, ~, info] = get_tj(pars_tj, f);
 
-  % birth
-  L_bm = l_bm * L_mm;                % cm, structural length at birth at f for males
-  aT_b = t_bm / k_M / TC_ab;
-  
-  % metamorphosis
-  L_jm  = l_jm * L_mm;  
-  tT_jm = t_jm / k_M / TC;           % d, time since birth at puberty at f for males
-  
-  % puberty 
-  tT_pm = t_pm / k_M / TC;           % d, time since birth at puberty at f for males
-  L_pm  = l_pm * L_mm;               % cm, structural length at puberty at f for males
-  
-  % ultimate
-  L_im  = l_im * L_mm;               % cm, ultimate structural length males
-  Lw_im = L_im / del_M;              % cm, ultimate total length 
-  Ww_im = L_im^3 * (1 + f * ome_m);  % g, ultimate wet weight males
-  
   % pack to output (females)
   prdData.ab  = aT_b;
   prdData.aj  = aT_j;
@@ -124,7 +92,8 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
 %   prdData.Ri  = RT_i;
   
   %% Uni-variate data
-  % Basu (1997) time (d) ~ weight(g) (adults)
+  % Basu (1997) 
+  % time (d) ~ weight(g) (adults)
   kT_M  = k_M * TC_tW;
   rT_j = rho_j * kT_M; 
   rT_B = rho_B * kT_M; 
@@ -133,9 +102,10 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   L = [L_bj; L_jm];
   EWw   = L.^3 * (1 + f * w);                                   % g,  total wet-weight
   %
-  % Bilbao (2010) Lenght (cm) ~ wet-weight (g)
+  % Bilbao (2010) 
+  % Lenght (cm) ~ wet-weight (g)
   EWw_f = (LWw_f(:,1) * del_M).^3 * (1 + f * w);                 % g, expected total wet-weights females (shell included)
-  EWw_m = (LWw_m(:,1) * del_M).^3 * (1 + f * ome_m);             % g, expected total wet-weight males (shell included)
+  EWw_m = (LWw_m(:,1) * del_M).^3 * (1 + f * w);             % g, expected total wet-weight males (shell included)
   
   % Roussel (2019) Length (cm) ~ wet-weight (g)
   ELWw_roussel = (LWw_roussel(:,1) * del_M).^3 * (1 + f * w);     % g, expected total wet-weights (shell included)
@@ -154,36 +124,55 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
 %   L = V.^(1/3) ./ del_M;                                % cm, total length
 %   EtW_Avignon = L.^3 + (E + R) * w_E / mu_E / d_E; % w * d_V .* V + (E + R) .* w_E / mu_E;                % g,  Wet-weight (including gonad)
 
-  % Avignon (2020)  time(d) ~ length (cm)
-  V0 = (L0_Avignon2020 * del_M)^3; % to convert initial length to structural volume
+  % Avignon (2020)  
+  % time(d) ~ length (cm)
+  V0 = (L0_Avignon2020 * del_M)^3; % Convert initial length to structural volume
   E0 = V0 * p_Am / v; 
   H0 = E_Hp;
   t_start = tL_Avignon(1,1); % time at the start of the experiment
   time_tL = tL_Avignon(:,1); 
-  tspan = linspace(t_start, time_tL(end), 1000); % integrate for longer to get better estimates
+  tspan  = linspace(t_start, time_tL(end), 1000); % integrate for longer to get better estimates
   EVHR_0 = [E0; V0; H0; 10]; % initial conditions for state variables E,V,H,R
-  pars_EVHR = [p_Am, v, s_M, V_p, d_V, kap, kap_X, kap_R, p_M, k_J, E_G, E_Hb, E_Hj, E_Hp];
+  pars_EVHR = [p_Am, v, s_M, V_p, d_V, kap, kap_X, kap_R, p_M, k_J, E_G, E_Hb, E_Hj, E_Hp, l_b, l_j, L_m];
   options = odeset('Events', @event_pH , 'RelTol',1e-4,'AbsTol',1e-6);
   [t, EVHR_pH] = ode23s(@dget_EVHR_pH, tspan, EVHR_0, [], pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_Avignon, pCO2.tL_Avignon, f); %[] in third no ODE options
   L_adj = interp1(t, EVHR_pH(:,2).^(2/3), time_tL, 'spline'); % to go from timesteps in tL to EtL,
   EtL_Avignon =  L_adj;  % cm, total length in time for Avignon2020 experiments
   %
-  % Roussel (2019) lenght(cm) ~ gonad weight(g) ~ wet-weight (g) at f1
-  [R, ~]  = reprod_rate_j(LGw_sl(:,1) * del_M, f_sl, pars_R);
-  ELGW_sl = TC_roussel  * R * 365/2 * Wd_0 / d_E;    % g, Expected total gonad wet-weight at diet of Saccorhiza polyschides
-  EWw_sl  = (LWw_sl(:,1) * del_M).^3 * (1 + f_sl * w);  % g, expected total wet-weight at diet of Saccorhiza polyschides
+  % Roussel (2019): diet of Saccorhiza polyschides 
+  % Males
+  [R, ~]        = reprod_rate_j(LGw_sl_male(:,1) * del_M, f_sl, pars_R);
+  ELGW_sl_male = TC_roussel  * R * 365 / 2 * Wd_0 / d_E;  % g, Expected males gonad wet-weight at diet of Saccorhiza polyschides
+  EWw_sl_male  = (LWw_sl_male(:,1) * del_M).^3 * (1 + f_sl * w);  % g, expected males stotal wet-weight at diet of Saccorhiza polyschides
+  % Females
+  [R, ~]        = reprod_rate_j(LGw_sl_female(:,1) * del_M, f_sl, pars_R);
+  ELGW_sl_female = TC_roussel  * R * 365 / 2 * Wd_0 / d_E;  % g, Expected males gonad wet-weight at diet of Saccorhiza polyschides
+  EWw_sl_female  = (LWw_sl_female(:,1) * del_M).^3 * (1 + f_sl * w);  % g, expected males stotal wet-weight at diet of Saccorhiza polyschides
   %
-  % Roussel (2019) lenght(cm) ~ gonad weight(g) ~ wet-weight (g) at f2
-  [R, ~]  = reprod_rate_j(LGw_pp(:,1) * del_M, f_pp, pars_R);
-  ELGw_pp = TC_roussel * R * 365/2 * Wd_0 / d_E;      % g, Expected total gonad wet-weight at diet of Palmaria palmata
-  EWw_pp  = (LWw_pp(:,1) * del_M).^3 * (1 + f_pp * w);   % g, expected total wet-weight at diet of Palmaria palmata
+  % Roussel (2019): diet of Palmaria palmata 
+  % Males
+  [R, ~]  = reprod_rate_j(LGw_pp_male(:,1) * del_M, f_pp, pars_R);
+  ELGw_pp_male = TC_roussel * R * 365/2 * Wd_0 / d_E;      % g, Expected total gonad wet-weight at diet of Palmaria palmata
+  EWw_pp_male  = (LWw_pp_male(:,1) * del_M).^3 * (1 + f_pp * w);   % g, expected total wet-weight at diet of Palmaria palmata
   %
-  % Roussel (2019) lenght(cm) ~ gonad weight(g) ~ wet-weight (g) at f3
-  [R, ~]  = reprod_rate_j(LGw_ee(:,1) * del_M, f_ee, pars_R);
-  ELGw_ee = TC_roussel  * R * 365 / 2 * Wd_0 / d_E;        % g, Expected total gonad wet-weight at diet of Enteromorpha sp.
-  EWw_ee  = (LWw_ee(:,1) * del_M).^3 * (1 + f_pp * w);     % g, expected total wet-weight at diet of Enteromoepha sp.
+  % Females
+  [R, ~]  = reprod_rate_j(LGw_pp_female(:,1) * del_M, f_pp, pars_R);
+  ELGw_pp_female = TC_roussel * R * 365/2 * Wd_0 / d_E;      % g, Expected total gonad wet-weight at diet of Palmaria palmata
+  EWw_pp_female  = (LWw_pp_female(:,1) * del_M).^3 * (1 + f_pp * w);   % g, expected total wet-weight at diet of Palmaria palmata
+  % 
+  % Roussel (2019) : diet of Enteromorpha sp.
+  % Males
+  [R, ~]  = reprod_rate_j(LGw_ee_male(:,1) * del_M, f_ee, pars_R);
+  ELGw_ee_male = TC_roussel  * R * 365 / 2 * Wd_0 / d_E;        % g, Expected total gonad wet-weight at diet of Enteromorpha sp.
+  EWw_ee_male  = (LWw_ee_male(:,1) * del_M).^3 * (1 + f_pp * w);     % g, expected total wet-weight at diet of Enteromorpha sp.
   %
-  %Auzoux-Bordenave (2021)  time (days) ~ total length (cm)
+  % Female
+  [R, ~]  = reprod_rate_j(LGw_ee_female(:,1) * del_M, f_ee, pars_R);
+  ELGw_ee_female = TC_roussel  * R * 365 / 2 * Wd_0 / d_E;        % g, Expected total gonad wet-weight at diet of Enteromorpha sp.
+  EWw_ee_female  = (LWw_ee_female(:,1) * del_M).^3 * (1 + f_pp * w);     % g, expected total wet-weight at diet of Enteromorpha sp.
+  %
+  %Auzoux-Bordenave (2021)  
+  % Time (days) ~ total length (cm)
   V0 = (L0_Auzous2021 * del_M)^3; % initial structural volume
   E0 = 	V0 * p_Am / v; 
   H0 = E_Hp;
@@ -202,7 +191,8 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
       EtL_Auzoux = EtL_A;
   end
   %
- % Auzoux-Bordenave (2022)  time (hpf) ~ larval length (cm)
+ % Auzoux-Bordenave (2022)  
+ % time (hpf) ~ larval length (cm)
  V0 = (L0_Auzous2022 * del_M)^3; % initial structural volume
  L0 = L0_Auzous2022 * del_M;     % Initial structural lenght
  E0 = L0^3 * p_Am / v;
@@ -222,7 +212,8 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
      EtL_Auzoux2022 = EtL;
  end
  %
-  % Wessel (2018) time (hpf) - larval lenght (cm)
+  % Wessel (2018) 
+  % Time (hpf) - larval lenght (cm)
   EVHR_1 = [E_0; V_b^3; E_Hb; 0];
   [t EVHR_pH] = ode23(@dget_EVHR_pH, [0; unique(tL_wessel(:,1))], EVHR_1, [], pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_wessel, pCO2.tL_wessel, f);
   t(1) = []; EVHR_pH(1,:) = []; V = EVHR_pH(:,2);
@@ -237,33 +228,41 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
       EtL_wessel = EtL;
   end
   %
-  % Chauvaud (2019) length (cm) ~ total weight (g)
+  % Chauvaud (2019) 
+  % Length (cm) ~ total weight (g)
   EWw_Chauvaud = (LW_chauvaud(:,1) * del_M).^3 * (1 + f * w);  % g, expected total wet-weights (shell included)
   
   % pack to output
-  prdData.tW    = EWw;
-  prdData.LWw_f = EWw_f;
-  prdData.LWw_m = EWw_m;
-  prdData.LWw_roussel = ELWw_roussel;
-%   prdData.LN    = EN;
-  prdData.tL_Avignon  = EtL_Avignon;
+  prdData.tW         = EWw;
+  prdData.LWw_f         = EWw_f;
+  prdData.LWw_m         = EWw_m;
+  prdData.LWw_roussel   = ELWw_roussel;
+%   prdData.LN          = EN;
+  prdData.tL_Avignon    = EtL_Avignon;
 %   prdData.tW_Avignon  = EtW_Avignon;
-  prdData.LGw_sl = ELGW_sl;
-  prdData.LWw_sl = EWw_sl;
-  prdData.LGw_pp = ELGw_pp;
-  prdData.LWw_pp = EWw_pp;
-  prdData.LGw_ee = ELGw_ee;
-  prdData.LWw_ee = EWw_ee;
+  prdData.LGw_sl_male   = ELGW_sl_male;
+  prdData.LWw_sl_male   = EWw_sl_male;
+  prdData.LGw_sl_female = ELGW_sl_female;
+  prdData.LWw_sl_female = EWw_sl_female;
+  prdData.LGw_pp_male   = ELGw_pp_male;
+  prdData.LWw_pp_male   = EWw_pp_male;
+  prdData.LGw_pp_female = ELGw_pp_female;
+  prdData.LWw_pp_female = EWw_pp_female;
+  prdData.LGw_ee_male   = ELGw_ee_male;
+  prdData.LWw_ee_male   = EWw_ee_male;
+  prdData.LGw_ee_female = ELGw_ee_female;
+  prdData.LWw_ee_female = EWw_ee_female;
   prdData.tL_auzoux2021 = EtL_Auzoux;
-  prdData.tL_azoux2022 = EtL_Auzoux2022;
-  prdData.tL_wessel = EtL_wessel;
-  prdData.LW_chauvaud = EWw_Chauvaud;
+  prdData.tL_azoux2022  = EtL_Auzoux2022;
+  prdData.tL_wessel     = EtL_wessel;
+  prdData.LW_chauvaud   = EWw_Chauvaud;
   
 end
 
 %% Subfunction 
-function [value,isterminal,direction] = event_pH(t, EVHR_pH, pars_EVHR, varargin)
-E_Hb = pars_EVHR(12); E_Hj = pars_EVHR(13);
+function [value,isterminal, direction] = event_pH(t, EVHR_pH, pars_EVHR, varargin)
+E_Hb = pars_EVHR(12);
+E_Hj = pars_EVHR(13);
 value = [E_Hb; E_Hj] - EVHR_pH(3);
 isterminal = [0; 0]; % modified to NOT stop
 direction = [0; 0];
@@ -284,15 +283,31 @@ function dEVHR = dget_EVHR_pH(t, EVHR, pars_EVHR, q_adult, q_larva, CML_adult, C
   E = EVHR(1); V = EVHR(2); E_H = EVHR(3); E_R = EVHR(4);
   
   % unpack par, cpar, data  
-  p_Am = pars_EVHR(1); v = pars_EVHR(2); s_M = pars_EVHR(3); kap = pars_EVHR(6); 
-  kap_X = pars_EVHR(7); kap_R = pars_EVHR(8); p_M = pars_EVHR(9); k_J = pars_EVHR(10);
-  E_G = pars_EVHR(11);  E_Hb = pars_EVHR(12);  E_Hj = pars_EVHR(13); E_Hp = pars_EVHR(14); 
+  p_Am  = pars_EVHR(1); v     = pars_EVHR(2);  s_M  = pars_EVHR(3);  kap  = pars_EVHR(6); 
+  kap_X = pars_EVHR(7); kap_R = pars_EVHR(8);  p_M  = pars_EVHR(9);  k_J  = pars_EVHR(10);
+  E_G   = pars_EVHR(11); E_Hb = pars_EVHR(12); E_Hj = pars_EVHR(13); E_Hp = pars_EVHR(14); 
+  l_b   = pars_EVHR(15); l_j  = pars_EVHR(16); L_m  = pars_EVHR(17);
   
   % Interpolation for temperatures
   if length(tT) > 1
       TC = tempcorr(interp1(tT(:,1),tT(:,2), t), T_ref, pars_T);
   else
       TC = tempcorr(tT, T_ref, pars_T); % -, temperature correction factor
+  end
+  
+  % aceleration factor
+%   l_j = simu.cPar.v_Hj^(1/3);
+%   l_b = simu.cPar.v_Hb^(1/3);
+  l = V.^(1/3) / L_m;
+  
+  if E_H < E_Hb
+      s_M = 1;
+      
+  elseif E_Hb <= E_H && E_H < E_Hj
+      s_M = l / l_b;
+      
+  elseif E_H > E_Hj
+      s_M = l_j / l_b;
   end
   
   % Temperature corrected parameters
@@ -303,7 +318,7 @@ function dEVHR = dget_EVHR_pH(t, EVHR, pars_EVHR, q_adult, q_larva, CML_adult, C
 % DEB Fluxes
 if E_H < E_Hj % pre-metamorphosis, Larva
     pX = f  * (s_M * p_AmT / kap_X) * V^(2/3);                                        % feeding
-    pA = kap_X * pX * TC;                                                             % assimilation (eq. 2.3 p.35)
+    pA = kap_X * pX; % * TC;                                                             % assimilation (eq. 2.3 p.35)
     pM = (p_M * V + q_larva * min(max(pCO2 - CML_larva, 0), (CMH_larva -  CML_larva)) * V^(2/3)) * TC; % somatic mnaintenace               
     pJ = kT_J * E_H;                                                                  % Maturiry maintenance(eq.2.19 p.47)
     pC = (E / V) * ((E_G * s_M * v * V^(2/3) + p_M * V) / (kap * E / V + E_G)) * TC;  % Reserve mobilization
@@ -313,7 +328,7 @@ if E_H < E_Hj % pre-metamorphosis, Larva
     
 else % Post-metamorphosis, Juvenile and adults
     pX = f * p_XmT * V^(2/3); 
-    pA = kap_X * pX * TC;                                                           % Assimilation (eq.2.3 page 36)
+    pA = kap_X * pX; % * TC;                                                           % Assimilation (eq.2.3 page 36)
     pM = (p_M * V + q_adult * min(max(pCO2 - CML_adult, 0), (CMH_adult -  CML_adult)) * V^(2/3)) * TC;  % somatic mnaintenace                                                           
     pJ = kT_J * E_H;                                                                 % Maturiry maintenance(eq.2.19 p.47)  
     pC = (E / V) * ((E_G * v * V^(2/3) + p_M * V) / (kap * E / V + E_G)) * TC;       % Reserve mobilization
@@ -322,37 +337,19 @@ else % Post-metamorphosis, Juvenile and adults
     pD = pM + pJ + (1 - kap_R) * pR;                                                 % Dissipation
 end
 
-% pLR = (1 / kap_LR) * (pM - kap * pC - ((1 - kap) * pC - pJ)); 
-% pLV = (1 / kap_LV) * (pM - kap * pC - ((1 - kap) * pC - pJ));
-
 % Differential equations
 dE = pA - pC; % dE/dt energy reserves (p.35)
 
-% if (kap * pC) < pM % if in starvation conditions, fraction from mobilization does not cover somatic maintenacce costs.
-%     
-%     dH = 0; % there is no maturation flux
-%     
-% %     if V >= V_p && E_R >= pLR % if volume is larger that volume at puberty and reproduction buffer is larger than the amount of energy taken from the reproduction buffer to cover somatic maintenance
-% %         dV = 0;     % dV/dt structural volume (or there is no growth)
-% %         dR = -pLR;  % dR/dt reproduction buffer
-% %     else
-% %         dV = -pLV / (rho_V * d_V);
-% %         dR = 0;
-% %     end
-%     
-% else
+
     dV = (pG / E_G); % dV/dt structural volume
     
     if E_H < E_Hp
         dH = (1 - kap) * pC - kT_J * E_H;  
-        %dH = pR; % dEH/dt maturity
         dR = 0;  % dER/dt reproduction
     else
         dH = 0;   % dEH/dt maturity
         dR = kap_R * (1 - kap) * pC - kT_J * E_Hp;
-        %dR = pR; % dR/dt reproduction
     end
-% end
 
 % pack derivatives
 dEVHR = [dE; dV; dH; dR];

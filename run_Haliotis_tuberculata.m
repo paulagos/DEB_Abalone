@@ -5,7 +5,7 @@ pets = {'Haliotis_tuberculata'};
 check_my_pet(pets); 
 
 estim_options('default'); 
-estim_options('max_step_number',2000); 
+estim_options('max_step_number',1500); 
 estim_options('max_fun_evals',2000); 
 
 %sb - symmetric bounded (default)
@@ -16,7 +16,7 @@ estim_options('loss_function', 'sb')
 %   0 - get initial estimates from automatized computation (default)
 %   1 - read initial estimates from .mat file (for continuation)
 %   2 - read initial estimates from pars_init file
-estim_options('pars_init_method', 2);
+estim_options('pars_init_method', 1);
 
 %  'results_output':
 %   0     - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations
@@ -41,7 +41,7 @@ fprintf('THIS RUN TOOK: %d minutes and %f seconds\n', floor(tEnd/60), rem(tEnd,6
 
 
 % Save all the results to working folder
-figures = dir('*.png');
+figures = dir('*.fig');
 html    = dir('*.html');
 results = dir('*.mat');
 

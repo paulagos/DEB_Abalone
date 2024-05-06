@@ -12,21 +12,21 @@ par.T_H = 301.15;     free.T_H   = 0;   units.T_H   = 'K';        label.T_H   = 
 par.T_AL = 13516.96;  free.T_AL  = 0;   units.T_AL  = 'K';        label.T_AL  = 'arrh. temp for lower boundary';
 par.T_AH = 24570.25;  free.T_AH  = 0;   units.T_AH  = 'K';        label.T_AH  = 'arrh. temp for upper boundary';
 par.z = 7.0392;       free.z     = 1;   units.z     = '-';        label.z     = 'zoom factor'; 
-par.F_m = 6.5;        free.F_m   = 0;   units.F_m   = 'l/d.cm^2'; label.F_m   = '{F_m}, max spec searching rate'; 
+par.F_m = 65;         free.F_m   = 0;   units.F_m   = 'l/d.cm^2'; label.F_m   = '{F_m}, max spec searching rate'; 
 par.kap_X = 0.8;      free.kap_X = 0;   units.kap_X = '-';        label.kap_X = 'digestion efficiency of food to reserve'; 
-par.kap_P = 0.2;      free.kap_P = 0;   units.kap_P = '-';        label.kap_P = 'faecation efficiency of food to faeces'; 
-par.v = 0.022003;     free.v     = 1;   units.v     = 'cm/d';     label.v     = 'energy conductance'; 
-par.kap = 0.8981;     free.kap   = 1;   units.kap   = '-';        label.kap   = 'allocation fraction to soma'; 
+par.kap_P = 0.1;      free.kap_P = 0;   units.kap_P = '-';        label.kap_P = 'faecation efficiency of food to faeces'; 
+par.v = 0.032003;     free.v     = 1;   units.v     = 'cm/d';     label.v     = 'energy conductance'; 
+par.kap = 0.6981;     free.kap   = 1;   units.kap   = '-';        label.kap   = 'allocation fraction to soma'; 
 par.kap_R = 0.95;     free.kap_R = 0;   units.kap_R = '-';        label.kap_R = 'reproduction efficiency'; 
-par.p_M = 19.1757;    free.p_M   = 1;   units.p_M   = 'J/d.cm^3'; label.p_M   = '[p_M], vol-spec somatic maint'; 
+par.p_M = 18.1757;    free.p_M   = 1;   units.p_M   = 'J/d.cm^3'; label.p_M   = '[p_M], vol-spec somatic maint'; 
 par.p_T = 0;          free.p_T   = 0;   units.p_T   = 'J/d.cm^2'; label.p_T   = '{p_T}, surf-spec somatic maint'; 
 par.k_J = 0.002;      free.k_J   = 1;   units.k_J   = '1/d';      label.k_J   = 'maturity maint rate coefficient'; 
-par.E_G = 3914.7586;  free.E_G   = 1;   units.E_G   = 'J/cm^3';   label.E_G   = '[E_G], spec cost for structure'; 
+par.E_G = 3814.7586;  free.E_G   = 1;   units.E_G   = 'J/cm^3';   label.E_G   = '[E_G], spec cost for structure'; 
 par.E_Hb = 7.838e-04; free.E_Hb  = 1;   units.E_Hb  = 'J';        label.E_Hb  = 'maturity at birth';
 par.E_Hj = 9.839e-04; free.E_Hj  = 1;   units.E_Hj  = 'J';        label.E_Hj  = 'maturity at metamorphosis';
 par.E_Hp = 1.896e+03; free.E_Hp  = 1;   units.E_Hp  = 'J';        label.E_Hp  = 'maturity at puberty'; 
-par.h_a  = 1.331e-8;  free.h_a   = 1;   units.h_a   = '1/d^2';    label.h_a   = 'Weibull aging acceleration'; 
-par.s_G  = 0.0001;    free.s_G   = 1;   units.s_G   = '-';        label.s_G   = 'Gompertz stress coefficient'; 
+par.h_a  = 1.0e-6;    free.h_a   = 1;   units.h_a   = '1/d^2';    label.h_a   = 'Weibull aging acceleration'; 
+par.s_G  = 0.01;      free.s_G   = 0;   units.s_G   = '-';        label.s_G   = 'Gompertz stress coefficient'; 
 %
 %% secondary parameters 
 % par.del_Y = 0.3060;   free.del_Y = 0;   units.del_Y = '-';        label.del_Y = 'shape coefficient for the egg';
@@ -36,7 +36,7 @@ par.f     = 1;        free.f     = 1;   units.f     = '-';        label.f     = 
 par.f_ee  = 1;        free.f_ee  = 1;   units.f_ee  = '-';        label.f_ee  = 'scaled functional response for Enteropmorpha diet'; 
 par.f_pp  = 1;        free.f_pp  = 1;   units.f_pp  = '-';        label.f_pp  = 'scaled functional response for Palmaria palmata diet';
 par.f_sl  = 1;        free.f_sl  = 1;   units.f_sl  = '-';        label.f_sl  = 'scaled functional response for Saccorhiza polyschides diet'; 
-par.L0_Avignon2020  = 4.2;    free.L0_Avignon2020  = 0;  units.L0_Avignon2020  = 'cm';  label.L0_Avignon2020  = 'L at start Avignon2020'; 
+par.L0_Avignon2020  = 4.7;    free.L0_Avignon2020  = 0;  units.L0_Avignon2020  = 'cm';  label.L0_Avignon2020  = 'L at start Avignon2020'; 
 par.L0_Auzous2021   = 6.023;  free.L0_Auzous2021   = 0;  units.L0_Auzous2021   = 'cm';  label.L0_Auzous2021   = 'L at start Auzous2021';
 par.L0_Auzous2022   = 0.019;  free.L0_Auzous2022   = 0;  units.L0_Auzous2022   = 'cm';  label.L0_Auzous2022   = 'L at start Auzous2022';
 par.egg_r           = 0.0075; free.egg_r           = 0;  units.egg_r           = 'cm';  label.egg_r           = 'egg radius';

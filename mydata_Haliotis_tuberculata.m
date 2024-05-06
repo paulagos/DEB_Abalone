@@ -23,12 +23,9 @@ metaData.email_cur   = {'sta@akvaplan.niva.no'};
 metaData.date_acc    = [2019 01 09]; 
 %
 %% Zero-variate data
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         females
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-data.ab = 0.7;     units.ab = 'd';    label.ab = 'age at birth';               bibkey.ab = 'Wessel2018';
+data.ab = 0.91;     units.ab = 'd';    label.ab = 'age at birth';               bibkey.ab = 'Wessel2018';
 temp.ab = C2K(17);  units.temp.ab = 'K'; label.temp.ab = 'temperature';
-  comment.ab = 'We asusme a feeding larval stage, beginning at late trocophore stage (19hpf to 24hpf). However, is likely larva do not need to  eat until metamorphosis has occured (9 dpf approx)';
+  comment.ab = 'We asusme feeding beginning at late trocophore stage (19hpf to 24hpf). However, larva might not need to eat until metamorphosis has occured (9 dpf approx)';
 
 data.am = 365*15; units.am = 'd';   label.am = 'life span';                     bibkey.am = 'Basu1997';   
   temp.am = C2K(18);  units.temp.am = 'K'; label.temp.am = 'temperature'; 
@@ -37,10 +34,11 @@ data.aj = 3.9;      units.aj = 'd';    label.aj = 'age at metamorphosis'; bibkey
   temp.aj = C2K(15);  units.temp.aj = 'K'; label.temp.aj = 'temperature';  
   comment.aj = 'veliger larva at end of planktonic phase 94hpf ';
 
-data.ap = 365*3;  units.ap = 'd';     label.ap = 'age since birth at puberty'; bibkey.ap = 'Basu1997';
-temp.ap = C2K(18);   units.temp.ap = 'K'; label.temp.ap = 'temperature';
-  comment.ap = 'males mature at 2 years and females mature at 3 years of age';
-
+ 
+data.ap = 365*1.2;  units.ap = 'd';     label.ap = 'age since birth at puberty'; bibkey.ap = 'Coch1980';
+temp.ap = C2K(17);   units.temp.ap = 'K'; label.temp.ap = 'temperature';
+  comment.ap = 'females mature at ~1 years with variations depending on locations';
+  
 data.Lb = 0.0099; units.Lb = 'cm';  label.Lb = 'lenght at birth';               bibkey.Lb = 'Wessel2018';
 temp.Lb = C2K(17);  units.temp.Lb = 'K'; label.temp.Lb = 'temperature';
   comment.Lb = 'Minimiun lenght for a larvae at 40hpf from experiments at 17deg C'; 
@@ -49,8 +47,8 @@ data.Lj = 0.0268;  units.Lj = 'cm'; label.Lj = 'length at metamorphosis';   bibk
 temp.Lj = C2K(15.4);   units.temp.Lj = 'K'; label.temp.Lj = 'temperature';
   comment.Lj = 'Average lenght of 200 pre-metamorphic larva (96hph) at ph8.0 ';
   
-data.Lp  = 4.0;  units.Lp  = 'cm';  label.Lp  = 'lenght at puberty';        bibkey.Lp  = 'Basu1997';
-  comment.Lp = 'range from 30 to 49 mm for males';
+data.Lp  = 3.0;  units.Lp  = 'cm';  label.Lp  = 'lenght at puberty';        bibkey.Lp  = 'Basu1997';
+  comment.Lp = 'range from 30mm to 49mm';
   
 data.Li  = 14; units.Li  = 'cm';  label.Li  = 'ultimate total lenght';       bibkey.Li  = 'Basu1997';
   comment.Li = 'based on one individual found on Nord-Ouestdu du Cotentin (Author personal note)';
@@ -67,13 +65,9 @@ data.Lw0 = 0.0150;    units.Lw0 = 'cm';     label.Lw0 = 'egg diameter';  bibkey.
 %    temp.Ri = C2K(15); units.temp.Ri = 'K'; label.temp.Ri = 'temperature';
 %    comment.Ri = 'Mean number of oocytes in one batch 391.103. Could be twice as much if the spawning occurs two times per year or more. the maximun batch fecundity is 691.566 oocytes per female';
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         Males
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 %% Uni-variate data
 %
+% Basu (1997)
 % time ~ total wet-weight
 data.tW = [ ... % age (days), total wet-weight (g)
 163   0.318
@@ -91,10 +85,11 @@ data.tW = [ ... % age (days), total wet-weight (g)
 units.tW   = {'d', 'g'}; label.tW = {'Time', 'Total wet-weight'};  
 temp.tW    = C2K(18); units.temp.tW = 'K'; label.temp.tW = 'temperature';
 bibkey.tW  = 'Basu1997';
-comment.tW = 'data from Figure 35 age of adult abalone in months converted to days (2.7  years in total)';
+comment.tW = 'Age of adult abalone from thr bay of Brest in months converted to days (2.7  years in total)';
 %
-% lenght ~ total wet-weight (including shell)
-data.LWw_f = [ ... % total lenght (mm), total body wet-weight (g) (Females)
+% Bilbao (2010) 
+% Data for Females: lenght ~ total wet-weight (including shell)
+data.LWw_f = [ ... % total lenght (mm), total body wet-weight (g)
 30.00	 3.56
 30.56	 3.56
 32.05	 4.25
@@ -222,10 +217,10 @@ data.LWw_f(:,1) = sort(data.LWw_f(:,1)/10); %convert length from mm to cm
 units.LWw_f   = {'cm', 'g'};  label.LWw_f = {'Total length', 'Total wet-weight'};  
 temp.LWw_f    = C2K(20);  units.temp.LWw_f = 'K'; label.temp.LWw_f = 'temperature';
 bibkey.LWw_f = 'Bilbao2010';
-comment.LWw_f = 'Data of abalone females from Fig.10 total body weight including shell';
+comment.LWw_f = 'Data of abalone females from the canary islands, total body weight including shell';
 %
-% lenght ~ total wet-weight (including shell)
-data.LWw_m = [ ... % length (mm), total body wet-weight (g) for (Males)
+% Data for Males: lenght ~ total wet-weight (including shell)
+data.LWw_m = [ ... % length (mm), total body wet-weight (g)
 25.47	1.681
 29.91	3.088
 31.04	3.324
@@ -355,10 +350,10 @@ data.LWw_m(:,1) = sort(data.LWw_m(:,1)/10); % convert length from mm to cm
 units.LWw_m = {'cm', 'g'};  label.LWw_m = {'Total length', 'Total wet-weight'};  
 temp.LWw_m = C2K(20);  units.temp.LWw_m = 'K'; label.temp.LWw_m = 'temperature';
 bibkey.LWw_m = 'Bilbao2010';
-comment.LWw_m = 'Data of abalone males from Fig.10, total body weight including shell';
+comment.LWw_m = 'Data of abalone male from the canary islands, total body weight including shell';
 %
 % Roussel (2019)
-data.LWw_roussel = [... % Length (cm) ~ total weigth (g)
+data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 4.0	0.01
 4.0	0.02
 5.0	0.03
@@ -682,16 +677,16 @@ data.LWw_roussel = [... % Length (cm) ~ total weigth (g)
 9.0	0.06
 9.0	0.13
 9.0	0.12
-9.0	0.14
-9.0	 0.13
-9.0	 0.11
-9.0	 0.12
-9.0	 0.12
-10.0 0.16
-10.0 0.16
-10.0 0.17
-10.0 0.13
-10.0 0.13
+9.0   0.14
+9.0	  0.13
+9.0	  0.11
+9.0	  0.12
+9.0	  0.12
+10.0  0.16
+10.0  0.16
+10.0  0.17
+10.0  0.13
+10.0  0.13
 10.0	0.14
 10.0	0.13
 10.0	0.13
@@ -2222,7 +2217,7 @@ comment.LWw_roussel = '10 to 34 months old abalone from france Haliotis';
 % units.LN   = {'cm', '#eggs'};  label.LN = {'Total length', 'Total Fecundity'};  
 % temp.LN    = C2K(21);  units.temp.LN = 'K'; label.temp.LN = 'temperature';
 % bibkey.LN = 'Bilbao2010';
-% comment.LN = 'Data from Fig.7, H.tuberculata females between 37 to 47mm from the Canary island, using equation is F = 3187*e^0.0881*SL and temperatures occilation between 19 to 23 deg C';
+% comment.LN = 'Data from Fig.7, H.tuberculata female between 37 to 47mm from the Canary island, using equation is F = 3187*e^0.0881*SL and temperatures occilation between 19 to 23 deg C';
 % %
 Avignon2020 = [...% experimental time(d) ~ lenght(mm) ~ total wet-weight(g)     
 0    48.49  16.17  
@@ -2247,9 +2242,9 @@ comment.tL_Avignon = 'Control data (pH = 8.0) from experiments in adult abalone 
 % bibkey.tW_Avignon = 'Avignon2020';
 % comment.tW_Avignon = 'Control data (pH = 8.0) from experiments in adult abalone of average (~600 days old) weight 16.2 g and lenght 48.5 mm fed ad libitum for 6 months';
 %
-% Roussel2019 growth of males and females under a diet of Saccorhiza polyschides
-M = 1; % Males
-F = 2; % Females
+% Roussel (2019)
+% Data for male and female under a diet of Saccorhiza polyschides
+M = 1; F = 2;
 Roussel2019_sl = [... % (1)total lenght(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) total weight(g)
 3.45	F	0.68	7.93
 3.20	M	0.52	6.42
@@ -2271,46 +2266,50 @@ Roussel2019_sl = [... % (1)total lenght(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 3.22	F	0.38	5.95
 3.10	F	0.31	5.28
 2.97	F	0.35	4.64
-3.60	M	0.64	8.1
+3.60	M	0.64	8.10
 2.65	M	0.24	3.48
 3.10	M	0.42	5.24
 3.33	F	0.54	7.71
 3.00	F	0.45	5.81
-3.53	M	0.67	8.9
+3.53	M	0.67	8.90
 3.83	M	0.67	10.37
 3.35	M	0.39	6.86
 3.20	M	0.28	5.76
 3.40	M	0.46	7.61
 3.00	M	0.31	5.01
 ];
-data.LGw_sl_f = sort(Roussel2019_sl(Roussel2019_sl(:,2)==2 ,[1 3])); % Females total length(cm) ~ gonad weight(g)
-units.LGw_sl_f = {'cm', 'g'}; label.LGw_sl_f = {'total length', 'Females gonad weight'};  
-temp.LGw_sl_f = C2K(14.4); units.temp.LGw_sl_f = 'K'; label.temp.LGw_sl_f = 'temperature';
-bibkey.LGw_sl_f = 'Roussel2019';
-comment.LGw_sl_f = 'one year old adult female and male abalone fed for 11 months with a diet of Saccorhiza polyschides ';
+male_data_sl   = Roussel2019_sl(Roussel2019_sl(:,2) == 1, :);
+female_data_sl = Roussel2019_sl(Roussel2019_sl(:,2) == 2, :);
 %
-data.LWw_sl_f = sort(Roussel2019_sl(Roussel2019_sl(:,2)==2,[1 4])); % Females total length(cm) ~ total weight(g)
-units.LWw_sl_f = {'cm', 'g'}; label.LWw_sl_f = {'total length', 'Feamles total weight'};  
-temp.LWw_sl_f = C2K(14.4); units.temp.LWw_sl_f = 'K'; label.temp.LWw_sl_f = 'temperature';
-bibkey.LWw_sl_f = 'Roussel2019';
-comment.LWw_sl_f = 'one year old adult female and male abalone fed for 11 months with a diet of Saccorhiza polyschides';
+data.LGw_sl_female = sort(female_data_sl(:,[1 3])); % Female total length(cm) ~ gonad weight(g)
+units.LGw_sl_female = {'cm', 'g'}; label.LGw_sl_female = {'total length', 'gonad weight'};  
+temp.LGw_sl_female = C2K(14.4); units.temp.LGw_sl_female = 'K'; label.temp.LGw_sl_female = 'temperature';
+bibkey.LGw_sl_female = 'Roussel2019';
+comment.LGw_sl_female = 'one year old adult female abalone fed for 11 months with a diet of Saccorhiza polyschides ';
 %
-data.LGw_sl_m = sort(Roussel2019_sl(Roussel2019_sl(:,2)==1 ,[1 3])); % Males total length(cm) ~ gonad weight(g)
-units.LGw_sl_m = {'cm', 'g'}; label.LGw_sl_m = {'total length', 'Males gonad weight'};  
-temp.LGw_sl_m = C2K(14.4); units.temp.LGw_sl_m = 'K'; label.temp.LGw_sl_m = 'temperature';
-bibkey.LGw_sl_m = 'Roussel2019';
-comment.LGw_sl_m = 'one year old adult males abalone fed for 11 months with a diet of Saccorhiza polyschides ';
+data.LWw_sl_female = sort(female_data_sl(:,[1 4])); % Female total length(cm) ~ total weight(g)
+units.LWw_sl_female = {'cm', 'g'}; label.LWw_sl_female = {'total length', 'wet-weight'};  
+temp.LWw_sl_female = C2K(14.4); units.temp.LWw_sl_female = 'K'; label.temp.LWw_sl_female = 'temperature';
+bibkey.LWw_sl_female = 'Roussel2019';
+comment.LWw_sl_female = 'one year old adult female abalone fed for 11 months with a diet of Saccorhiza polyschides';
 %
-data.LWw_sl_f = sort(Roussel2019_sl(Roussel2019_sl(:,2)==1,[1 4])); % Males total length(cm) ~ total weight(g)
-units.LWw_sl_f = {'cm', 'g'}; label.LWw_sl_f = {'total length', 'Males total weight'};  
-temp.LWw_sl_f = C2K(14.4); units.temp.LWw_sl_f = 'K'; label.temp.LWw_sl_f = 'temperature';
-bibkey.LWw_sl_f = 'Roussel2019';
-comment.LWw_sl_f = 'one year old adult male abalone fed for 11 months with a diet of Saccorhiza polyschides';
+data.LGw_sl_male = sort(male_data_sl(:,[1 3])); % male total length(cm) ~ gonad weight(g)
+units.LGw_sl_male = {'cm', 'g'}; label.LGw_sl_male = {'total length', 'gonad weight'};  
+temp.LGw_sl_male = C2K(14.4); units.temp.LGw_sl_male = 'K'; label.temp.LGw_sl_male = 'temperature';
+bibkey.LGw_sl_male = 'Roussel2019';
+comment.LGw_sl_male = 'one year old adult male abalone fed for 11 months with a diet of Saccorhiza polyschides ';
 %
+data.LWw_sl_male = sort(male_data_sl(:,[1 4])); % male total length(cm) ~ total weight(g)
+units.LWw_sl_male = {'cm', 'g'}; label.LWw_sl_male = {'total length', 'wet-weight'};  
+temp.LWw_sl_male = C2K(14.4); units.temp.LWw_sl_male = 'K'; label.temp.LWw_sl_male = 'temperature';
+bibkey.LWw_sl_male = 'Roussel2019';
+comment.LWw_sl_male = 'one year old adult male abalone fed for 11 months with a diet of Saccorhiza polyschides';
+%
+% Data for male and female under a diet of Palmaria palmata
 Roussel2019_pp = [... % (1)total length(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) total weight(g)
 4.30	F	1.02	15.88
-3.37	M	0.67	8.27
-3.23	F	0.48	8.32
+3.37	M	0.67	8.270
+3.23	F	0.48	8.320
 3.88	F	1.07	14.33
 3.60	F	0.67	11.25
 3.75	F	0.79	10.74
@@ -2318,23 +2317,23 @@ Roussel2019_pp = [... % (1)total length(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 3.68	F	0.78	10.95
 4.16	F	1.37	17.03
 3.90	F	0.82	13.27
-3.86	M	1.05	13.4
-3.30	M	0.62	7.47
-3.63	F	0.96	9.92
-3.50	F	0.55	8.56
-4.25	F	1.32	15.4
-3.15	M	0.49	6.74
+3.86	M	1.05	13.40
+3.30	M	0.62	7.470
+3.63	F	0.96	9.920
+3.50	F	0.55	8.560
+4.25	F	1.32	15.40
+3.15	M	0.49	6.740
 3.60	F	0.84	10.51
 3.83	F	0.71	12.56
-3.31	M	0.57	8.23
+3.31	M	0.57	8.230
 3.95	F	1.00	14.66
 4.15	M	1.50	14.24
 4.12	M	1.28	15.06
-3.55	M	0.70	9.38
-3.67	M	0.72	9.65
+3.55	M	0.70	9.380
+3.67	M	0.72	9.650
 4.17	F	1.20	18.49
 3.64	M	0.78	10.28
-3.56	M	0.54	9.66
+3.56	M	0.54	9.660
 4.20	M	1.13	14.38
 5.15	F	2.17	31.47
 3.77	F	0.61	10.99
@@ -2343,20 +2342,36 @@ Roussel2019_pp = [... % (1)total length(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 4.10	F	1.06	16.78
 4.10	F	1.33	15.24
 4.70	M	1.76	19.35
-3.83	M	0.83	13
+3.83	M	0.83	13.00
 ];
-data.LGw_pp = sort(Roussel2019_pp(:,[1 3])); % total length(cm) ~ gonad weight(g)
-units.LGw_pp = {'cm', 'g'}; label.LGw_pp = {'total length', 'gonad weight'};  
-temp.LGw_pp = C2K(14.4); units.temp.LGw_pp = 'K'; label.temp.LGw_pp = 'temperature';
-bibkey.LGw_pp = 'Roussel2019';
-comment.LGw_pp = 'one year old juveniles female and male abalone fed for 11 months with a diet of Palmaria palmata';
+male_data_pp   = Roussel2019_pp(Roussel2019_pp(:,2) == 1, :);
+female_data_pp = Roussel2019_pp(Roussel2019_pp(:,2) == 2, :);
 %
-data.LWw_pp = sort(Roussel2019_pp(:,[1 4])); % total length(cm) ~ total weight(g)
-units.LWw_pp = {'cm', 'g'}; label.LWw_pp = {'total length', 'total weight'};  
-temp.LWw_pp = C2K(14.4); units.temp.LWw_pp = 'K'; label.temp.LWw_pp = 'temperature';
-bibkey.LWw_pp = 'Roussel2019';
-comment.LWw_pp = 'one year old juveniles female and male abalone fed for 11 months with a diet of palmaria palmata';
+data.LGw_pp_male = sort(male_data_pp(:,[1 3])); % total length(cm) ~ gonad weight(g)
+units.LGw_pp_male = {'cm', 'g'}; label.LGw_pp_male = {'total length', 'gonad weight'};  
+temp.LGw_pp_male = C2K(14.4); units.temp.LGw_pp_male = 'K'; label.temp.LGw_pp_male = 'temperature';
+bibkey.LGw_pp_male = 'Roussel2019';
+comment.LGw_pp_male = 'one year old juveniles male abalone fed for 11 months with a diet of Palmaria palmata';
 %
+data.LWw_pp_male = sort(male_data_pp(:,[1 4])); % total length(cm) ~ total weight(g)
+units.LWw_pp_male = {'cm', 'g'}; label.LWw_pp_male = {'total length', 'wet-weight'};  
+temp.LWw_pp_male = C2K(14.4); units.temp.LWw_pp_male = 'K'; label.temp.LWw_pp_male = 'temperature';
+bibkey.LWw_pp_male = 'Roussel2019';
+comment.LWw_pp_male = 'one year old juveniles female and male abalone fed for 11 months with a diet of palmaria palmata';
+%
+data.LGw_pp_female = sort(female_data_pp(:,[1 3])); % total length(cm) ~ gonad weight(g)
+units.LGw_pp_female = {'cm', 'g'}; label.LGw_pp_female = {'total length', 'gonad weight'};  
+temp.LGw_pp_female = C2K(14.4); units.temp.LGw_pp_female = 'K'; label.temp.LGw_pp_female = 'temperature';
+bibkey.LGw_pp_female = 'Roussel2019';
+comment.LGw_pp_female = 'one year old juveniles female abalone fed for 11 months with a diet of Palmaria palmata';
+%
+data.LWw_pp_female = sort(female_data_pp(:,[1 4])); % total length(cm) ~ total weight(g)
+units.LWw_pp_female = {'cm', 'g'}; label.LWw_pp_female = {'total length', 'wet-weight'};  
+temp.LWw_pp_female = C2K(14.4); units.temp.LWw_pp_female = 'K'; label.temp.LWw_pp_female = 'temperature';
+bibkey.LWw_pp_female = 'Roussel2019';
+comment.LWw_pp_female = 'one year old juveniles female abalone fed for 11 months with a diet of palmaria palmata';
+%
+% Data for male and female under a diet of Enteromorpha sp.
 Roussel2019_ee = [... % (1)total length(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) total weight(g)
 3.56	F	1.04	9.04
 3.63	M	0.66	8.25
@@ -2392,17 +2407,32 @@ Roussel2019_ee = [... % (1)total length(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 2.86	M	0.30	3.93
 2.95	M	0.39	4.42
 ];
-data.LGw_ee = sort(Roussel2019_ee(:,[1 3])); % total length(cm) ~ gonad weight(g)
-units.LGw_ee = {'cm', 'g'}; label.LGw_ee = {'total length', 'gonad weight'};  
-temp.LGw_ee = C2K(14.4); units.temp.LGw_ee = 'K'; label.temp.LGw_ee = 'temperature';
-bibkey.LGw_ee = 'Roussel2019';
-comment.LGw_e = 'one year old juveniles female and male abalone fed for 11 months with a diet of Enteromorpha sp.';
-% %
-data.LWw_ee = sort(Roussel2019_ee(:,[1 4])); % total length(cm) ~ total weight(g)
-units.LWw_ee = {'cm', 'g'}; label.LWw_ee = {'total length', 'total weight'};  
-temp.LWw_ee = C2K(14.4); units.temp.LWw_ee = 'K'; label.temp.LWw_ee = 'temperature';
-bibkey.LWw_ee = 'Roussel2019';
-comment.LWw_ee = 'one year old juveniles female and male abalone fed for 11 months with a diet of Enteromorpha sp.';
+male_data_ee   = Roussel2019_ee(Roussel2019_ee(:,2) == 1, :);
+female_data_ee = Roussel2019_ee(Roussel2019_ee(:,2) == 2, :);
+%
+data.LGw_ee_male = sort(male_data_ee(:,[1 3])); % total length(cm) ~ gonad weight(g)
+units.LGw_ee_male = {'cm', 'g'}; label.LGw_ee_male = {'total length', 'gonad weight'};  
+temp.LGw_ee_male = C2K(14.4); units.temp.LGw_ee_male = 'K'; label.temp.LGw_ee_male = 'temperature';
+bibkey.LGw_ee_male = 'Roussel2019';
+comment.LGw_e_male = 'one year old juveniles male abalone fed for 11 months with a diet of Enteromorpha sp.';
+% 
+data.LGw_ee_female = sort(female_data_ee(:,[1 3])); % total length(cm) ~ gonad weight(g)
+units.LGw_ee_female = {'cm', 'g'}; label.LGw_ee_female = {'total length', 'gonad weight'};  
+temp.LGw_ee_female = C2K(14.4); units.temp.LGw_ee_female = 'K'; label.temp.LGw_ee_female = 'temperature';
+bibkey.LGw_ee_female = 'Roussel2019';
+comment.LGw_e_female = 'one year old juveniles female abalone fed for 11 months with a diet of Enteromorpha sp.';
+%
+data.LWw_ee_male = sort(male_data_ee(:,[1 4])); % total length(cm) ~ total weight(g)
+units.LWw_ee_male = {'cm', 'g'}; label.LWw_ee_male = {'total length', 'wet-weight'};  
+temp.LWw_ee_male = C2K(14.4); units.temp.LWw_ee_male = 'K'; label.temp.LWw_ee = 'temperature';
+bibkey.LWw_ee_male = 'Roussel2019';
+comment.LWw_ee_male = 'one year old juveniles male abalone fed for 11 months with a diet of Enteromorpha sp.';
+%
+data.LWw_ee_female = sort(female_data_ee(:,[1 4])); % total length(cm) ~ total weight(g)
+units.LWw_ee_female = {'cm', 'g'}; label.LWw_ee_female = {'total length', 'wet-weight'};  
+temp.LWw_ee_female = C2K(14.4); units.temp.LWw_ee_female = 'K'; label.temp.LWw_ee = 'temperature';
+bibkey.LWw_ee_female = 'Roussel2019';
+comment.LWw_ee_female = 'one year old juveniles female abalone fed for 11 months with a diet of Enteromorpha sp.';
 %
 % % Auzoux-Bordenave(2021) temperatures at 3mt depth for 15 days starting the 9th of November 2021. Obtained from the COAST-HF-Iroise buoy time series for the Bay of Brest
 tT = [...% time (days), temperature (°C)
@@ -2425,7 +2455,7 @@ tT = [...% time (days), temperature (°C)
 tT(:,1) = tT(:,1) + 1096; % convert days to match experimental time 
 tT = [0, 14.04; ...
       tT; ...
-      15+1096, 13.87];
+      15 + 1096, 13.87];
 tT(:,2) = C2K(tT(:,2)); % convert temperatute from (°C) to (°K)
 %
 % Auzoux-Bordenave(2021)
@@ -3645,13 +3675,17 @@ txtData.comment = comment;
 %
 %% Group plots 
 set1 = {'LWw_m','LWw_f'}; subtitle1 = {'Males, Females'};
-comment1 = {'Total wet-weight of females and males adults and juvenile'};
-set2 = {'LGw_ee','LGw_pp','LGw_sl'};
-comment2 = {'Gonad weight at several diets'};
-set3 = {'LWw_sl','LWw_pp','LWw_ee'};
-comment3 = {'Lenght~weigth at several diets'};
-metaData.grp.sets = {set1, set2, set3};            
-metaData.grp.comment = {comment1, comment2, comment3};
+comment1 = {'Total wet-weight of female and male adults and juvenile'};
+set2 = {'LGw_ee_female','LGw_pp_female','LGw_sl_female'};
+comment2 = {'Gonad weight at several diets for female abalone'};
+set3 = {'LWw_sl_female','LWw_pp_female','LWw_ee_female'};
+comment3 = {'Lenght~weigth at several diets for female abalone'};
+set4 = {'LGw_ee_male','LGw_pp_male','LGw_sl_male'};
+comment4 = {'Gonad weight of male abalone at several diets '};
+set5 = {'LWw_sl_male','LWw_pp_male','LWw_ee_male'};
+comment5 = {'Total wet-weigth of male abaloneat at several diets'};
+metaData.grp.sets = {set1, set2, set3, set4, set5};            
+metaData.grp.comment = {comment1, comment2, comment3, comment4, comment5};
 metaData.grp.subtitle = {subtitle1};
 %
 %% Discussion points
