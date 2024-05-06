@@ -1,4 +1,4 @@
-function obs = get_obs(filename, simu, gen)
+function obs = get_obs(simu, gen)
   %---------------------------------------------------------------
   % Compute physical length, weight, fecundity, and energy content from state variables
   %  
@@ -17,12 +17,6 @@ function obs = get_obs(filename, simu, gen)
   % 2013/03/15 - Laure Pecquerie
   % 2023/03/21 - PaulI F. Lagos
   %-------------------------------------------------------------
-  %% unpack parameters, state variables
-  res = load(filename);
-  par  = res.par;          % get primary parameters
-  cPar = parscomp_st(par); % get compound parameters
-  vars_pull(par);
-  vars_pull(cPar);
   
 %% State variables
 t   = simu.tEVHR(:,1, gen); % days,     Time
@@ -31,16 +25,17 @@ V   = simu.tEVHR(:,3, gen); % cm^3,     Structural volume
 E_R = simu.tEVHR(:,5, gen); % Joules,   Reproduction buffer
 
 % Observable quantities
-L_w       =  V.^(1/3) / del_M;                  % cm, physical length
-Ww_V      =  d_V * V + (E + E_R) * w_E / mu_E;  % g, total wet-weight
-F         =  kap_R * E_R / simu.EVHR_init(1);   % Fecundity = egg number = kap_R * E_R / E_0
-G_Ww      =  E_R * (w_E / (d_E * mu_E));        % g, gonad wet-weight
+L_w       =  V.^(1/3) / simu.par.del_M;                  % cm, physical length
+Ww_V      =  simu.par.d_V * V + (E + E_R) * simu.cPar.w_E / simu.par.mu_E;  % g, total wet-weight
+F         =  simu.par.kap_R * E_R / simu.EVHR_init(1);   % Fecundity = egg number = kap_R * E_R / E_0
+%G_Ww      =  E_R * (simu.cPar.w_E / (simu.par.d_E * simu.par.mu_E));        % g, gonad wet-weight
+G_Ww      =  E_R * simu.cPar.w_E / simu.par.mu_E;  % g, total wet-weight
 GSI       =  G_Ww ./ (Ww_V - G_Ww);              % -, Gonado somatic index (GSI)
 
 % Non-observable quantities
-E_m       = cPar.p_Am ./ par.v;          % [Em], J m^-3, maximun reserve density
+E_m       = simu.cPar.p_Am ./ simu.par.v;          % [Em], J m^-3, maximun reserve density
 e         = E ./ (V * E_m);              % e,          -, scaled reserve density
-E_V       = mu_V * d_V / w_V * V;        % Joules, Energy content of structure
+E_V       = simu.par.mu_V * simu.par.d_V / simu.cPar.w_V * V;        % Joules, Energy content of structure
 E_w       = (E_V + E + E_R) ./ Ww_V;     % J/g, Total energy content 
 
 obs = [t, e, L_w, Ww_V, E_w, F, G_Ww, GSI];

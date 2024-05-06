@@ -1,4 +1,4 @@
-function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number) %, pco2, temp)
+function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number, zoom_f, born_date) %, pco2, temp)
   %---------------------------------------------------------------
   % Define simulation and individual features
   %  
@@ -19,12 +19,12 @@ function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number) %, p
 
   % Set parameter variables
   [V_Hb, g, k_J, k_M, v]    = deal(cPar.V_Hb, cPar.g, par.k_J, cPar.k_M, par.v);
-  [T_ref, p_Am, kap_X, F_m] = deal(par.T_ref, cPar.p_Am, par.kap_X, par.F_m);
+  [p_Am] = deal(cPar.p_Am);
   
   % set simulation times
-  t0 = 0;             % initial time % January 1st
-  tm = 20 * 365;      % final time 
-  ts = t0;            % spawning time 
+  t0 = 0;     % initial time % 0; January 1st
+  tm = 20 * 365;      % max simulation length in number of days
+  ts = t0;            % spawning time xs
   
   % Set environment flags
   envT    = varEnv;  
@@ -35,13 +35,13 @@ function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number) %, p
   % Define plot color based on environment
   col = getColor(envT, envX, envpCO2);
   
-  % contant environemantal conditions
+  % constant environemantal conditions
   T    = 14 + 273.15; %14 + 273.15 or  %temp + 273.15; %
-  f    = 0.999;
+  f    = 0.9;
   pCO2 = 420; % pco2 ;
   
   % SSP scenarios applied to in-situ environmental data
-   [ssp_temp, ssp_pco2] = forcing_deb(location, SSP);
+  [ssp_temp, ssp_pco2] = forcing_deb(location, SSP, born_date);
    
   % Calculate initial states
   pars_UE0     = [V_Hb; g; k_J; k_M; v];
@@ -50,25 +50,30 @@ function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number) %, p
   V_0          = 1e-8;                   % cm^3, initial structural volume
   E_H0         = 0;                      % J, initial cum. energy invested into maturation
   E_R0         = 0;                      % J, initial reproduction buffer
-  K            = p_Am / (kap_X * F_m);   % same unit as food, half-saturation coefficient
+  K            = 0.05;                   % p_Am / (kap_X * F_m)  same unit as food, half-saturation coefficient
         
   % Set simulation parameters in the 'simu' structure
-  simu.t0       = t0;
-  simu.tm       = tm;
-  simu.ts       = ts;
-  simu.envT     = envT;
-  simu.SSP      = envSSP;
-  simu.foodQ    = envFoodQ;
-  simu.envX     = envX;
-  simu.envpCO2  = envpCO2;
-  simu.Tinit    = T;
-  simu.Xinit    = f.* K ./ (1 - f);
+  simu.t0        = t0;
+  simu.tm        = tm;
+  simu.ts        = ts;
+  simu.tb        = born_date;
+  simu.envT      = envT;
+  simu.SSP       = envSSP;
+  simu.foodQ     = envFoodQ;
+  simu.envX      = envX;
+  simu.envpCO2   = envpCO2;
+  simu.zoom      = zoom_f;
+  simu.par       = par;
+  simu.cPar      = cPar;
+  simu.Tinit     = T;
+  simu.Xinit     = f.* K ./ (1 - f);
   simu.pCO2init  = pCO2;
+  simu.K         = K;
   simu.tempData  = ssp_temp;
   simu.pco2Data  = ssp_pco2;
   simu.EVHR_init = [E_0 ; V_0 ; E_H0; E_R0];
   simu.tEVHR     = zeros(tm+1,length(simu.EVHR_init)+1, gen_number);
-  simu.col = col;
+  simu.col       = col;
   
 end
   

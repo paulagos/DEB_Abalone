@@ -39,12 +39,12 @@ for food_idx = 1:length(food_array)
             pco2 = pco2_array(pco2_idx);
             
             % Initialize simulation with current conditions
-            simu = init('RCP1', 1, food, 1, pco2, temp); % Modify init to accept additional argument
+            simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number);
             
             %% 2 - calculate state variables
             simu.tEVHR(:,:,1) = indiv(simu, 1);
             
-            % Check for the condition you want to capture and store the time
+            % Check for the condition to capture and store the time
             condition_time = find_time_EHp(simu.tEVHR(:,4), par.E_Hp, simu.tEVHR(:,1));
             
             disp(condition_time);
@@ -57,8 +57,6 @@ for food_idx = 1:length(food_array)
 end
 
 disp(captured_times);
-
-
 
 %% code to creating plots, analyze data, etc. %%%%%%%%
 
@@ -95,8 +93,6 @@ for i = 1:length(food_levels)
     
 end
 
-
-
 % Create a box plot for each slice
 figure;
 
@@ -120,9 +116,6 @@ for i = 1:length(food_levels)
 end
     
     
-    
-    
-
 % Create a box plot for each temperature level
 figure;
 
@@ -188,11 +181,6 @@ for i = 1:num_food_levels
     % Add a legend to differentiate different pCO2 levels (if needed)
     legend(arrayfun(@num2str, pco2_array, 'UniformOutput', false), 'Location', 'Best');
 end
-
-
-
-
-
 
 
 

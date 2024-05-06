@@ -1,20 +1,15 @@
-function get_plots(filename, simu, j, h, gen_number) %[t, F]
-%---------------------------------------------------------------
-% Load parameter values
-res = load(filename);
-par  = res.par;          % get primary parameters
-cPar = parscomp_st(par); % get compound parameters
+function get_plots(simu, j, h, gen_number) %[t, F]
 %---------------------------------------------------------------
 
 for gen = 1:gen_number
     
     % time , environmental forcing
-    t = simu.tEVHR(:,1,gen);
+    t = simu.tEVHR(:,1, gen);
     
     if simu.envX == 1
         X = repmat(simu.Xinit, length(t),1);
     else
-        X = food(t);
+        X = food(t,simu);
     end
     
     if simu.envT == 1
@@ -29,6 +24,17 @@ for gen = 1:gen_number
         pCO2 = simu.pco2Data(t+1);
     end
     
+%% Assign dates to simulation time span
+years = t(end)/365;
+
+% Get today and the start of the current year
+d = datetime(2019,01,1);
+s = dateshift(d, 'start', 'year');
+t0Date = s + simu.tb - 1;
+tEndDate = s + years * 366 + simu.tb - 1; % using 366 instead of 365 as the date functions include leap years, and dont want to wind up with too few dates once we cut them out
+
+sim_dates = t0Date:tEndDate;
+sim_dates = sim_dates(~(sim_dates.Month == 2 & sim_dates.Day == 29));  % removing the leap days as we do not account for those in sim (all our years are 365 days)
 
     %% state variables
     E   = simu.tEVHR(:,2, gen); % Energy reserves
@@ -36,15 +42,14 @@ for gen = 1:gen_number
     E_H = simu.tEVHR(:,4, gen); % maturity
     E_R = simu.tEVHR(:,5, gen); % reproduction buffer
     
-    %% spawning date indices
-    i_sp = find(and((E_R == 0),(E_H >= par.E_Hp)));
-    i_sp = i_sp - 1 ; % look at the preceding line with E_R value before spawning
+    %% find spawning dates indices
+    i_sp = find(and((E_R == 0),(E_H >= simu.zoom^3 * simu.par.E_Hp)));
     
-    %% temperature correction
-    c_T2  = exp(par.T_A / par.T_ref - par.T_A/ 297.8);
+    %% Applyingthe dates to i_sp
+    Spawning_dates = sim_dates(i_sp);
     
     %% Functional response
-    f  = X ./ (X + cPar.K);
+    f  = X ./ (X + 0.04); % Problem with K, SHOULD NOT COME FROM THE ESTIMATION
     
     %% Model fluxes
     pX  = simu.tFluxes(:,2, gen);
@@ -53,12 +58,8 @@ for gen = 1:gen_number
     pJ  = simu.tFluxes(:,5, gen);
     pC  = simu.tFluxes(:,6, gen);
     pG  = simu.tFluxes(:,7, gen);
-    pR     = simu.tFluxes(:,8, gen);
-    pD     = simu.tFluxes(:,9, gen);
-    pLR    = simu.tFluxes(:,10, gen);
-    pLV    = simu.tFluxes(:,11, gen);
-    kap_pC = simu.tFluxes(:,12, gen);
-    
+    pR  = simu.tFluxes(:,8, gen);
+    pD  = simu.tFluxes(:,9, gen);
 
     %% observable quantities
     e    = simu.obs(:,2, gen); % Scaled reserve energy
@@ -67,6 +68,7 @@ for gen = 1:gen_number
     E_w  = simu.obs(:,5, gen); % Total energy content
     F    = simu.obs(:,6, gen); % Fecundity
     G_Ww = simu.obs(:,7, gen); % Gonad wet weight
+    GSI  = simu.obs(:,8, gen); % GSI
     
         %% graph 1
     nfig = 1; % number of figures
@@ -75,12 +77,11 @@ for gen = 1:gen_number
         set(gcf,'PaperPositionMode','manual');
         set(gcf,'PaperUnits','in');
         set(gca,'Fontsize', 12)
-        % Adjust the figure size, if needed
         set(gcf, 'Position', [100, 100, 800, 600]);
     end
     
     line_styles = {'-', '--', ':', '-.'}; % Line styles 
-    colors = ["#77AC30", "#0072BD", "#7E2F8E" ,"#A2142F", "#A2143F", "#A2144F"];
+    colors = ["#77AC30", "#0072BD", "#7E2F8E" ,"#A2142F", "#A2143F", "#D95319"];
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%% Plots for model fluxes %%%%%
@@ -142,28 +143,7 @@ for gen = 1:gen_number
     title('Dissipation')
     xlabel('Time (d)')
     ylabel('pD')
-    
-    subplot(3, 4, 9)
-    hold on
-    plot( t, pLR , simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
-    title('pLR')
-    xlabel('Time (d)')
-    ylabel('pLR ')
-    
-    subplot(3, 4, 10)
-    hold on
-    plot( t, pLV, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
-    title('pLV')
-    xlabel('Time (d)')
-    ylabel('pLV')
-    
-    subplot(3, 4, 11)
-    hold on
-    plot( t, kap_pC, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
-    title(' kap * pC')
-    xlabel('Time (d)')
-    ylabel('kap * pC')
-    
+        
     subplot(3, 4, 12)
     p1 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{1});
     hold on;
@@ -171,7 +151,7 @@ for gen = 1:gen_number
     p3 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{3});
     p4 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{4});
     
-    legend('Current','SSP1_19','SSP1_26','SSP1_45', 'SSP5_baseline', 'location', 'best');
+    legend('Current','SSP1 1.9','SSP1 2.6','SSP1 4.5', 'SSP5 baseline', 'location', 'best');
 
     set(gca, 'visible', 'off');
     
@@ -179,22 +159,28 @@ for gen = 1:gen_number
     %%%%%% Plots for Enviromental conditions %%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     figure(2)
-    subplot(3, 1, 1)
+    subplot(4, 1, 1)
     hold on
-    plot(t, T, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t/365, T, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
     title('Temperature')
     xlabel('Time (years)')
     ylabel('T (°C)')
-    axis([0 t(end) 0 25])
     
-    subplot(3, 1, 2)
+    subplot(4, 1, 2)
     hold on
     plot(t/365, f , simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
-    title('Food')
+    title('Functional response')
     xlabel('Time (years)')
-    ylabel('Food density')
+    ylabel('functional response, f')
     
-    subplot(3, 1, 3)
+    subplot(4, 1, 3)
+    hold on
+    plot(t/365, X, simu.col) %, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    title('Algae biomass, kg m2')
+    xlabel('Time (years)')
+    ylabel('Food biomass')    
+    
+    subplot(4, 1, 4)
     hold on
     plot(t/365, pCO2, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
     title('pCO2 levels')
@@ -268,39 +254,51 @@ for gen = 1:gen_number
     
     %%%%%%%%% Total lenghts %%%%%%%%
     figure(4)
-    subplot(1, 4, 1)
+    subplot(1, 5, 1)
     hold on
     plot(t/365, L_w, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % cm, physical length
     xlabel('Time (years)')
     ylabel('Total length (cm)')
-    v = axis;
-    text((v(2)-v(1)) * 0.07 + v(1), (v(4)-v(3)) *.9 + v(3), '(c)','Fontsize',12)
     
     %%%%%%%%% Fecundity %%%%%%%%
-    subplot(1, 4, 2)
+    subplot(1, 5, 2)
     hold on
     plot(t/365, F, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % Fecundity = egg number = kap_R * E_R / E_0
     xlabel('Time (years)')
     ylabel('Fecundity (# Eggs)')
-    v = axis;
-    text((v(2)-v(1)) * 0.07 + v(1), (v(4)-v(3)) *.9 + v(3), '(c)','Fontsize',12)
     
     %%%%%%%%% wet-weights %%%%%%%%
-    subplot(1, 4, 3)
+    subplot(1, 5, 3)
     hold on
     plot(t/365, Ww_V, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})  % g, total wet-weight, same water content in structure and reserves
     xlabel('Time (years)')
     ylabel('Total wet-weight (g)')
     
     %%%%%% Gonad Weigth %%%%%%%%%
-    subplot(1, 4, 4)
+    subplot(1, 5, 4)
     hold on
     plot(t/365, G_Ww, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})  % g, total wet-weight, same water content in structure and reserves
     xlabel('Time (years)')
     ylabel('Gonad wet-weight (g)')
-        
     
+    %%%%%% GSI %%%%%%%%%
+    subplot(1, 5, 5)
+    hold on
+    plot(t/365, GSI, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})  % g, total wet-weight, same water content in structure and reserves
+    xlabel('Time (years)')
+    ylabel('GSI)')
+    
+    %%%%%% Spawning events %%%%
+    figure (5)
+    spa_2 = Spawning_dates;
+    spa_2.Year = 2020;
+    plot(Spawning_dates.Year, spa_2, 'o', 'MarkerFaceColor', 'b')
+    if (~isempty(Spawning_dates.Year))
+        ytickformat('dd-MMM')
+        tstart = datetime(2020,01,01);
+        tend = datetime(2020,12,31);
+        ylim([tstart tend])
+    end
+        
 end
-
-
 

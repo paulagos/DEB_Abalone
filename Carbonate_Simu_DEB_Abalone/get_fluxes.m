@@ -12,7 +12,7 @@ tVec = simu.tEVHR(:, 1, gen);
 fluxOut = 1;
 
 % set up matrix to hold output
-fluxes = zeros(length(tVec),12); % 10 is the number of fluxes output from flux.m
+fluxes = zeros(length(tVec), 9); % 10 is the number of fluxes output from flux.m
 fluxes(:,1) = tVec;
 
 for i = 1:length(tVec)
@@ -20,6 +20,6 @@ for i = 1:length(tVec)
     t = tVec(i);
     EVHR = simu.tEVHR(i,2:size(simu.tEVHR,2), gen);
     
-    fluxes(i,2:size(fluxes,2)) = flux(t, EVHR, simu, par, cPar, fluxOut);
+    fluxes(i,2:size(fluxes,2)) = flux(t, EVHR, simu, fluxOut);
     
 end
