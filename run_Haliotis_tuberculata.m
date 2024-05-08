@@ -16,7 +16,7 @@ estim_options('loss_function', 'sb')
 %   0 - get initial estimates from automatized computation (default)
 %   1 - read initial estimates from .mat file (for continuation)
 %   2 - read initial estimates from pars_init file
-estim_options('pars_init_method', 1);
+estim_options('pars_init_method', 2);
 
 %  'results_output':
 %   0     - only saves data to .mat (no printing to html or screen and no figures) - use this for (automatic) continuations
@@ -31,7 +31,7 @@ estim_options('results_output', 2);
 % 'method':
 %   'nm' - use Nelder-Mead method;
 %   'no' - do not estimate; 
-estim_options('method', 'nm'); 
+estim_options('method', 'no'); 
 
 % Calculate the time it takes running the calibration
 tStart = tic;
