@@ -62,8 +62,8 @@ doPlotsSet1 = 1; % Set to 1 to plot SET 1,; set to 0 to plot SET 1 and SET  2.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 SSP_scenarios = {'Current'}; %'Current','SSP1s19','SSP1s26','SSP1s45','SSP3sBaseline','SSP5sBaseline'};
-all_locations = {'brest','roscoff','med'}; % locations: 'brest', 'roscoff', 'nantes','larochelle','med'
-Food_quality  = [0]; % [0.3, 0.15, 0] percentages of decrease in food quality use any other combination;
+all_locations = {'brest'}; % locations: 'brest', 'roscoff', 'nantes','larochelle','med'
+Food_quality  = [0, 0.15, 0.3]; % [0.3, 0.15, 0] percentages of decrease in food quality use any other combination;
 variable_env  = [2]; % Constant (1) or Variable (2) environmental conditions
 zoom_f        = [1]; % Number of idividuals to model) Range of zoom factors from 0.5 to 2 1 is default
 gen_number    = [1]; % Increase number of simulations in times, For end of the century = 4
@@ -190,4 +190,6 @@ if any(zoom_f ~= 1)
 end
 
 
-
+Next steps:
+Ensure that the main.m script can accept variables from the workspace.
+Modify the main.m to use the selected options from the app.

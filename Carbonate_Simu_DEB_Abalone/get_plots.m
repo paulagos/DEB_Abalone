@@ -1,4 +1,4 @@
-function get_plots(simu, j, h, gen_number) %[t, F]
+function get_plots(simu, h, i, gen_number) %[t, F]
 %---------------------------------------------------------------
 
 for gen = 1:gen_number
@@ -89,7 +89,7 @@ sim_dates = sim_dates(~(sim_dates.Month == 2 & sim_dates.Day == 29));  % removin
     figure(1)
     subplot(3, 4, 1)
     hold on
-    plot(t, pX, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t, pX, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Feeding')
     %legend('Current','RCP2.6','RCP4.5','RCP8.5', 'location', 'best'),
     xlabel('Time (d)')
@@ -97,49 +97,49 @@ sim_dates = sim_dates(~(sim_dates.Month == 2 & sim_dates.Day == 29));  % removin
     
     subplot(3, 4, 2)
     hold on
-    plot(t, pA, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t, pA, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Assimilation')
     xlabel('Time (d)')
     ylabel('pA')
     
     subplot(3, 4, 3)
     hold on
-    plot(t, pM, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t, pM, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Somatic maintenance')
     xlabel('Time (d)')
     ylabel('pM')
     
     subplot(3, 4, 4)
     hold on
-    plot(t, pJ, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t, pJ, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Maturity maintenance')
     xlabel('Time (d)')
     ylabel('pJ')
     
     subplot(3, 4, 5)
     hold on
-    plot(t, pC, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t, pC, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Reserve mobilization')
     xlabel('Time (d)')
     ylabel('pC')
     
     subplot(3, 4, 6)
     hold on
-    plot(t, pG, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t, pG, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Growth')
     xlabel('Time (d)')
     ylabel('pG')
     
     subplot(3, 4, 7)
     hold on
-    plot(t, pR, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t, pR, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Reproduction')
     xlabel('Time (d)')
     ylabel('pR')
     
     subplot(3, 4, 8)
     hold on
-    plot( t, pD, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot( t, pD, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Dissipation')
     xlabel('Time (d)')
     ylabel('pD')
@@ -161,14 +161,14 @@ sim_dates = sim_dates(~(sim_dates.Month == 2 & sim_dates.Day == 29));  % removin
     figure(2)
     subplot(4, 1, 1)
     hold on
-    plot(t/365, T, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t/365, T, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Temperature')
     xlabel('Time (years)')
     ylabel('T (°C)')
     
     subplot(4, 1, 2)
     hold on
-    plot(t/365, f , simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t/365, f , simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Functional response')
     xlabel('Time (years)')
     ylabel('functional response, f')
@@ -182,7 +182,7 @@ sim_dates = sim_dates(~(sim_dates.Month == 2 & sim_dates.Day == 29));  % removin
     
     subplot(4, 1, 4)
     hold on
-    plot(t/365, pCO2, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t/365, pCO2, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('pCO2 levels')
     xlabel('Time (years)')
     ylabel('pCO2')
@@ -193,42 +193,42 @@ sim_dates = sim_dates(~(sim_dates.Month == 2 & sim_dates.Day == 29));  % removin
     figure(3)
     subplot(2, 4, 1)
     hold on
-    plot(t/365, e, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
+    plot(t/365, e, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
     title('Scaled reserve density (e)')
     xlabel('Time (d)')
     ylabel('e (-)')
     
     subplot(2, 4, 2)
     hold on
-    plot(t/365, E,  simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % Joules, Reserve energy
+    plot(t/365, E,  simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % Joules, Reserve energy
     title('Reserve energy [E]')
     xlabel('Time (d)')
     ylabel('E (Joules)')
     
     subplot(2, 4, 3)
     hold on
-    plot(t/365, V, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % cm^3, Structural volume
+    plot(t/365, V, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % cm^3, Structural volume
     title('Structural volume')
     xlabel('Time (d)')
     ylabel('V (cm^3)')
     
     subplot(2, 4, 4)
     hold on
-    plot(t/365, E_H, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})  % J, cumulated energy inversted into maturity
+    plot(t/365, E_H, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})  % J, cumulated energy inversted into maturity
     title('Energy invested into maturation')
     xlabel('Time (d)')
     ylabel('E_H (J)')
     
     subplot(2, 4, 5)
     hold on
-    plot(t/365, E_R, simu.col , 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % Joules, Reproduction buffer
+    plot(t/365, E_R, simu.col , 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % Joules, Reproduction buffer
     title('Reproduction buffer')
     xlabel('Time (d)')
     ylabel('E_R (J)')
     
     subplot(2, 4, 6)
     hold on
-    plot(t/365, E_w, simu.col , 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % J/g, Total energy content
+    plot(t/365, E_w, simu.col , 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % J/g, Total energy content
     title('Energy content (J/g)')
     xlabel('Time (d)')
     ylabel('E_w (J.g^{-1})')
@@ -256,35 +256,35 @@ sim_dates = sim_dates(~(sim_dates.Month == 2 & sim_dates.Day == 29));  % removin
     figure(4)
     subplot(1, 5, 1)
     hold on
-    plot(t/365, L_w, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % cm, physical length
+    plot(t/365, L_w, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % cm, physical length
     xlabel('Time (years)')
     ylabel('Total length (cm)')
     
     %%%%%%%%% Fecundity %%%%%%%%
     subplot(1, 5, 2)
     hold on
-    plot(t/365, F, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j}) % Fecundity = egg number = kap_R * E_R / E_0
+    plot(t/365, F, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % Fecundity = egg number = kap_R * E_R / E_0
     xlabel('Time (years)')
     ylabel('Fecundity (# Eggs)')
     
     %%%%%%%%% wet-weights %%%%%%%%
     subplot(1, 5, 3)
     hold on
-    plot(t/365, Ww_V, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})  % g, total wet-weight, same water content in structure and reserves
+    plot(t/365, Ww_V, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})  % g, total wet-weight, same water content in structure and reserves
     xlabel('Time (years)')
     ylabel('Total wet-weight (g)')
     
     %%%%%% Gonad Weigth %%%%%%%%%
     subplot(1, 5, 4)
     hold on
-    plot(t/365, G_Ww, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})  % g, total wet-weight, same water content in structure and reserves
+    plot(t/365, G_Ww, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})  % g, total wet-weight, same water content in structure and reserves
     xlabel('Time (years)')
     ylabel('Gonad wet-weight (g)')
     
     %%%%%% GSI %%%%%%%%%
     subplot(1, 5, 5)
     hold on
-    plot(t/365, GSI, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})  % g, total wet-weight, same water content in structure and reserves
+    plot(t/365, GSI, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})  % g, total wet-weight, same water content in structure and reserves
     xlabel('Time (years)')
     ylabel('GSI)')
     

@@ -13,7 +13,7 @@ function X = food(t,simu)
   % 
   % 2024/02/05 - Paulo F. Lagos
   %--------------------------------------------------------------
-%   
+  
 %   p5 = [0   0.120336841
 %         25	0.120336943
 %         51	0.080808081
@@ -105,17 +105,17 @@ p5 = [365.000   0.0861;
 % t1 = p5(:,1);    
 % t = linspace(0, 365,100)'; % time points for evaluation
 % fr = 0.1;% function value to solve x from f(x) = fr
-
-%% spline1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% % spline1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
 % [fs1, dfs1] = spline1(t1, p5); % function values and derivative
 % ifs1 = ispline1(t1, p5); % integration
 % ts1_fr = rspline1(p5,0,0,fr); % roots of f(x) = fr;
 % [ts1_min, ts1_max] = espline1(p5); % extremes
-
-
-%% spline, here natural spline. 
-
+% 
+% 
+% % spline, here natural spline. 
+% 
 % [fs, dfs, ddfs] = spline(t1, p5); % function values and derivatives
 % ifs = ispline(t1, p5); % integration
 % ts_fr = 0; ts_min = 0; ts_max = 0;
