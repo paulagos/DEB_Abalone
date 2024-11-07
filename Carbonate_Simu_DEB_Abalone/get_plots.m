@@ -1,304 +1,190 @@
-function get_plots(simu, h, i, gen_number) %[t, F]
+function get_plots(simu, h, i, gen_number, legendLabels, colorIndex, location, mode, SSP, totalLocations, totalSSP)
 %---------------------------------------------------------------
+% simu: simulation data structure
+% h, i: indices for the selected options
+% gen_number: number of generations being simulated
+% legendLabels: dynamic labels for the legend (e.g., SSP_scenarios, Locations)
+% colorIndex: index used to assign unique colors
+% location: the current location being simulated
+% mode: specifies the mode of plotting (e.g., default, locations_together, etc.)
+% SSP: the current SSP scenario being processed
+% totalLocations: total number of locations selected
+% totalSSP: total number of SSP scenarios selected
 
+% Display the running SSP scenario and location in the Command Window
+fprintf('Running simulation for SSP: %s, Location: %s\n', SSP, location);
+
+% Define dynamic line styles and color palette
+line_styles = {'-', '--', ':', '-.'}; % Line styles 
+n_colors = 20;  % Define how many distinct colors you need
+colors = hsv(n_colors);  % Create distinct colors using MATLAB's hsv function
+
+% Dynamically adjust figure size based on the number of locations
+figureHeight = 300 + (150 * totalLocations);  % Base height with adjustment for more locations
+figureWidth = 900;  % Fixed width to accommodate 3 columns (length, weight, GSI)
+
+% Create Figure 1 for observables with dynamic size
+figure(1);
+set(gcf, 'Position', [100, 100, figureWidth, figureHeight]);  % Set dynamic size
+sgtitle('Observables for Multiple Locations and SSP Scenarios');
+
+% Loop through the generations
 for gen = 1:gen_number
+    % Extract the time vector `t` from the simulation data
+    t = simu.tEVHR(:,1, gen);  % Assuming time is in the first column of `tEVHR`
     
-    % time , environmental forcing
-    t = simu.tEVHR(:,1, gen);
+    % Extract other variables for plotting
+    L_w = simu.obs(:,3, gen);  % Physical length
+    Ww_V = simu.obs(:,4, gen);  % Total wet-weight
+    GSI = simu.obs(:,8, gen);  % Gonado Somatic Index (GSI)
     
-    if simu.envX == 1
-        X = repmat(simu.Xinit, length(t),1);
-    else
-        X = food(t,simu);
-    end
+    % ===================== Figure 1: Observables =====================
+    % Create a 3-column figure: rows for locations, columns for observables
+    % Rows = totalLocations, Columns = 3 (Length, Weight, GSI)
     
-    if simu.envT == 1
-        T = repmat(simu.Tinit, length(t), 1) - 273.15; % in DegC
-    else
-        T = simu.tempData(t+1);
-    end
+    % Row index for this location (h = location index)
+    rowOffset = (h - 1) * 3;
     
-    if simu.envpCO2 == 1
-        pCO2 = repmat(simu.pCO2init, length(t), 1);
-    else
-        pCO2 = simu.pco2Data(t+1);
-    end
-    
-%% Assign dates to simulation time span
-years = t(end)/365;
+    % Column 1: Physical Length (L_w)
+    subplot(totalLocations, 3, rowOffset + 1); hold on;
+    plot(t/365, L_w, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title(sprintf('Physical Length (Location: %s)', location));
+    xlabel('Time (years)');
+    ylabel('Length (cm)');
 
-% Get today and the start of the current year
-d = datetime(2019,01,1);
-s = dateshift(d, 'start', 'year');
-t0Date = s + simu.tb - 1;
-tEndDate = s + years * 366 + simu.tb - 1; % using 366 instead of 365 as the date functions include leap years, and dont want to wind up with too few dates once we cut them out
+    % Column 2: Wet Weight (Ww_V)
+    subplot(totalLocations, 3, rowOffset + 2); hold on;
+    plot(t/365, Ww_V, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title(sprintf('Wet Weight (Location: %s)', location));
+    xlabel('Time (years)');
+    ylabel('Weight (g)');
 
-sim_dates = t0Date:tEndDate;
-sim_dates = sim_dates(~(sim_dates.Month == 2 & sim_dates.Day == 29));  % removing the leap days as we do not account for those in sim (all our years are 365 days)
+    % Column 3: Gonado Somatic Index (GSI)
+    subplot(totalLocations, 3, rowOffset + 3); hold on;
+    plot(t/365, GSI, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title(sprintf('GSI (Location: %s)', location));
+    xlabel('Time (years)');
+    ylabel('GSI');
 
-    %% state variables
-    E   = simu.tEVHR(:,2, gen); % Energy reserves
-    V   = simu.tEVHR(:,3, gen); % structural volume
-    E_H = simu.tEVHR(:,4, gen); % maturity
-    E_R = simu.tEVHR(:,5, gen); % reproduction buffer
-    
-    %% find spawning dates indices
-    i_sp = find(and((E_R == 0),(E_H >= simu.zoom^3 * simu.par.E_Hp)));
-    
-    %% Applyingthe dates to i_sp
-    Spawning_dates = sim_dates(i_sp);
-    
-    %% Functional response
-    f  = X ./ (X + 0.04); % Problem with K, SHOULD NOT COME FROM THE ESTIMATION
-    
-    %% Model fluxes
-    pX  = simu.tFluxes(:,2, gen);
-    pA  = simu.tFluxes(:,3, gen);
-    pM  = simu.tFluxes(:,4, gen);
-    pJ  = simu.tFluxes(:,5, gen);
-    pC  = simu.tFluxes(:,6, gen);
-    pG  = simu.tFluxes(:,7, gen);
-    pR  = simu.tFluxes(:,8, gen);
-    pD  = simu.tFluxes(:,9, gen);
+    legend(legendLabels, 'Location', 'best');
 
-    %% observable quantities
-    e    = simu.obs(:,2, gen); % Scaled reserve energy
-    L_w  = simu.obs(:,3, gen); % Physical length
-    Ww_V = simu.obs(:,4, gen); % Total wet-weight
-    E_w  = simu.obs(:,5, gen); % Total energy content
-    F    = simu.obs(:,6, gen); % Fecundity
-    G_Ww = simu.obs(:,7, gen); % Gonad wet weight
-    GSI  = simu.obs(:,8, gen); % GSI
-    
-        %% graph 1
-    nfig = 1; % number of figures
-    for i = 1:nfig
-        figure(i)
-        set(gcf,'PaperPositionMode','manual');
-        set(gcf,'PaperUnits','in');
-        set(gca,'Fontsize', 12)
-        set(gcf, 'Position', [100, 100, 800, 600]);
-    end
-    
-    line_styles = {'-', '--', ':', '-.'}; % Line styles 
-    colors = ["#77AC30", "#0072BD", "#7E2F8E" ,"#A2142F", "#A2143F", "#D95319"];
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%% Plots for model fluxes %%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    figure(1)
-    subplot(3, 4, 1)
-    hold on
-    plot(t, pX, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Feeding')
-    %legend('Current','RCP2.6','RCP4.5','RCP8.5', 'location', 'best'),
-    xlabel('Time (d)')
-    ylabel('pX')
-    
-    subplot(3, 4, 2)
-    hold on
-    plot(t, pA, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Assimilation')
-    xlabel('Time (d)')
-    ylabel('pA')
-    
-    subplot(3, 4, 3)
-    hold on
-    plot(t, pM, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Somatic maintenance')
-    xlabel('Time (d)')
-    ylabel('pM')
-    
-    subplot(3, 4, 4)
-    hold on
-    plot(t, pJ, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Maturity maintenance')
-    xlabel('Time (d)')
-    ylabel('pJ')
-    
-    subplot(3, 4, 5)
-    hold on
-    plot(t, pC, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Reserve mobilization')
-    xlabel('Time (d)')
-    ylabel('pC')
-    
-    subplot(3, 4, 6)
-    hold on
-    plot(t, pG, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Growth')
-    xlabel('Time (d)')
-    ylabel('pG')
-    
-    subplot(3, 4, 7)
-    hold on
-    plot(t, pR, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Reproduction')
-    xlabel('Time (d)')
-    ylabel('pR')
-    
-    subplot(3, 4, 8)
-    hold on
-    plot( t, pD, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Dissipation')
-    xlabel('Time (d)')
-    ylabel('pD')
-        
-    subplot(3, 4, 12)
-    p1 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{1});
-    hold on;
-    p2 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{2});
-    p3 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{3});
-    p4 = plot(NaN,NaN, 'Linewidth',1.5, 'Color', colors{4});
-    
-    legend('Current','SSP1 1.9','SSP1 2.6','SSP1 4.5', 'SSP5 baseline', 'location', 'best');
+    % ===================== Separate Figures for Fluxes =====================
+    % Create separate figures for each location and plot all SSPs within it
+    figure('Name', ['Model Fluxes for Location: ', location], 'NumberTitle', 'off');
+    sgtitle(['Model Fluxes for Location: ', location]);
 
-    set(gca, 'visible', 'off');
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%% Plots for Enviromental conditions %%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    figure(2)
-    subplot(4, 1, 1)
-    hold on
-    plot(t/365, T, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Temperature')
-    xlabel('Time (years)')
-    ylabel('T (°C)')
-    
-    subplot(4, 1, 2)
-    hold on
-    plot(t/365, f , simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Functional response')
-    xlabel('Time (years)')
-    ylabel('functional response, f')
-    
-    subplot(4, 1, 3)
-    hold on
-    plot(t/365, X, simu.col) %, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{j})
-    title('Algae biomass, kg m2')
-    xlabel('Time (years)')
-    ylabel('Food biomass')    
-    
-    subplot(4, 1, 4)
-    hold on
-    plot(t/365, pCO2, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('pCO2 levels')
-    xlabel('Time (years)')
-    ylabel('pCO2')
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%  Plots for State variables  %%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    figure(3)
-    subplot(2, 4, 1)
-    hold on
-    plot(t/365, e, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})
-    title('Scaled reserve density (e)')
-    xlabel('Time (d)')
-    ylabel('e (-)')
-    
-    subplot(2, 4, 2)
-    hold on
-    plot(t/365, E,  simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % Joules, Reserve energy
-    title('Reserve energy [E]')
-    xlabel('Time (d)')
-    ylabel('E (Joules)')
-    
-    subplot(2, 4, 3)
-    hold on
-    plot(t/365, V, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % cm^3, Structural volume
-    title('Structural volume')
-    xlabel('Time (d)')
-    ylabel('V (cm^3)')
-    
-    subplot(2, 4, 4)
-    hold on
-    plot(t/365, E_H, simu.col, 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})  % J, cumulated energy inversted into maturity
-    title('Energy invested into maturation')
-    xlabel('Time (d)')
-    ylabel('E_H (J)')
-    
-    subplot(2, 4, 5)
-    hold on
-    plot(t/365, E_R, simu.col , 'Linewidth',1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % Joules, Reproduction buffer
-    title('Reproduction buffer')
-    xlabel('Time (d)')
-    ylabel('E_R (J)')
-    
-    subplot(2, 4, 6)
-    hold on
-    plot(t/365, E_w, simu.col , 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % J/g, Total energy content
-    title('Energy content (J/g)')
-    xlabel('Time (d)')
-    ylabel('E_w (J.g^{-1})')
-    
-    saveas(gcf, 'fig_DEB_standard.jpg', 'jpg')
-    % other ways to save the graph
-    % saveas(gcf, 'fig_DEB_standard.eps', 'psc2')
-    % print -djpeg90 fig_DEB_standard.jpg
-    
-    
-    % graphs 2
-    nfig = 1; % number of figures
-    for i = 1:nfig
-        figure(i)
-        set(gcf,'PaperPositionMode','manual');
-        set(gcf,'PaperUnits','in');
-        set(gcf,'PaperPosition',[0 0 14 10]);
-        set(gca,'Fontsize', 14)
-    end
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%% Plots for observable quantities %%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    %%%%%%%%% Total lenghts %%%%%%%%
-    figure(4)
-    subplot(1, 5, 1)
-    hold on
-    plot(t/365, L_w, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % cm, physical length
-    xlabel('Time (years)')
-    ylabel('Total length (cm)')
-    
-    %%%%%%%%% Fecundity %%%%%%%%
-    subplot(1, 5, 2)
-    hold on
-    plot(t/365, F, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i}) % Fecundity = egg number = kap_R * E_R / E_0
-    xlabel('Time (years)')
-    ylabel('Fecundity (# Eggs)')
-    
-    %%%%%%%%% wet-weights %%%%%%%%
-    subplot(1, 5, 3)
-    hold on
-    plot(t/365, Ww_V, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})  % g, total wet-weight, same water content in structure and reserves
-    xlabel('Time (years)')
-    ylabel('Total wet-weight (g)')
-    
-    %%%%%% Gonad Weigth %%%%%%%%%
-    subplot(1, 5, 4)
-    hold on
-    plot(t/365, G_Ww, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})  % g, total wet-weight, same water content in structure and reserves
-    xlabel('Time (years)')
-    ylabel('Gonad wet-weight (g)')
-    
-    %%%%%% GSI %%%%%%%%%
-    subplot(1, 5, 5)
-    hold on
-    plot(t/365, GSI, simu.col, 'Linewidth', 1.5, 'LineStyle', line_styles{h}, 'Color', colors{i})  % g, total wet-weight, same water content in structure and reserves
-    xlabel('Time (years)')
-    ylabel('GSI)')
-    
-    %%%%%% Spawning events %%%%
-    figure (5)
-    spa_2 = Spawning_dates;
-    spa_2.Year = 2020;
-    plot(Spawning_dates.Year, spa_2, 'o', 'MarkerFaceColor', 'b')
-    if (~isempty(Spawning_dates.Year))
-        ytickformat('dd-MMM')
-        tstart = datetime(2020,01,01);
-        tend = datetime(2020,12,31);
-        ylim([tstart tend])
-    end
-        
+    % Plot model fluxes for the current location and SSPs
+    plot_fluxes(t, simu, gen, i, colorIndex, line_styles, colors, n_colors, legendLabels);
+
+    % ===================== Separate Figures for Environmental Variables =====================
+    figure('Name', ['Environmental Variables for Location: ', location], 'NumberTitle', 'off');
+    sgtitle(['Environmental Variables for Location: ', location]);
+
+    % Plot environmental variables for the current location and SSPs
+    plot_environmental(t, simu, gen, i, colorIndex, line_styles, colors, n_colors, legendLabels);
 end
+end
+
+% Helper function to plot fluxes
+function plot_fluxes(t, simu, gen, i, colorIndex, line_styles, colors, n_colors, legendLabels)
+    % Model fluxes (pX, pA, pM, etc.)
+    pX = simu.tFluxes(:,2, gen);
+    pA = simu.tFluxes(:,3, gen);
+    pM = simu.tFluxes(:,4, gen);
+    pJ = simu.tFluxes(:,5, gen);
+    pC = simu.tFluxes(:,6, gen);
+    pG = simu.tFluxes(:,7, gen);
+    pR = simu.tFluxes(:,8, gen);
+    pD = simu.tFluxes(:,9, gen);
+
+    % Feeding flux (pX)
+    subplot(3, 3, 1); hold on;
+    plot(t, pX, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('Feeding (pX)');
+    xlabel('Time (d)');
+    ylabel('pX');
+    
+    % Assimilation flux (pA)
+    subplot(3, 3, 2); hold on;
+    plot(t, pA, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('Assimilation (pA)');
+    xlabel('Time (d)');
+    ylabel('pA');
+    
+    % Somatic Maintenance flux (pM)
+    subplot(3, 3, 3); hold on;
+    plot(t, pM, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('Somatic Maintenance (pM)');
+    xlabel('Time (d)');
+    ylabel('pM');
+    
+    % Maturity flux (pJ)
+    subplot(3, 3, 4); hold on;
+    plot(t, pJ, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('Maturity (pJ)');
+    xlabel('Time (d)');
+    ylabel('pJ');
+    
+    % Reserve Mobilization (pC)
+    subplot(3, 3, 5); hold on;
+    plot(t, pC, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('Reserve Mobilization (pC)');
+    xlabel('Time (d)');
+    ylabel('pC');
+    
+    % Growth (pG)
+    subplot(3, 3, 6); hold on;
+    plot(t, pG, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('Growth (pG)');
+    xlabel('Time (d)');
+    ylabel('pG');
+    
+    % Reproduction (pR)
+    subplot(3, 3, 7); hold on;
+    plot(t, pR, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('Reproduction (pR)');
+    xlabel('Time (d)');
+    ylabel('pR');
+    
+    % Dissipation (pD)
+    subplot(3, 3, 8); hold on;
+    plot(t, pD, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('Dissipation (pD)');
+    xlabel('Time (d)');
+    ylabel('pD');
+    
+    legend(legendLabels, 'Location', 'best');
+end
+
+% Helper function to plot environmental variables
+function plot_environmental(t, simu, gen, i, colorIndex, line_styles, colors, n_colors, legendLabels)
+    % Environmental variables
+    X = simu.tEVHR(:,2, gen);  % Placeholder for food biomass (X)
+    T = simu.tempData(t+1) - 273.15;  % Temperature in Celsius
+    pCO2 = simu.pco2Data(t+1);  % pCO2 levels
+
+    % Food Biomass (X)
+    subplot(3, 1, 1); hold on;
+    plot(t/365, X, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('Food Biomass (X)');
+    xlabel('Time (years)');
+    ylabel('Biomass');
+    
+    % Temperature (T)
+    subplot(3, 1, 2); hold on;
+    plot(t/365, T, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('Temperature (T)');
+    xlabel('Time (years)');
+    ylabel('Temperature (°C)');
+    
+    % pCO2
+    subplot(3, 1, 3); hold on;
+    plot(t/365, pCO2, 'Linewidth', 1.5, 'LineStyle', line_styles{mod(i-1, length(line_styles))+1}, 'Color', colors(mod(colorIndex, n_colors) + 1, :));
+    title('pCO2');
+    xlabel('Time (years)');
+    ylabel('pCO2');
+    
+    legend(legendLabels, 'Location', 'best');
+end
+
 

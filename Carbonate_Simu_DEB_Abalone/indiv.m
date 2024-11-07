@@ -37,21 +37,14 @@ tSpan   = [tc:gen_tm];
 
 while tc < gen_tm
     
-%     i = i + 0.5; %spawning twice every year
-%     tnext = gen_ts + 365 * i; % integrate between two spawning dates (two spawning each year)
-%     
-%     if tnext >= gen_tm
-%         tnext = gen_tm;
-%     end
-%     
-%     t = unique([tc, ceil(tc): floor(tnext)])';
-%     
+
+    %
     fluxOut = 0; % make flux output the usual state variable output, and not the fluxes
     
-    options = odeset('Events', @event_spawning);
-    %[t, EVHR, te,ye,ie] = ode45(@(t, EVHR) flux(t, EVHR, simu, par, cPar, fluxOut), t, EVHR_tc, options); % integrate
+    options = odeset('Events', @event_spawning, 'MaxStep', 1);
+ 
     [tOut, EVHR, te,ye,ie] = ode45(@flux, tSpan, EVHR_tc, options, simu, fluxOut); % integrate
-
+    
     if ( ~isempty(te) )
         
         % Check if we ended on non-integer and, if so, trim it out
@@ -61,7 +54,7 @@ while tc < gen_tm
         end
         
     end
-
+    
     % saving output in predefined matrix
     tEVHR( (tOut - (gen - 1) * simu.tm +1) ,:) = [tOut, EVHR];
     
@@ -74,7 +67,7 @@ while tc < gen_tm
         tEVHR(2+simu.tm-nrows:1+simu.tm,1) = 1+gen_tm-nrows:gen_tm;
         tEVHR( (tOut(end)-(gen-1)*simu.tm+2), 4) = 0;
         if nrows == 2
-           tEVHR((tOut(end)-(gen-1)*simu.tm+3), 4) = 0.001; 
+            tEVHR((tOut(end)-(gen-1)*simu.tm+3), 4) = 0.001;
         end
         tc = gen_tm;
     else
@@ -83,10 +76,13 @@ while tc < gen_tm
         
         EVHR_tc = EVHR(end,:)';
         
+        
         % Implement spawning, i.e. reset E_R to 0
         E_Hc = EVHR_tc(3);
+        E_Hp = simu.zoom.^3 * simu.par.E_Hp;
+        propRemaining = 0;
         if E_Hc >= E_Hp
-            EVHR_tc(4) = 0;
+            EVHR_tc(4) = propRemaining * EVHR_tc(4);
         end
         
         tc      = tSpan(1);

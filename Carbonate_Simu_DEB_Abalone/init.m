@@ -1,4 +1,4 @@
-function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number, zoom_f, born_date) %, pco2, temp)
+function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number, zoom, born_date) %, pco2, temp)
   %---------------------------------------------------------------
   % Define simulation and individual features
   %  
@@ -50,7 +50,7 @@ function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number, zoom
   V_0          = 1e-8;                   % cm^3, initial structural volume
   E_H0         = 0;                      % J, initial cum. energy invested into maturation
   E_R0         = 0;                      % J, initial reproduction buffer
-  K            = 0.05;                   % p_Am / (kap_X * F_m)  same unit as food, half-saturation coefficient
+  K            = 0.01;                   % p_Am / (kap_X * F_m)  same unit as food, half-saturation coefficient
         
   % Set simulation parameters in the 'simu' structure
   simu.t0        = t0;
@@ -62,7 +62,7 @@ function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number, zoom
   simu.foodQ     = envFoodQ;
   simu.envX      = envX;
   simu.envpCO2   = envpCO2;
-  simu.zoom      = zoom_f;
+  simu.zoom      = zoom;
   simu.par       = par;
   simu.cPar      = cPar;
   simu.Tinit     = T;

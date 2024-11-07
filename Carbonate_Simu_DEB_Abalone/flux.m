@@ -38,6 +38,7 @@ else
     pCO2 = interp1(0:(length(simu.pco2Data)-1), simu.pco2Data, t, 'linear');
 end
 
+
 %% Unpack state vars
 E    = EVHR(1);  % J, reserve energy
 V    = EVHR(2);  % cm^3, structural volume
@@ -58,7 +59,7 @@ if E_H < simu.par.E_Hb
 elseif simu.par.E_Hb <= E_H && E_H < simu.par.E_Hj
     s_M = l /l_b;
     
-elseif E_H > simu.par.E_Hj
+elseif E_H >= simu.par.E_Hj
     s_M = l_j / l_b;
 end
 
@@ -116,12 +117,12 @@ dE = pA - pC; % dE/dt energy reserves
 
 dV = (pG / simu.par.E_G); % dV/dt structural volume
 
-if E_H < simu.par.E_Hp
+if E_H < E_Hp %simu.par.E_Hp
     dH = (1 - simu.par.kap) * pC - k_JT * E_H;
     dR = 0;  % dER/dt reproduction
 else
     dH = 0;   % dEH/dt maturity
-    dR = simu.par.kap_R * (1 - simu.par.kap) * pC - k_JT * simu.par.E_Hp;
+    dR = simu.par.kap_R * (1 - simu.par.kap) * pC - k_JT * E_Hp; %simu.par.E_Hp;
 end
 
 if fluxOut

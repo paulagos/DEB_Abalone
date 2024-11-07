@@ -16,10 +16,10 @@ end
 
 % Observable quantities
 Ww_V      =  simu.par.d_V * V + (E + E_R) * simu.cPar.w_E / simu.par.mu_E;  % g, total wet-weight
-G_Ww      =  E_R * simu.cPar.w_E / simu.par.mu_E;  % g, total wet-weight
+G_Ww      =  E_R * simu.cPar.w_E / simu.par.mu_E;            % g, total wet-weight
 GSI       =  G_Ww ./ (Ww_V - G_Ww);                          % -, Gonado somatic index (GSI)
 
-value = ~(GSI >= 0.2 & T >= 17); % out the GSI and T threshold in the parameters
+value = ~(GSI >= 0.14 & T >= 17); % out the GSI and T threshold in the parameters
 
 isterminal = [1]; % modified to stop
 direction  = [0]; 

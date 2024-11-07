@@ -1,4 +1,4 @@
-function obs = get_obs(simu, gen)
+function obs = get_obs(simu, zoom, gen)
   %---------------------------------------------------------------
   % Compute physical length, weight, fecundity, and energy content from state variables
   %  
@@ -19,17 +19,18 @@ function obs = get_obs(simu, gen)
   %-------------------------------------------------------------
   
 %% State variables
-t   = simu.tEVHR(:,1, gen); % days,     Time
-E   = simu.tEVHR(:,2, gen); % Joules,   Reserve energy
-V   = simu.tEVHR(:,3, gen); % cm^3,     Structural volume
-E_R = simu.tEVHR(:,5, gen); % Joules,   Reproduction buffer
+t   = simu.tEVHR(:,1, zoom, gen); % days,     Time
+E   = simu.tEVHR(:,2, zoom, gen); % Joules,   Reserve energy
+V   = simu.tEVHR(:,3, zoom, gen); % cm^3,     Structural volume
+E_R = simu.tEVHR(:,5, zoom, gen); % Joules,   Reproduction buffer
 
 % Observable quantities
-L_w       =  V.^(1/3) / simu.par.del_M;                  % cm, physical length
+del_M     =  286.2^(1/3) / 11.25; % ultimate total lenght and weight using data from my_data file Page 11 DEB book
+L_w       =  V.^(1/3) / del_M; %simu.par.del_M;                  % cm, physical length
+% L_w       =  V.^(1/3) / simu.par.del_M;                  % cm, physical length
 Ww_V      =  simu.par.d_V * V + (E + E_R) * simu.cPar.w_E / simu.par.mu_E;  % g, total wet-weight
 F         =  simu.par.kap_R * E_R / simu.EVHR_init(1);   % Fecundity = egg number = kap_R * E_R / E_0
-%G_Ww      =  E_R * (simu.cPar.w_E / (simu.par.d_E * simu.par.mu_E));        % g, gonad wet-weight
-G_Ww      =  E_R * simu.cPar.w_E / simu.par.mu_E;  % g, total wet-weight
+G_Ww      =  E_R * simu.cPar.w_E / simu.par.mu_E;  % g, gonad wet-weight
 GSI       =  G_Ww ./ (Ww_V - G_Ww);              % -, Gonado somatic index (GSI)
 
 % Non-observable quantities
