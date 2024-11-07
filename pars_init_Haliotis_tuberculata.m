@@ -6,11 +6,11 @@ metaPar.model = 'abj';
 par.T_ref = 293.15;   free.T_ref = 0;   units.T_ref = 'K';        label.T_ref = 'Reference temperature'; 
 %
 %% core primary parameters 
-par.T_A = 4176.17;    free.T_A   = 0;   units.T_A   = 'K';        label.T_A   = 'arrhenius temperature';
-par.T_L = 280.15;     free.T_L   = 0;   units.T_L   = 'K';        label.T_L   = 'lower boundary tolerance range';
-par.T_H = 301.15;     free.T_H   = 0;   units.T_H   = 'K';        label.T_H   = 'Upper boundary tolerance range';
-par.T_AL = 13516.96;  free.T_AL  = 0;   units.T_AL  = 'K';        label.T_AL  = 'arrh. temp for lower boundary';
-par.T_AH = 24570.25;  free.T_AH  = 0;   units.T_AH  = 'K';        label.T_AH  = 'arrh. temp for upper boundary';
+par.T_A = 8497;       free.T_A   = 0;   units.T_A   = 'K';        label.T_A   = 'arrhenius temperature';
+par.T_L = 290.15;     free.T_L   = 0;   units.T_L   = 'K';        label.T_L   = 'lower boundary tolerance range';
+par.T_H = 300.55;     free.T_H   = 0;   units.T_H   = 'K';        label.T_H   = 'Upper boundary tolerance range';
+par.T_AL = 5500;      free.T_AL  = 0;   units.T_AL  = 'K';        label.T_AL  = 'arrh. temp for lower boundary';
+par.T_AH = 40068;     free.T_AH  = 0;   units.T_AH  = 'K';        label.T_AH  = 'arrh. temp for upper boundary';
 par.z = 7.0392;       free.z     = 1;   units.z     = '-';        label.z     = 'zoom factor'; 
 par.F_m = 65;         free.F_m   = 0;   units.F_m   = 'l/d.cm^2'; label.F_m   = '{F_m}, max spec searching rate'; 
 par.kap_X = 0.8;      free.kap_X = 0;   units.kap_X = '-';        label.kap_X = 'digestion efficiency of food to reserve'; 
@@ -36,9 +36,9 @@ par.f     = 1;        free.f     = 1;   units.f     = '-';        label.f     = 
 par.f_ee  = 1;        free.f_ee  = 1;   units.f_ee  = '-';        label.f_ee  = 'scaled functional response for Enteropmorpha diet'; 
 par.f_pp  = 1;        free.f_pp  = 1;   units.f_pp  = '-';        label.f_pp  = 'scaled functional response for Palmaria palmata diet';
 par.f_sl  = 1;        free.f_sl  = 1;   units.f_sl  = '-';        label.f_sl  = 'scaled functional response for Saccorhiza polyschides diet'; 
-par.L0_Avignon2020  = 4.7;    free.L0_Avignon2020  = 0;  units.L0_Avignon2020  = 'cm';  label.L0_Avignon2020  = 'L at start Avignon2020'; 
+% par.L0_Avignon2020  = 4.7;    free.L0_Avignon2020  = 0;  units.L0_Avignon2020  = 'cm';  label.L0_Avignon2020  = 'L at start Avignon2020'; 
 par.L0_Auzous2021   = 6.023;  free.L0_Auzous2021   = 0;  units.L0_Auzous2021   = 'cm';  label.L0_Auzous2021   = 'L at start Auzous2021';
-par.L0_Auzous2022   = 0.019;  free.L0_Auzous2022   = 0;  units.L0_Auzous2022   = 'cm';  label.L0_Auzous2022   = 'L at start Auzous2022';
+% par.L0_Auzous2022   = 0.019;  free.L0_Auzous2022   = 0;  units.L0_Auzous2022   = 'cm';  label.L0_Auzous2022   = 'L at start Auzous2022';
 par.egg_r           = 0.0075; free.egg_r           = 0;  units.egg_r           = 'cm';  label.egg_r           = 'egg radius';
 %
 %% acidification specific paramenters
@@ -48,14 +48,6 @@ par.CMH_adult = 1200; free.CMH_adult = 0;  units.CMH_adult = 'uatm';      label.
 par.CML_adult = 700;  free.CML_adult = 0;  units.CML_adult = 'uatm';      label.CML_adult  = 'lower pCO2 boundary for maintenacne cost'; 
 par.q_larva   = 0.001; free.q_larva  = 0;  units.q_larva = 'J/cm^2 uatm^1 d^1'; label.q_larva = 'maintenace coefficient related to pCO2 for larva';
 par.q_adult   = 0.001; free.q_adult  = 0;  units.q_adult = 'J/cm^2 uatm^1 d^1'; label.q_adult = 'maintenace coefficient related to pCO2 for adults';
-% par.kap_LR    = 0.79; free.kap_LR    = 1;  units.kap_LR  = '-';            label.kap_LR = 'yield of reproduction tissue lysis';
-% par.kap_LV    = 0.79; free.kap_LV    = 1;  units.kap_LV  = '-';            label.kap_LV = 'yield of structural  tissue lysis';
-%
-%% shell growth parameters
-% par.vA = 0;           free.vA  = 1;     units.vA = 'cm/d';        label.vA = 'coupling coefficient to assimilation';     
-% par.vD = 2.37E-04;    free.vD  = 1;     units.vD = 'cm/d';        label.vD = 'coupling coefficient to dissipation';  
-% par.vG = 0.01;        free.vG  = 1;     units.vG = 'cm/d';        label.vG = 'coupling coefficient to growth';
-% par.d_Vs = 2.7;       free.d_Vs = 0;    units.d_Vs = 'g/cm^3';    label.d_Vs = 'specific density of calcium carbonate';
 %
 %% set chemical parameters from Kooy2010 
 [par, units, label, free] = addchem(par, units, label, free, metaData.phylum, metaData.class); 

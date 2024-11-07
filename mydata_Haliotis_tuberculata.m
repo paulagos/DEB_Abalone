@@ -7,7 +7,7 @@ metaData.order      = 'Vetigastropoda';
 metaData.family     = 'Haliotidae';
 metaData.species    = 'Haliotis_tuberculata'; 
 metaData.species_en = 'European abalone'; 
-metaData.T_typical  = C2K(15); % K, body temp
+metaData.T_typical  = C2K(20); % K, body temp
 metaData.data_0     = {'am';'ab';'ap';'Lp'; 'Li'; 'Wwb'; 'Wwi'}; 
 metaData.data_1     = {'tW'; 'tL'; 'LWw_f';'LWw_m'}; 
 
@@ -34,7 +34,6 @@ data.aj = 3.9;      units.aj = 'd';    label.aj = 'age at metamorphosis'; bibkey
   temp.aj = C2K(15);  units.temp.aj = 'K'; label.temp.aj = 'temperature';  
   comment.aj = 'veliger larva at end of planktonic phase 94hpf ';
 
- 
 data.ap = 365*1.2;  units.ap = 'd';     label.ap = 'age since birth at puberty'; bibkey.ap = 'Coch1980';
 temp.ap = C2K(17);   units.temp.ap = 'K'; label.temp.ap = 'temperature';
   comment.ap = 'females mature at ~1 years with variations depending on locations';
@@ -53,9 +52,9 @@ data.Lp  = 3.0;  units.Lp  = 'cm';  label.Lp  = 'lenght at puberty';        bibk
 data.Li  = 14; units.Li  = 'cm';  label.Li  = 'ultimate total lenght';       bibkey.Li  = 'Basu1997';
   comment.Li = 'based on one individual found on Nord-Ouestdu du Cotentin (Author personal note)';
    
-data.Wm = 450;  units.Wm = 'g'; label.Wm = 'maximum wet-weight';             bibkey.Wm = 'Basu1997';
+data.Wm = 450 * (2/3);  units.Wm = 'g'; label.Wm = 'maximum wet-weight';             bibkey.Wm = 'Basu1997';
   temp.Wm = C2K(18);   units.temp.Wm = 'K'; label.temp.Wm = 'temperature';
-  comment.Wm = 'based on one individual found on Nord-Ouestdu du Cotentin (Author personal note)'; 
+  comment.Wm = 'based on one individual found on Nord-Ouestdu du Cotentin (Author personal note), shell-included'; 
   
 data.Lw0 = 0.0150;    units.Lw0 = 'cm';     label.Lw0 = 'egg diameter';  bibkey.Lw0 = 'Bilbao2010';
  temp.Lw0 = C2K(18);  units.temp.Lw0 = 'K'; label.temp.Lw0 = 'temperature';
@@ -82,10 +81,11 @@ data.tW = [ ... % age (days), total wet-weight (g)
 892   49.056
 987   52.533
 ];
+data.tW(:,2) = data.tW(:,2) * (2/3); % loss 1/3 of the weight to account for the pressence of shell in the data
 units.tW   = {'d', 'g'}; label.tW = {'Time', 'Total wet-weight'};  
 temp.tW    = C2K(18); units.temp.tW = 'K'; label.temp.tW = 'temperature';
 bibkey.tW  = 'Basu1997';
-comment.tW = 'Age of adult abalone from thr bay of Brest in months converted to days (2.7  years in total)';
+comment.tW = 'Age of adult abalone from the bay of Brest in months converted to days (2.7  years in total)';
 %
 % Bilbao (2010) 
 % Data for Females: lenght ~ total wet-weight (including shell)
@@ -214,143 +214,34 @@ data.LWw_f = [ ... % total lenght (mm), total body wet-weight (g)
 71.42	 58.05
 ];
 data.LWw_f(:,1) = sort(data.LWw_f(:,1)/10); %convert length from mm to cm
+data.LWw_f(:,2) = data.LWw_f(:,2) * (2/3); % loss 1/3 of the weight to account for the pressence of shell in the data
 units.LWw_f   = {'cm', 'g'};  label.LWw_f = {'Total length', 'Total wet-weight'};  
 temp.LWw_f    = C2K(20);  units.temp.LWw_f = 'K'; label.temp.LWw_f = 'temperature';
 bibkey.LWw_f = 'Bilbao2010';
 comment.LWw_f = 'Data of abalone females from the canary islands, total body weight including shell';
 %
-% Data for Males: lenght ~ total wet-weight (including shell)
-data.LWw_m = [ ... % length (mm), total body wet-weight (g)
-25.47	1.681
-29.91	3.088
-31.04	3.324
-31.51	3.558
-31.98	3.560
-32.36	3.330
-32.92	4.953
-33.96	5.189
-35.47	5.658
-35.94	6.355
-36.89	5.664
-38.02	6.131
-38.02	7.521
-38.96	7.293
-38.96	6.135
-39.53	6.832
-39.81	8.455
-40.94	9.154
-40.94	8.228
-40.94	7.301
-40.94	13.787
-41.42	9.156
-41.42	9.156
-41.51	7.998
-41.89	8.463
-41.89	8.000
-42.45	11.013
-42.45	9.855
-42.92	11.478
-42.92	10.089
-42.92	9.394
-43.49	9.164
-43.96	11.482
-44.91	12.181
-45.00	10.097
-45.00	10.792
-45.00	14.266
-45.38	13.341
-45.38	10.330
-46.04	11.490
-46.04	13.575
-46.04	15.197
-46.04	18.440
-46.42	13.114
-46.42	12.187
-46.89	12.420
-46.89	12.884
-46.98	15.664
-47.55	13.350
-48.02	12.425
-48.02	13.351
-48.02	14.278
-48.02	15.436
-48.30	15.437
-48.30	14.047
-48.96	12.197
-48.96	13.355
-48.96	14.282
-48.87	14.976
-49.53	16.137
-50.00	17.761
-50.00	14.981
-50.09	16.603
-50.09	14.286
-50.19	16.835
-50.94	14.058
-50.94	17.069
-50.94	11.509
-51.04	14.985
-51.04	16.838
-51.04	18.923
-51.51	20.315
-51.98	20.085
-51.98	17.768
-51.98	15.915
-51.98	14.988
-53.11	15.919
-53.11	18.236
-54.06	18.935
-53.96	20.787
-53.96	23.104
-53.58	22.176
-53.58	21.249
-53.02	22.174
-53.02	21.247
-53.02	20.321
-55.00	21.255
-56.04	22.649
-56.98	23.811
-58.02	21.035
-58.96	20.575
-57.92	26.363
-57.92	27.753
-57.08	27.981
-56.04	27.282
-57.08	31.688
-57.92	33.776
-60.94	40.737
-60.94	36.799
-60.94	33.787
-60.94	30.544
-60.00	30.772
-60.09	29.614
-59.06	27.989
-61.98	18.734
-63.02	28.236
-63.02	33.332
-63.02	35.417
-63.49	35.882
-64.43	32.411
-64.91	33.803
-67.92	36.131
-64.91	40.753
-66.04	40.294
-67.08	43.541
-67.08	42.614
-66.98	46.784
-67.08	51.881
-70.00	53.745
-70.00	52.587
-71.98	56.069
-73.02	58.390
-71.89	51.204
-75.00	66.274
+% Length (mm) ~ fecundity (#eggs)
+data.LN = [...
+36.04	53333.33
+38.95	87037.04
+40.97	151851.85
+41.02	115555.56
+42.99	188148.15
+44.97	182962.96
+45.95	245185.19
+47.98	177777.78
+52.12	328148.15
+56.02	312592.59
+57.01	507037.04
+59.03	595185.19
+59.08	634074.07
+62.04	691111.11
 ];
-data.LWw_m(:,1) = sort(data.LWw_m(:,1)/10); % convert length from mm to cm
-units.LWw_m = {'cm', 'g'};  label.LWw_m = {'Total length', 'Total wet-weight'};  
-temp.LWw_m = C2K(20);  units.temp.LWw_m = 'K'; label.temp.LWw_m = 'temperature';
-bibkey.LWw_m = 'Bilbao2010';
-comment.LWw_m = 'Data of abalone male from the canary islands, total body weight including shell';
+data.LN(:,1) = data.LN(:,1)/10; % Convert length from mm to cm
+units.LN   = {'cm', '#'};  label.LN = {'Lenght', 'Fecundity'};  
+temp.LN    = C2K(20);  units.temp.LN = 'K'; label.temp.LN = 'temperature';
+bibkey.LN  = 'Bilbao2010';
+comment.LN = 'Batch fecundity for animals from the Canary islands estimated by conting the number of stage III and IV eggs in wild females';
 %
 % Roussel (2019)
 data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
@@ -358,9 +249,7 @@ data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 4.0	0.02
 5.0	0.03
 5.0	0.01
-5.0	0.01
 5.0	0.04
-5.0	0.03
 5.0	0.03
 5.0	0.01
 6.0	0.03
@@ -368,11 +257,9 @@ data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 6.0	0.05
 6.0	0.04
 6.0	0.02
-6.0	0.02
 6.0	0.04
 6.0	0.05
 6.0	0.03
-6.0	0.05
 6.0	0.04
 6.0	0.05
 6.0	0.02
@@ -384,30 +271,15 @@ data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 6.0	0.04
 6.0	0.01
 7.0	0.09
-7.0	0.09
 7.0	0.08
-7.0	0.08
-7.0	0.11
 7.0	0.11
 7.0	0.07
-7.0	0.08
-7.0	0.08
-7.0	0.09
 7.0	0.03
-7.0	0.03
-7.0	0.11
 7.0	0.06
-7.0	0.08
-7.0	0.08
-7.0	0.07
 7.0	0.05
 7.0	0.09
-7.0	0.07
 7.0	0.08
 7.0	0.10
-7.0	0.07
-7.0	0.08
-7.0	0.06
 7.0	0.08
 7.0	0.11
 7.0	0.07
@@ -438,30 +310,6 @@ data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 7.0	0.06
 7.0	0.09
 7.0	0.08
-8.0	0.08
-8.0	0.07
-8.0	0.12
-8.0	0.10
-8.0	0.09
-8.0	0.12
-8.0	0.11
-8.0	0.13
-8.0	0.11
-8.0	0.09
-8.0	0.12
-8.0	0.08
-8.0	0.10
-8.0	0.12
-8.0	0.11
-8.0	0.09
-8.0	0.12
-8.0	0.09
-8.0	0.11
-8.0	0.07
-8.0	0.10
-8.0	0.10
-8.0	0.10
-8.0	0.09
 8.0	0.11
 8.0	0.14
 8.0	0.13
@@ -526,32 +374,8 @@ data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 8.0	0.05
 8.0	0.08
 8.0	0.09
-8.0	0.10
-8.0	0.13
-8.0	0.10
-8.0	0.05
-8.0	0.06
-8.0	0.09
-8.0	0.08
-8.0	0.09
-8.0	0.13
-8.0	0.08
-8.0	0.14
-8.0	0.06
-8.0	0.08
-8.0	0.08
 8.0	0.08
 8.0	0.06
-9.0	0.11
-9.0	0.13
-9.0	0.15
-9.0	0.13
-9.0	0.12
-9.0	0.13
-9.0	0.11
-9.0	0.14
-9.0	0.14
-9.0	0.14
 9.0	0.20
 9.0	0.14
 9.0	0.10
@@ -677,55 +501,31 @@ data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 9.0	0.06
 9.0	0.13
 9.0	0.12
-9.0   0.14
-9.0	  0.13
-9.0	  0.11
-9.0	  0.12
-9.0	  0.12
-10.0  0.16
-10.0  0.16
-10.0  0.17
-10.0  0.13
-10.0  0.13
-10.0	0.14
-10.0	0.13
-10.0	0.13
-10.0	0.18
-10.0	0.14
-10.0	0.14
-10.0	0.14
-10.0	0.16
-10.0	0.15
-10.0	0.14
-10.0	0.15
-10.0	0.12
-10.0	0.11
-10.0	0.13
-10.0	0.13
-10.0	0.14
-10.0	0.15
-10.0	0.15
-10.0	0.15
-10.0	0.14
-10.0	0.12
-10.0	0.14
-10.0	0.16
-10.0	0.18
-10.0	0.18
-10.0	0.20
-10.0	0.18
-10.0	0.18
-10.0	0.17
-10.0	0.20
-10.0	0.15
-10.0	0.20
-10.0	0.19
-10.0	0.13
-10.0	0.14
-10.0	0.13
-10.0	0.13
-10.0	0.16
-10.0	0.12
+9.0 0.14
+9.0	0.13
+9.0	0.11
+9.0	0.12
+10.0 0.16
+10.0 0.16
+10.0 0.17
+10.0 0.13
+10.0 0.14
+10.0 0.15
+10.0 0.15
+10.0 0.15
+10.0 0.14
+10.0 0.12
+10.0 0.14
+10.0 0.16
+10.0 0.18
+10.0 0.18
+10.0 0.20
+10.0 0.18
+10.0 0.18
+10.0 0.17
+10.0 0.20
+10.0 0.15
+10.0 0.20
 10.0	0.14
 10.0	0.12
 10.0	0.12
@@ -788,19 +588,6 @@ data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 10.0	0.07
 10.0	0.15
 10.0	0.15
-10.0	0.11
-10.0	0.08
-10.0	0.12
-10.0	0.10
-10.0	0.12
-10.0	0.14
-10.0	0.09
-10.0	0.12
-10.0	0.15
-10.0	0.13
-10.0	0.14
-10.0	0.13
-10.0	0.16
 10.0	0.17
 10.0	0.18
 10.0	0.16
@@ -822,22 +609,11 @@ data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 10.0	0.14
 10.0	0.15
 10.0	0.18
-10.0	0.13
-10.0	0.18
-10.0	0.16
-10.0	0.14
-10.0	0.12
-10.0	0.12
 11.0	0.23
 11.0	0.20
 11.0	0.18
 11.0	0.20
 11.0	0.15
-11.0	0.18
-11.0	0.17
-11.0	0.18
-11.0	0.19
-11.0	0.17
 11.0	0.19
 11.0	0.19
 11.0	0.17
@@ -915,14 +691,6 @@ data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 11.0	0.23
 11.0	0.19
 11.0	0.14
-11.0	0.14
-11.0	0.21
-11.0	0.13
-11.0	0.28
-11.0	0.14
-11.0	0.19
-11.0	0.18
-11.0	0.17
 11.0	0.21
 11.0	0.18
 11.0	0.13
@@ -2188,52 +1956,369 @@ data.LWw_roussel = [... % Length (mm) ~ total weigth (g)
 68.1	36.58
 68.1	48.43
 68.3	48.62
-72.0	39.56
+72.0	39.56	
+77	    64
+78	    62
+78	    70
+82	    82
+82	    100
+82	    91
+83	    101
+84	    79
+84	    86
+84	    101
+85	    76
+85	    76
+85	    109
+85	    98
+85	    103
+86	    82
+86	    97
+86	    113
+86	    90
+87	    90
+87	    117
+87	    98
+87	    116
+87	    91
+88	    85
+88	    103
+88	    100
+88	    96
+88.5	97
+89	    120
+89	   100
+89	   102
+89	   115
+89	   106
+89	   103
+89	   91
+89	   108
+89	   140
+89	   108
+90	   146
+90	   113
+90	   92
+90	   103
+90	   114
+90	   98
+90	   108
+90	   119
+90	   113
+90	   105
+90	   123
+90	   109
+90	   138
+90	   111
+91	   124
+91	   111
+91	   116
+91	   122
+91	   126
+91	   109
+91	   132
+91	   104
+91	 107
+91	 96
+91	 120
+91	 164
+91	 104
+91	 108
+91	 113
+91	 119
+91.5 127
+91.5 100
+92	 113
+92	 125
+92	 123
+92	 124
+92	 132
+92	 106
+92.5 128
+92.5 124
+93	 137
+93	 142
+93	 129
+93	 123
+93	 136
+93	 118
+93	 94
+93	 124
+93	 145
+93	 133
+93	 120
+93	 136
+93	 120
+93	 132
+93	 147
+93	 108
+93.5 133
+93.5 137
+94	 125
+94	 116
+94	 136
+94	 147
+94	 144
+94	 130
+94	 147
+94	 129
+94	 152
+94	 143
+95	 157
+95	 125
+95	 117
+95	 156
+95	 110
+95	 146
+95	 123
+95	 128
+95.5 109
+96	 141
+96	 136
+96	 122
+96	 132
+96	 114
+96	 144
+96	 123
+96	 150
+96	 170
+96	 131
+96	 136
+97	 140
+97	 147
+97	 168
+97	 156
+97	 164
+97	 132
+97	 139
+97	 146
+97	 137
+97	 123
+97	 139
+97	 141
+97	 151
+97	 138
+97	 148
+97	 128
+97	 128
+97.5 146
+97.5 123
+98	 130
+98	 139
+98	 147
+98	 151
+98	 170
+98	 156
+98	 160
+98	 121
+98	 119
+98	 135
+98	 120
+98	 134
+98	 133
+98	 130
+98	 142
+98	 151
+98	 144
+98	 152
+99	 162
+99	 135
+99	 129
+99	 161
+99	 163
+99	 149
+99	 190
+99	 151
+99	 115
+99	 140
+99	 138
+99.5 135
+100	 134
+100	 148
+100	 150
+100	 144
+100	 160
+100	 137
+100	 123
+100	 141
+100	 151
+100	 156
+100	 169
+101	 150
+101	 146
+101	 150
+101	 166
+101	 163
+101	 153
+101	 148
+101	 155
+101	 179
+101	 137
+101	  162
+101	  160
+101	  136
+101	  161
+101.5 167
+101.5 166
+102   182
+102	160
+102	169
+102	164
+102	179
+102	141
+102	136
+102	168
+102	140
+102	168
+102	160
+102	88
+102	138
+102	150
+102.5	168
+102.5	145
+103	143
+103	143
+103	177
+103	165
+103	166
+103	151
+103	160
+103	167
+103.5	178
+104	170
+104	172
+104	174
+104	172
+104	203
+104	198
+104	122
+104	162
+104	163
+105	190
+105	213
+105	173
+105.5	176
+106	197
+106	180
+106	178
+106	155
+106	192
+106	171
+106	170
+106	200
+106	181
+106.5	166
+107	217
+107	167
+107	191
+107	181
+108	214
+108	215
+108	190
+108	194
+108.5	186
+109	153
+109	189
+109	203
+109	212
+109	185
+109	188
+109	184
+109	200
+109.5	193
+110	200
+110	185
+110	209
+110	220
+110	171
+110	205
+111	238
+111	147
+111	243
+111	222
+111	196
+111.5	205
+112	210
+112	146
+112	199
+112	232
+112	188
+112	221
+112	187
+112	206
+112	160
+112	182
+112	209
+112	188
+112	175
+113	227
+113	210
+113	214
+113	236
+113.5	239
+114	233
+114	231
+115	250
+115	238
+115	192
+115	180
+115	223
+115	220
+116	155
+116	214
+116	218
+116	242
+116	242
+116	229
+116	269
+116	194
+117	211
+117	190
+117	190
+117	228
+118	235
+119	267
+119	284
+119	227
+119	280
+119	325
+119	290
+119	205
+120	302
+120	261
+121	237
+122	267
+122	318
+123	303
+124	314
+125	299
+131	306
+131	340
+132	300
+133	325
 ];
 data.LWw_roussel(:,1) = data.LWw_roussel(:,1) / 10; % convert length from mm to cm
+data.LWw_roussel(:,2) = data.LWw_roussel(:,2) * (2/3); % loss 1/3 of the weight to account for the pressence of shell in the data
 units.LWw_roussel = {'cm', 'g'};  label.LWw_roussel = {'Total length', 'Total weight'};  
 temp.LWw_roussel = C2K(21);  units.temp.LWw_roussel = 'K'; label.temp.LWw_roussel2019 = 'temperature';
 bibkey.LWw_roussel = 'Roussel2019';
 comment.LWw_roussel = '10 to 34 months old abalone from france Haliotis';
-%
-% data.LN = [... lenght ~ Number of eggs
-% 36.04	53333.33
-% 38.95	87037.04
-% 40.97	151851.85
-% 41.02	115555.56
-% 42.99	188148.15
-% 44.97	182962.96
-% 45.95	245185.19
-% 47.98	177777.78
-% 52.12	328148.15
-% 56.02	312592.59
-% 57.01	507037.04
-% 59.03	595185.19
-% 59.08	634074.07
-% 62.04	691111.11
-% ];
-% data.LN(:,1) = data.LN(:,1)/10; % convert length from mm to cm
-% data.LN(:,2) = data.LN(:,2) * 3; % Assuming two spawning events per year
-% units.LN   = {'cm', '#eggs'};  label.LN = {'Total length', 'Total Fecundity'};  
-% temp.LN    = C2K(21);  units.temp.LN = 'K'; label.temp.LN = 'temperature';
-% bibkey.LN = 'Bilbao2010';
-% comment.LN = 'Data from Fig.7, H.tuberculata female between 37 to 47mm from the Canary island, using equation is F = 3187*e^0.0881*SL and temperatures occilation between 19 to 23 deg C';
 % %
-Avignon2020 = [...% experimental time(d) ~ lenght(mm) ~ total wet-weight(g)     
-0    48.49  16.17  
-6    50.50  17.87
-60   49.39  15.74
-90   47.88  14.83
-125  53.19  22.28
-];
-Avignon2020(:,1) = Avignon2020(:,1) + 600;  % convert experimentals time to abalone age
-Avignon2020(:,2)  =  Avignon2020(:,2) / 10;  % convert mm to cm
-data.tL_Avignon = Avignon2020(:,[1 2]); % time(d) ~ total lenght(cm) at pH = 8.0
-units.tL_Avignon = {'d', 'cm'}; label.tL_Avignon = {'time', 'total lenght'};  
-temp.tL_Avignon = C2K(14.4); units.temp.tL_Avignon = 'K'; label.temp.tL_Avignon = 'temperature';
-pCO2.tL_Avignon = 439; units.pCO2.tL_Avignon = 'μatm'; label.pCO2.tL_Avignon = 'pCO2';
-bibkey.tL_Avignon = 'Avignon2020';
-comment.tL_Avignon = 'Control data (pH = 8.0) from experiments in adult abalone (~600 days old) of average weight 16.2 g and lenght 48.5 mm fed ad libitum for 6 months';
+% Avignon2020 = [...% experimental time(d) ~ lenght(mm) ~ total wet-weight(g)     
+% 0    48.49  16.17  
+% 6    50.50  17.87
+% 60   49.39  15.74
+% 90   47.88  14.83
+% 125  53.19  22.28
+% ];
+% Avignon2020(:,1) = Avignon2020(:,1) + 600;  % convert experimentals time to abalone age
+% d  =  Avignon2020(:,2) / 10;  % convert mm to cm
+% data.tL_Avignon = Avignon2020(:,[1 2]); % time(d) ~ total lenght(cm) at pH = 8.0
+% units.tL_Avignon = {'d', 'cm'}; label.tL_Avignon = {'time', 'total lenght'};  
+% temp.tL_Avignon = C2K(14.4); units.temp.tL_Avignon = 'K'; label.temp.tL_Avignon = 'temperature';
+% pCO2.tL_Avignon = 439; units.pCO2.tL_Avignon = 'μatm'; label.pCO2.tL_Avignon = 'pCO2';
+% bibkey.tL_Avignon = 'Avignon2020';
+% comment.tL_Avignon = 'Control data (pH = 8.0) from experiments in adult abalone (~600 days old) of average weight 16.2 g and lenght 48.5 mm fed ad libitum for 6 months';
 
 % data.tW_Avignon = Avignon2020(:,[1 3]); % time(cm) ~ total weight(g) at pH = 8.0
 % units.tW_Avignon = {'d', 'g'}; label.tW_Avignon = {'time', 'total wet-weight'};  
@@ -2278,6 +2363,10 @@ Roussel2019_sl = [... % (1)total lenght(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 3.40	M	0.46	7.61
 3.00	M	0.31	5.01
 ];
+% Subtract 1/3 of the total weight (4th column) to account for the shell
+Roussel2019_sl(:,4) = Roussel2019_sl(:,4) * (2/3);
+
+% Separate data by sex (1 = male, 2 = female)
 male_data_sl   = Roussel2019_sl(Roussel2019_sl(:,2) == 1, :);
 female_data_sl = Roussel2019_sl(Roussel2019_sl(:,2) == 2, :);
 %
@@ -2344,6 +2433,10 @@ Roussel2019_pp = [... % (1)total length(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 4.70	M	1.76	19.35
 3.83	M	0.83	13.00
 ];
+% Subtract 1/3 of the total weight (4th column) to account for the shell
+Roussel2019_pp(:,4) = Roussel2019_pp(:,4) * (2/3);
+
+% Separate data by sex (1 = male, 2 = female)
 male_data_pp   = Roussel2019_pp(Roussel2019_pp(:,2) == 1, :);
 female_data_pp = Roussel2019_pp(Roussel2019_pp(:,2) == 2, :);
 %
@@ -2407,6 +2500,10 @@ Roussel2019_ee = [... % (1)total length(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 2.86	M	0.30	3.93
 2.95	M	0.39	4.42
 ];
+% Subtract 1/3 of the total weight (4th column) to account for the shell
+Roussel2019_ee(:,4) = Roussel2019_ee(:,4) * (2/3);
+
+% Separate data by sex (1 = male, 2 = female)
 male_data_ee   = Roussel2019_ee(Roussel2019_ee(:,2) == 1, :);
 female_data_ee = Roussel2019_ee(Roussel2019_ee(:,2) == 2, :);
 %
@@ -3645,6 +3742,7 @@ data.LW_chauvaud = [... % length (cm) ~ total weight (g)
 9.61	109.78
 ];
 data.LW_chauvaud(:,1) = sort(data.LW_chauvaud(:,1));
+data.LW_chauvaud(:,2) = data.LW_chauvaud(:,2) * (2/3); % loss 1/3 of the weight to account for the pressence of shell in the data
 units.LW_chauvaud = {'cm', 'g'}; label.LW_chauvaud = {'total length', 'total weight'};  
 temp.LW_chauvaud = C2K(11.5); units.temp.LW_chauvaud = {'K'}; label.temp.LW_chauvaud = {'temperature'};
 pCO2.LW_chauvaud = 400; units.pCO2.LW_chauvaud = 'μatm'; label.pCO2.LW_chauvaud = 'pCO2';
@@ -3674,8 +3772,8 @@ txtData.bibkey  = bibkey;
 txtData.comment = comment;
 %
 %% Group plots 
-set1 = {'LWw_m','LWw_f'}; subtitle1 = {'Males, Females'};
-comment1 = {'Total wet-weight of female and male adults and juvenile'};
+% set1 = {'LWw_m','LWw_f'}; subtitle1 = {'Males, Females'};
+% comment1 = {'Total wet-weight of female and male adults and juvenile'};
 set2 = {'LGw_ee_female','LGw_pp_female','LGw_sl_female'};
 comment2 = {'Gonad weight at several diets for female abalone'};
 set3 = {'LWw_sl_female','LWw_pp_female','LWw_ee_female'};
@@ -3684,9 +3782,9 @@ set4 = {'LGw_ee_male','LGw_pp_male','LGw_sl_male'};
 comment4 = {'Gonad weight of male abalone at several diets '};
 set5 = {'LWw_sl_male','LWw_pp_male','LWw_ee_male'};
 comment5 = {'Total wet-weigth of male abaloneat at several diets'};
-metaData.grp.sets = {set1, set2, set3, set4, set5};            
-metaData.grp.comment = {comment1, comment2, comment3, comment4, comment5};
-metaData.grp.subtitle = {subtitle1};
+metaData.grp.sets = {set2, set3, set4, set5};            
+metaData.grp.comment = {comment2, comment3, comment4, comment5};
+% metaData.grp.subtitle = {subtitle1};
 %
 %% Discussion points
 D1 = 'for shell weights is assumed that the weight of the shell is 1/3 of the total abalone weight ';

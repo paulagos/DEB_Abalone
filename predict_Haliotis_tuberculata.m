@@ -21,7 +21,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   TC_am      = tempcorr(temp.am, T_ref, pars_T);
   TC_aj      = tempcorr(temp.aj, T_ref, pars_T);
   TC_tW      = tempcorr(temp.tW, T_ref, pars_T);
-%   TC_LN      = tempcorr(temp.LN, T_ref, pars_T);
+  TC_LN      = tempcorr(temp.LN, T_ref, pars_T);
   TC_roussel = tempcorr(temp.LGw_ee_female, T_ref, pars_T);
   TC_LW0     = tempcorr(temp.Lw0, T_ref, pars_T);
   
@@ -31,7 +31,6 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   pars_R    = [kap, kap_R, g, k_J, k_M, L_T, v, U_Hb, U_Hj, U_Hp];
   pars_UE0  = [V_Hb; g; k_J; k_M; v];
   
- 
   %% Zero-variate data
   %
   % initial
@@ -50,7 +49,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   aT_b = t_b / k_M / TC_ab;           % d, age at birth at f and T
   L_b  = L_m * l_b;                   % cm, structural length at birth at f (post-metamorphosis)
   Lw_b = L_b / del_L;                 % cm, total length at birth at f (post-metamorphosis)
-  V_b  = (L_b / del_L).^3;            % cm^3, volume at birth (no pH) (post-metamorphosis)
+  V_b  = L_b .^3;                    % cm^3, volume at birth (no pH) (post-metamorphosis)
  
   % metamorphosis
   aT_j = t_j / k_M / TC_aj;           % d,  time at metamorphosis
@@ -62,21 +61,17 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   aT_p = t_p  / k_M / TC_ap;          % d, time at puberty at f and T
   L_p  = L_m * l_p;                   % cm, structural length at puberty at f
   Lw_p = L_p / del_M;                 % cm, length at puberty at f
-  V_p  = (del_M * Lw_p)^3;            % volume at puberty 
+  V_p  = L_p .^3;                     % volume at puberty 
   
    % ultimate
-  L_i  =  L_m - l_i;                  % cm, ultimate structural length at f
-  Lw_i = L_i / del_M;                  % cm, ultimate total length at f
+  L_i  =  L_m * l_i;                  % cm, ultimate structural length at f
+  Lw_i = L_i / del_M;                 % cm, ultimate total length at f
   Ww_i = L_i^3 * (1 + f * w);         % g, ultimate wet-weight
    
   % life span
   t_m = get_tm_s(pars_tm, f, l_b);    % -, scaled mean life span at T_ref
   aT_m = t_m / k_M / TC_am;           % d, mean life span at T
   rho_V = mu_E / w_V;                 % J g-1, energy content of 1 g of structure
-
-%   % reproduction
-%   RT_i = TC_Ri * reprod_rate_j(L_i, f, pars_R);   % #/d, ultimate reproduction rate at T
-
 
   % pack to output (females)
   prdData.ab  = aT_b;
@@ -94,24 +89,23 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   %% Uni-variate data
   % Basu (1997) 
   % time (d) ~ weight(g) (adults)
-  kT_M  = k_M * TC_tW;
+  kT_M = k_M * TC_tW;
   rT_j = rho_j * kT_M; 
   rT_B = rho_B * kT_M; 
   L_bj = L_b * exp(tW((tW(:,1) <= aT_j),1) * rT_j/ 3);
   L_jm = L_i - (L_i - L_j) * exp( - rT_B * (tW((tW(:,1) > aT_j),1) - aT_j)); % cm, expected length at time
-  L = [L_bj; L_jm];
-  EWw   = L.^3 * (1 + f * w);                                   % g,  total wet-weight
+  L    = [L_bj; L_jm];
+  EWw  = L.^3 * (1 + f * w);                                   % g,  total wet-weight
   %
   % Bilbao (2010) 
   % Lenght (cm) ~ wet-weight (g)
-  EWw_f = (LWw_f(:,1) * del_M).^3 * (1 + f * w);                 % g, expected total wet-weights females (shell included)
-  EWw_m = (LWw_m(:,1) * del_M).^3 * (1 + f * w);             % g, expected total wet-weight males (shell included)
+  EWw_f = (LWw_f(:,1) * del_M).^3 * (1 + f * w);             % g, expected total wet-weights females (shell included)
   
   % Roussel (2019) Length (cm) ~ wet-weight (g)
-  ELWw_roussel = (LWw_roussel(:,1) * del_M).^3 * (1 + f * w);     % g, expected total wet-weights (shell included)
+  ELWw_roussel = (LWw_roussel(:,1) * del_M).^3 * (1 + f * w);  % g, expected total wet-weights (shell included)
   
-%   % Bilbao (2010) Total length (cm) ~ Batch fecundity (Females)
-%   EN = TC_LN * reprod_rate_j(LN(:,1), f, pars_R);        % # eggs, batch fecundity
+  % Bilbao (2010) Total length (cm) ~ Batch fecundity (Females)
+  EN = TC_LN * reprod_rate_j(LN(:,1), f, pars_R);        % # eggs, batch fecundity
   
 %   % aprox. 600 days old adults abalone,
   % Avignon (2020)  time(d) ~ wet-weight (g)
@@ -124,21 +118,21 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
 %   L = V.^(1/3) ./ del_M;                                % cm, total length
 %   EtW_Avignon = L.^3 + (E + R) * w_E / mu_E / d_E; % w * d_V .* V + (E + R) .* w_E / mu_E;                % g,  Wet-weight (including gonad)
 
-  % Avignon (2020)  
-  % time(d) ~ length (cm)
-  V0 = (L0_Avignon2020 * del_M)^3; % Convert initial length to structural volume
-  E0 = V0 * p_Am / v; 
-  H0 = E_Hp;
-  t_start = tL_Avignon(1,1); % time at the start of the experiment
-  time_tL = tL_Avignon(:,1); 
-  tspan  = linspace(t_start, time_tL(end), 1000); % integrate for longer to get better estimates
-  EVHR_0 = [E0; V0; H0; 10]; % initial conditions for state variables E,V,H,R
-  pars_EVHR = [p_Am, v, s_M, V_p, d_V, kap, kap_X, kap_R, p_M, k_J, E_G, E_Hb, E_Hj, E_Hp, l_b, l_j, L_m];
-  options = odeset('Events', @event_pH , 'RelTol',1e-4,'AbsTol',1e-6);
-  [t, EVHR_pH] = ode23s(@dget_EVHR_pH, tspan, EVHR_0, [], pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_Avignon, pCO2.tL_Avignon, f); %[] in third no ODE options
-  L_adj = interp1(t, EVHR_pH(:,2).^(2/3), time_tL, 'spline'); % to go from timesteps in tL to EtL,
-  EtL_Avignon =  L_adj;  % cm, total length in time for Avignon2020 experiments
-  %
+%   % Avignon (2020)  
+%   % time(d) ~ length (cm)
+%   V0 = (L0_Avignon2020 * del_M)^3; % Convert initial length to structural volume
+%   E0 = V0 * p_Am / v; 
+%   H0 = E_Hp;
+%   t_start = tL_Avignon(1,1); % time at the start of the experiment
+%   time_tL = tL_Avignon(:,1); 
+%   tspan  = linspace(t_start, time_tL(end), 1000); % integrate for longer to get better estimates
+%   EVHR_0 = [E0; V0; H0; 10]; % initial conditions for state variables E,V,H,R
+   pars_EVHR = [p_Am, v, s_M, V_p, d_V, kap, kap_X, kap_R, p_M, k_J, E_G, E_Hb, E_Hj, E_Hp, l_b, l_j, L_m];
+   options = odeset('Events', @event_pH , 'RelTol',1e-4,'AbsTol',1e-6);
+%   [t, EVHR_pH] = ode23s(@dget_EVHR_pH, tspan, EVHR_0, [], pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_Avignon, pCO2.tL_Avignon, f); %[] in third no ODE options
+%   L_adj = interp1(t, EVHR_pH(:,2).^(2/3), time_tL, 'spline'); % to go from timesteps in tL to EtL,
+%   EtL_Avignon =  L_adj;  % cm, total length in time for Avignon2020 experiments
+%   %
   % Roussel (2019): diet of Saccorhiza polyschides 
   % Males
   [R, ~]        = reprod_rate_j(LGw_sl_male(:,1) * del_M, f_sl, pars_R);
@@ -160,7 +154,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   ELGw_pp_female = TC_roussel * R * 365/2 * Wd_0 / d_E;      % g, Expected total gonad wet-weight at diet of Palmaria palmata
   EWw_pp_female  = (LWw_pp_female(:,1) * del_M).^3 * (1 + f_pp * w);   % g, expected total wet-weight at diet of Palmaria palmata
   % 
-  % Roussel (2019) : diet of Enteromorpha sp.
+  % Roussel (2019): diet of Enteromorpha sp.
   % Males
   [R, ~]  = reprod_rate_j(LGw_ee_male(:,1) * del_M, f_ee, pars_R);
   ELGw_ee_male = TC_roussel  * R * 365 / 2 * Wd_0 / d_E;        % g, Expected total gonad wet-weight at diet of Enteromorpha sp.
@@ -193,73 +187,73 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   %
  % Auzoux-Bordenave (2022)  
  % time (hpf) ~ larval length (cm)
- V0 = (L0_Auzous2022 * del_M)^3; % initial structural volume
- L0 = L0_Auzous2022 * del_M;     % Initial structural lenght
- E0 = L0^3 * p_Am / v;
- EH0 = E_Hp;
- EVHR_1 = [E0; V0; EH0; 0];
- [t EVHR_pH] = ode23(@dget_EVHR_pH, [0; unique(tL_azoux2022(:,1))], EVHR_1, [], pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_azoux2022, pCO2.tL_azoux2022,f);
- t(1) = []; 
- EVHR_pH(1,:) = []; 
- V = EVHR_pH(:,2);
- EtL = V.^(1/3) ./ del_L; % cm, shell length
- if (length(t) ~= 100) % we are doing calibration
-     EtL_Auzoux2022 = tL_azoux2022(:,1);
-     EtL_Auzoux2022(EtL_Auzoux2022==t(1)) = EtL(1);
-     EtL_Auzoux2022(EtL_Auzoux2022==t(2)) = EtL(2);
-     EtL_Auzoux2022(EtL_Auzoux2022==t(3)) = EtL(3);
- else % we are doing plotting (the inbuilt plotting always uses 100 time steps)
-     EtL_Auzoux2022 = EtL;
- end
- %
-  % Wessel (2018) 
-  % Time (hpf) - larval lenght (cm)
-  EVHR_1 = [E_0; V_b^3; E_Hb; 0];
-  [t EVHR_pH] = ode23(@dget_EVHR_pH, [0; unique(tL_wessel(:,1))], EVHR_1, [], pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_wessel, pCO2.tL_wessel, f);
-  t(1) = []; EVHR_pH(1,:) = []; V = EVHR_pH(:,2);
-  EtL = V.^(1/3) ./ del_L; % cm, shell length
-  if (length(t) ~= 100) % we are doing calibration
-      EtL_wessel = tL_wessel(:,1);
-      EtL_wessel(EtL_wessel==t(1)) = EtL(1);
-      EtL_wessel(EtL_wessel==t(2)) = EtL(2);
-      EtL_wessel(EtL_wessel==t(3)) = EtL(3);
-      EtL_wessel(EtL_wessel==t(4)) = EtL(4);
-  else % we are doing plotting (the inbuilt plotting always uses 100 time steps)
-      EtL_wessel = EtL;
-  end
-  %
-  % Chauvaud (2019) 
-  % Length (cm) ~ total weight (g)
-  EWw_Chauvaud = (LW_chauvaud(:,1) * del_M).^3 * (1 + f * w);  % g, expected total wet-weights (shell included)
-  
-  % pack to output
-  prdData.tW         = EWw;
-  prdData.LWw_f         = EWw_f;
-  prdData.LWw_m         = EWw_m;
-  prdData.LWw_roussel   = ELWw_roussel;
-%   prdData.LN          = EN;
-  prdData.tL_Avignon    = EtL_Avignon;
+%  V0 = (L0_Auzous2022 * del_M)^3; % initial structural volume
+%  L0 = L0_Auzous2022 * del_M;     % Initial structural lenght
+%  E0 = L0^3 * p_Am / v;
+%  EVHR_1 = [E0; V0; E_Hb; 0];
+E_b = L_b^3 * p_Am / v;
+EVHR_1 = [E_b; V_b; E_Hb; 0];
+[t EVHR_pH] = ode23(@dget_EVHR_pH, [0; unique(tL_azoux2022(:,1))], EVHR_1, [], pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_azoux2022, pCO2.tL_azoux2022,f);
+t(1) = [];
+EVHR_pH(1,:) = [];
+V = EVHR_pH(:,2);
+EtL = V.^(1/3) ./ del_L; % cm, shell length
+if (length(t) ~= 100) % we are doing calibration
+    EtL_Auzoux2022 = tL_azoux2022(:,1);
+    EtL_Auzoux2022(EtL_Auzoux2022==t(1)) = EtL(1);
+    EtL_Auzoux2022(EtL_Auzoux2022==t(2)) = EtL(2);
+    EtL_Auzoux2022(EtL_Auzoux2022==t(3)) = EtL(3);
+else % we are doing plotting (the inbuilt plotting always uses 100 time steps)
+    EtL_Auzoux2022 = EtL;
+end
+%
+% Wessel (2018)
+% Time (hpf) - larval lenght (cm)
+EVHR_1 = [E_b; V_b; E_Hb; 0];
+[t EVHR_pH] = ode23(@dget_EVHR_pH, [0; unique(tL_wessel(:,1))], EVHR_1, [], pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_wessel, pCO2.tL_wessel, f);
+t(1) = []; EVHR_pH(1,:) = []; V = EVHR_pH(:,2);
+EtL = V.^(1/3) ./ del_L; % cm, shell length
+if (length(t) ~= 100) % we are doing calibration
+    EtL_wessel = tL_wessel(:,1);
+    EtL_wessel(EtL_wessel==t(1)) = EtL(1);
+    EtL_wessel(EtL_wessel==t(2)) = EtL(2);
+    EtL_wessel(EtL_wessel==t(3)) = EtL(3);
+    EtL_wessel(EtL_wessel==t(4)) = EtL(4);
+else % we are doing plotting (the inbuilt plotting always uses 100 time steps)
+    EtL_wessel = EtL;
+end
+%
+% Chauvaud (2019)
+% Length (cm) ~ total weight (g)
+EWw_Chauvaud = (LW_chauvaud(:,1) * del_M).^3 * (1 + f * w);  % g, expected total wet-weights (shell included)
+
+% pack to output
+prdData.tW            = EWw;
+prdData.LWw_f         = EWw_f;
+prdData.LWw_roussel   = ELWw_roussel;
+prdData.LN            = EN;
+%   prdData.tL_Avignon  = EtL_Avignon;
 %   prdData.tW_Avignon  = EtW_Avignon;
-  prdData.LGw_sl_male   = ELGW_sl_male;
-  prdData.LWw_sl_male   = EWw_sl_male;
-  prdData.LGw_sl_female = ELGW_sl_female;
-  prdData.LWw_sl_female = EWw_sl_female;
-  prdData.LGw_pp_male   = ELGw_pp_male;
-  prdData.LWw_pp_male   = EWw_pp_male;
-  prdData.LGw_pp_female = ELGw_pp_female;
-  prdData.LWw_pp_female = EWw_pp_female;
-  prdData.LGw_ee_male   = ELGw_ee_male;
-  prdData.LWw_ee_male   = EWw_ee_male;
-  prdData.LGw_ee_female = ELGw_ee_female;
-  prdData.LWw_ee_female = EWw_ee_female;
-  prdData.tL_auzoux2021 = EtL_Auzoux;
-  prdData.tL_azoux2022  = EtL_Auzoux2022;
-  prdData.tL_wessel     = EtL_wessel;
-  prdData.LW_chauvaud   = EWw_Chauvaud;
+prdData.LGw_sl_male   = ELGW_sl_male;
+prdData.LWw_sl_male   = EWw_sl_male;
+prdData.LGw_sl_female = ELGW_sl_female;
+prdData.LWw_sl_female = EWw_sl_female;
+prdData.LGw_pp_male   = ELGw_pp_male;
+prdData.LWw_pp_male   = EWw_pp_male;
+prdData.LGw_pp_female = ELGw_pp_female;
+prdData.LWw_pp_female = EWw_pp_female;
+prdData.LGw_ee_male   = ELGw_ee_male;
+prdData.LWw_ee_male   = EWw_ee_male;
+prdData.LGw_ee_female = ELGw_ee_female;
+prdData.LWw_ee_female = EWw_ee_female;
+prdData.tL_auzoux2021 = EtL_Auzoux;
+prdData.tL_azoux2022  = EtL_Auzoux2022;
+prdData.tL_wessel     = EtL_wessel;
+prdData.LW_chauvaud   = EWw_Chauvaud;
   
 end
 
-%% Subfunction 
+%% Subfunction
 function [value,isterminal, direction] = event_pH(t, EVHR_pH, pars_EVHR, varargin)
 E_Hb = pars_EVHR(12);
 E_Hj = pars_EVHR(13);
@@ -296,8 +290,6 @@ function dEVHR = dget_EVHR_pH(t, EVHR, pars_EVHR, q_adult, q_larva, CML_adult, C
   end
   
   % aceleration factor
-%   l_j = simu.cPar.v_Hj^(1/3);
-%   l_b = simu.cPar.v_Hb^(1/3);
   l = V.^(1/3) / L_m;
   
   if E_H < E_Hb
@@ -327,11 +319,11 @@ if E_H < E_Hj % pre-metamorphosis, Larva
     pD = pM + pJ + (1 - kap_R) * pR;                                                  % Dissipation
     
 else % Post-metamorphosis, Juvenile and adults
-    pX = f * p_XmT * V^(2/3); 
+    pX = f * (s_M * p_AmT / kap_X) * V^(2/3); 
     pA = kap_X * pX; % * TC;                                                           % Assimilation (eq.2.3 page 36)
     pM = (p_M * V + q_adult * min(max(pCO2 - CML_adult, 0), (CMH_adult -  CML_adult)) * V^(2/3)) * TC;  % somatic mnaintenace                                                           
     pJ = kT_J * E_H;                                                                 % Maturiry maintenance(eq.2.19 p.47)  
-    pC = (E / V) * ((E_G * v * V^(2/3) + p_M * V) / (kap * E / V + E_G)) * TC;       % Reserve mobilization
+    pC = (E / V) * ((E_G * s_M * v * V^(2/3) + p_M * V) / (kap * E / V + E_G)) * TC;       % Reserve mobilization
     pG = kap * pC - pM;                                                              % Growth
     pR = (1 - kap) * pC - pJ;                                                        % Reproduction (eq.2.18 p.47)
     pD = pM + pJ + (1 - kap_R) * pR;                                                 % Dissipation
