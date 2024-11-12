@@ -80,7 +80,7 @@ while tc < gen_tm
         % Implement spawning, i.e. reset E_R to 0
         E_Hc = EVHR_tc(3);
         E_Hp = simu.zoom.^3 * simu.par.E_Hp;
-        propRemaining = 0;
+        propRemaining = 0.2; % proportion of gonad remaining after spawning
         if E_Hc >= E_Hp
             EVHR_tc(4) = propRemaining * EVHR_tc(4);
         end

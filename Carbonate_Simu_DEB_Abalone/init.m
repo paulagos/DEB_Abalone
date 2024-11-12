@@ -37,7 +37,7 @@ function simu = init(filename, SSP, location, varEnv, envFoodQ, gen_number, zoom
   
   % constant environemantal conditions
   T    = 14 + 273.15; %14 + 273.15 or  %temp + 273.15; %
-  f    = 0.9;
+  f    = 0.98;
   pCO2 = 420; % pco2 ;
   
   % SSP scenarios applied to in-situ environmental data

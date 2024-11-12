@@ -61,6 +61,9 @@ elseif simu.par.E_Hb <= E_H && E_H < simu.par.E_Hj
     
 elseif E_H >= simu.par.E_Hj
     s_M = l_j / l_b;
+
+else
+    keyboard
 end
 
 %% Temperature correction factors
