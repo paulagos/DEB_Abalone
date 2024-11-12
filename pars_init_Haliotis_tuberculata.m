@@ -32,7 +32,7 @@ par.s_G  = 0.01;      free.s_G   = 0;   units.s_G   = '-';        label.s_G   = 
 % par.del_Y = 0.3060;   free.del_Y = 0;   units.del_Y = '-';        label.del_Y = 'shape coefficient for the egg';
 par.del_L = 0.502;    free.del_L = 1;   units.del_L = '-';        label.del_L = 'shape coefficient pre-metamorphosis';
 par.del_M = 0.28218;  free.del_M = 1;   units.del_M = '-';        label.del_M = 'shape coefficient post-metamorphosis'; 
-par.f     = 1;        free.f     = 1;   units.f     = '-';        label.f     = 'scaled functional response for 0-var data';
+par.f     = 1;        free.f     = 0;   units.f     = '-';        label.f     = 'scaled functional response for 0-var data';
 par.f_ee  = 1;        free.f_ee  = 1;   units.f_ee  = '-';        label.f_ee  = 'scaled functional response for Enteropmorpha diet'; 
 par.f_pp  = 1;        free.f_pp  = 1;   units.f_pp  = '-';        label.f_pp  = 'scaled functional response for Palmaria palmata diet';
 par.f_sl  = 1;        free.f_sl  = 1;   units.f_sl  = '-';        label.f_sl  = 'scaled functional response for Saccorhiza polyschides diet'; 

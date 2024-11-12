@@ -25,41 +25,42 @@ metaData.date_acc    = [2019 01 09];
 %% Zero-variate data
 data.ab = 0.91;     units.ab = 'd';    label.ab = 'age at birth';               bibkey.ab = 'Wessel2018';
 temp.ab = C2K(17);  units.temp.ab = 'K'; label.temp.ab = 'temperature';
-  comment.ab = 'We asusme feeding beginning at late trocophore stage (19hpf to 24hpf). However, larva might not need to eat until metamorphosis has occured (9 dpf approx)';
+comment.ab = 'We asusme feeding beginning at late trocophore stage (19hpf to 24hpf). However, larva might not need to eat until metamorphosis has occured (9 dpf approx)';
 
-data.am = 365*15; units.am = 'd';   label.am = 'life span';                     bibkey.am = 'Basu1997';   
-  temp.am = C2K(18);  units.temp.am = 'K'; label.temp.am = 'temperature'; 
- 
-data.aj = 3.9;      units.aj = 'd';    label.aj = 'age at metamorphosis'; bibkey.aj = 'Azoux2022';   
-  temp.aj = C2K(15);  units.temp.aj = 'K'; label.temp.aj = 'temperature';  
-  comment.aj = 'veliger larva at end of planktonic phase 94hpf ';
+data.am = 365*15; units.am = 'd';   label.am = 'life span';                     bibkey.am = 'Basu1997';
+temp.am = C2K(18);  units.temp.am = 'K'; label.temp.am = 'temperature';
+
+data.aj = 3.9;      units.aj = 'd';    label.aj = 'age at metamorphosis'; bibkey.aj = 'Azoux2022';
+temp.aj = C2K(15);  units.temp.aj = 'K'; label.temp.aj = 'temperature';
+comment.aj = 'veliger larva at end of planktonic phase 94hpf ';
 
 data.ap = 365*1.2;  units.ap = 'd';     label.ap = 'age since birth at puberty'; bibkey.ap = 'Coch1980';
 temp.ap = C2K(17);   units.temp.ap = 'K'; label.temp.ap = 'temperature';
-  comment.ap = 'females mature at ~1 years with variations depending on locations';
-  
+comment.ap = 'females mature at ~1 years with variations depending on locations';
+
 data.Lb = 0.0099; units.Lb = 'cm';  label.Lb = 'lenght at birth';               bibkey.Lb = 'Wessel2018';
 temp.Lb = C2K(17);  units.temp.Lb = 'K'; label.temp.Lb = 'temperature';
-  comment.Lb = 'Minimiun lenght for a larvae at 40hpf from experiments at 17deg C'; 
-  
+comment.Lb = 'Minimiun lenght for a larvae at 40hpf from experiments at 17deg C';
+
 data.Lj = 0.0268;  units.Lj = 'cm'; label.Lj = 'length at metamorphosis';   bibkey.Lj = 'Azoux2022';
 temp.Lj = C2K(15.4);   units.temp.Lj = 'K'; label.temp.Lj = 'temperature';
-  comment.Lj = 'Average lenght of 200 pre-metamorphic larva (96hph) at ph8.0 ';
-  
+comment.Lj = 'Average lenght of 200 pre-metamorphic larva (96hph) at ph8.0 ';
+
 data.Lp  = 3.0;  units.Lp  = 'cm';  label.Lp  = 'lenght at puberty';        bibkey.Lp  = 'Basu1997';
-  comment.Lp = 'range from 30mm to 49mm';
-  
+comment.Lp = 'range from 30mm to 49mm';
+
 data.Li  = 14; units.Li  = 'cm';  label.Li  = 'ultimate total lenght';       bibkey.Li  = 'Basu1997';
-  comment.Li = 'based on one individual found on Nord-Ouestdu du Cotentin (Author personal note)';
-   
+temp.Li = C2K(14);   units.temp.Li = 'K'; label.temp.Li= 'temperature';
+comment.Li = 'based on one individual found on Nord-Ouestdu du Cotentin (Author personal note), average temperature';
+
 data.Wm = 450 * (2/3);  units.Wm = 'g'; label.Wm = 'maximum wet-weight';             bibkey.Wm = 'Basu1997';
-  temp.Wm = C2K(18);   units.temp.Wm = 'K'; label.temp.Wm = 'temperature';
-  comment.Wm = 'based on one individual found on Nord-Ouestdu du Cotentin (Author personal note), shell-included'; 
-  
+temp.Wm = C2K(14);   units.temp.Wm = 'K'; label.temp.Wm = 'temperature';
+comment.Wm = 'based on one individual found on Nord-Ouestdu du Cotentin (Author personal note), shell-included';
+
 data.Lw0 = 0.0150;    units.Lw0 = 'cm';     label.Lw0 = 'egg diameter';  bibkey.Lw0 = 'Bilbao2010';
- temp.Lw0 = C2K(18);  units.temp.Lw0 = 'K'; label.temp.Lw0 = 'temperature';
- comment.Lw0 = 'Mean mature oocyte size. Sizes range from 90-190 um';
-  
+temp.Lw0 = C2K(18);  units.temp.Lw0 = 'K'; label.temp.Lw0 = 'temperature';
+comment.Lw0 = 'Mean mature oocyte size. Sizes range from 90-190 um';
+
 %  data.Ri  = 391103 * 2 / 365; units.Ri  = '#/d'; label.Ri = 'max reproduction rate';   bibkey.Ri  = 'Bilbao2010';
 %    temp.Ri = C2K(15); units.temp.Ri = 'K'; label.temp.Ri = 'temperature';
 %    comment.Ri = 'Mean number of oocytes in one batch 391.103. Could be twice as much if the spawning occurs two times per year or more. the maximun batch fecundity is 691.566 oocytes per female';

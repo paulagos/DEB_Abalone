@@ -5,7 +5,7 @@ pets = {'Haliotis_tuberculata'};
 check_my_pet(pets); 
 
 estim_options('default'); 
-estim_options('max_step_number',1500); 
+estim_options('max_step_number',500); 
 estim_options('max_fun_evals',1000); 
 
 %sb - symmetric bounded (default)
@@ -37,7 +37,7 @@ estim_options('method', 'nm');
 tStart = tic;
 estim_pars; 
 tEnd = toc(tStart);
-fprintf('THIS RUN TOOK: %d minutes and %f seconds\n', floor(tEnd/60), rem(tEnd,60));
+fprintf('THIS CALIBRATION TOOK: %d minutes and %f seconds\n', floor(tEnd/60), rem(tEnd,60));
 
 
 % Save all the results to working folder

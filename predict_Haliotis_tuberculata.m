@@ -49,7 +49,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   aT_b = t_b / k_M / TC_ab;           % d, age at birth at f and T
   L_b  = L_m * l_b;                   % cm, structural length at birth at f (post-metamorphosis)
   Lw_b = L_b / del_L;                 % cm, total length at birth at f (post-metamorphosis)
-  V_b  = L_b .^3;                    % cm^3, volume at birth (no pH) (post-metamorphosis)
+  V_b  = L_b .^3;                     % cm^3, volume at birth (no pH) (post-metamorphosis)
  
   % metamorphosis
   aT_j = t_j / k_M / TC_aj;           % d,  time at metamorphosis
@@ -64,7 +64,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   V_p  = L_p .^3;                     % volume at puberty 
   
    % ultimate
-  L_i  =  L_m * l_i;                  % cm, ultimate structural length at f
+  L_i  = L_m * l_i;                   % cm, ultimate structural length at f
   Lw_i = L_i / del_M;                 % cm, ultimate total length at f
   Ww_i = L_i^3 * (1 + f * w);         % g, ultimate wet-weight
    
@@ -84,7 +84,6 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   prdData.Lp  = Lw_p;
   prdData.Li  = Lw_i;
   prdData.Wm  = Ww_i;
-%   prdData.Ri  = RT_i;
   
   %% Uni-variate data
   % Basu (1997) 
