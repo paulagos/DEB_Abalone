@@ -36,10 +36,8 @@ par.f     = 1;        free.f     = 0;   units.f     = '-';        label.f     = 
 par.f_ee  = 1;        free.f_ee  = 1;   units.f_ee  = '-';        label.f_ee  = 'scaled functional response for Enteropmorpha diet'; 
 par.f_pp  = 1;        free.f_pp  = 1;   units.f_pp  = '-';        label.f_pp  = 'scaled functional response for Palmaria palmata diet';
 par.f_sl  = 1;        free.f_sl  = 1;   units.f_sl  = '-';        label.f_sl  = 'scaled functional response for Saccorhiza polyschides diet'; 
-% par.L0_Avignon2020  = 4.7;    free.L0_Avignon2020  = 0;  units.L0_Avignon2020  = 'cm';  label.L0_Avignon2020  = 'L at start Avignon2020'; 
-par.L0_Auzous2021   = 6.023;  free.L0_Auzous2021   = 0;  units.L0_Auzous2021   = 'cm';  label.L0_Auzous2021   = 'L at start Auzous2021';
-% par.L0_Auzous2022   = 0.019;  free.L0_Auzous2022   = 0;  units.L0_Auzous2022   = 'cm';  label.L0_Auzous2022   = 'L at start Auzous2022';
-par.egg_r           = 0.0075; free.egg_r           = 0;  units.egg_r           = 'cm';  label.egg_r           = 'egg radius';
+par.L0_Auzous2021  = 6.023;  free.L0_Auzous2021   = 0;  units.L0_Auzous2021   = 'cm';  label.L0_Auzous2021   = 'L at start Auzous2021';
+par.egg_r          = 0.0075; free.egg_r           = 0;  units.egg_r           = 'cm';  label.egg_r           = 'egg radius';
 %
 %% acidification specific paramenters
 par.CMH_larva = 1000; free.CMH_larva = 0;  units.CMH_larva = 'uatm';      label.CMH_larva  = 'higher pCO2 boundary for maintenace cost';          
