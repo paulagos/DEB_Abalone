@@ -1,5 +1,7 @@
 function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   
+
+% BAS
   % unpack par, data, auxData
   cPar = parscomp_st(par); vars_pull(par); 
   vars_pull(cPar);  vars_pull(data);  vars_pull(auxData);
@@ -15,15 +17,14 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   end  
   
   % compute temperature correction factors
-  pars_T     = [T_A, T_L, T_H, T_AL, T_AH]; %[T_A, T_L, T_H, T_AL, T_AH]; %T_A; 
+  pars_T     = [T_A, T_L, T_H, T_AL, T_AH]; 
   TC_ab      = tempcorr(temp.ab, T_ref, pars_T);
+  TC_aj      = tempcorr(temp.aj, T_ref, pars_T);
   TC_ap      = tempcorr(temp.ap, T_ref, pars_T);
   TC_am      = tempcorr(temp.am, T_ref, pars_T);
-  TC_aj      = tempcorr(temp.aj, T_ref, pars_T);
   TC_tW      = tempcorr(temp.tW, T_ref, pars_T);
   TC_LN      = tempcorr(temp.LN, T_ref, pars_T);
   TC_roussel = tempcorr(temp.LGw_ee_female, T_ref, pars_T);
-  TC_LW0     = tempcorr(temp.Lw0, T_ref, pars_T);
   
   % parameter sets
   pars_tj   = [g; k; l_T; v_Hb; v_Hj; v_Hp];
@@ -35,12 +36,9 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   %
   % initial
   U_E0  = initial_scaled_reserve(f, pars_UE0); % d.cm^2, initial scaled reserve
-  p_TAm = p_Am * TC_LW0;                       %, J/d.cm^2, {p_Am}, spec. temperature correted assimilation flux
-  E_0   = U_E0 * p_TAm;                        % J, initial energy 
+  E_0   = U_E0 * p_Am;                         % J, initial energy 
   Wd_0  = E_0 * w_E / mu_E;                    % g, egg dry weight
-  del_Y = (4/3 * pi * egg_r^3)^(1/3) / (egg_r * 2); % shape coefficient for the egg
-  V_egg = E_0 * w_E / (mu_E * d_E) / del_Y^3;  % cm^3, volume of egg
-  Lw_0  = V_egg^(1/3);                         % cm, diameter of egg
+  Ww_0  = Wd_0/ d_E;                           % g, egg wet weight
   
   % life cycle
   [t_j, t_p, t_b, l_j, l_p, l_b, l_i, rho_j, rho_B, info] = get_tj(pars_tj, f);
@@ -71,19 +69,19 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   % life span
   t_m = get_tm_s(pars_tm, f, l_b);    % -, scaled mean life span at T_ref
   aT_m = t_m / k_M / TC_am;           % d, mean life span at T
-  rho_V = mu_E / w_V;                 % J g-1, energy content of 1 g of structure
+  %rho_V = mu_E / w_V;                 % J g-1, energy content of 1 g of structure
 
   % pack to output (females)
   prdData.ab  = aT_b;
   prdData.aj  = aT_j;
   prdData.ap  = aT_p;
   prdData.am  = aT_m;
-  prdData.Lw0 = Lw_0;
   prdData.Lb  = Lw_b;
   prdData.Lj  = Lw_j;
   prdData.Lp  = Lw_p;
   prdData.Li  = Lw_i;
-  prdData.Wm  = Ww_i;
+  prdData.Ww0  = Ww_0;
+  prdData.Wwi  = Ww_i;
   
   %% Uni-variate data
   % Basu (1997) 
@@ -127,11 +125,11 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   V0 = (L0_Auzous2021 * del_M)^3; % initial structural volume
   E0 = 	V0 * p_Am / v;
   H0 = E_Hp;
-  EVHR_1 = [E0; V0; H0; 0.01]; % initial conditions for state variables E,V,H,R
-  [t, EVHR_pH] = ode23(@dget_EVHR_pH, [1095; unique(tL_auzoux2021(:,1))], EVHR_1, options, pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_auzoux2021, pCO2.tL_auzoux2021, f); %[] in third no ODE options
+  EVHR_1 = [E0; V0; H0; 0.1]; % initial conditions for state variables E,V,H,R
+  [t, EVHR_pH] = ode23(@dget_EVHR_pH, [1050; unique(tL_auzoux2021(:,1))], EVHR_1, options, pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_auzoux2021, pCO2.tL_auzoux2021, f); %[] in third no ODE options
   t(1) = []; EVHR_pH(1,:) = [];
   V = EVHR_pH(:,2);
-  EtL_A = V.^(1/3) ./ del_M;                         % cm, total phisical length
+  EtL_A = V.^(1/3)/ del_M;                         % cm, total phisical length
   if (length(t) ~= 100) % we are doing calibration
       EtL_Auzoux = tL_auzoux2021(:,1);
       EtL_Auzoux(EtL_Auzoux==t(1)) = EtL_A(1);
@@ -142,7 +140,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
       EtL_Auzoux = EtL_A;
   end
   %
-  % Auzoux-Bordenave (2022)
+  % Auzoux-Bordenave (2022): Control pCO2
   % time (hpf) ~ larval length (cm)
   E_b = E_m * L_b^3; % J, energy in reserve at birth
   EVHR_1 = [E_b; V_b; E_Hb; 0];
@@ -150,7 +148,7 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
   t(1) = [];
   EVHR_pH(1,:) = [];
   V = EVHR_pH(:,2);
-  EtL = V.^(1/3) ./ del_L; % cm, shell length
+  EtL = V.^(1/3)/ del_L; % cm, shell length
   if (length(t) ~= 100) % we are doing calibration
       EtL_Auzoux2022 = tL_auzoux2022(:,1);
       EtL_Auzoux2022(EtL_Auzoux2022==t(1)) = EtL(1);
@@ -161,6 +159,25 @@ function [prdData, info] = predict_Haliotis_tuberculata(par, data, auxData)
       EtL_Auzoux2022 = EtL;
   end
 
+  % Auzoux-Bordenave (2022): Experimental pCO2
+  % time (hpf) ~ larval length (cm)
+  E_b = E_m * L_b^3; % J, energy in reserve at birth
+  EVHR_1 = [E_b; V_b; E_Hb; 0];
+  [t EVHR_pH] = ode23(@dget_EVHR_pH, [0; unique(tL_auzoux2022_pCO2(:,1))], EVHR_1, [], pars_EVHR, q_adult, q_larva, CML_adult, CMH_adult, CML_larva, CMH_larva, T_ref, pars_T, temp.tL_auzoux2022, pCO2.tL_auzoux2022,f);
+  t(1) = [];
+  EVHR_pH(1,:) = [];
+  V = EVHR_pH(:,2);
+  EtL = V.^(1/3)/ del_L; % cm, shell length
+  if (length(t) ~= 100) % we are doing calibration
+      EtL_Auzoux2022_pCO2 = tL_auzoux2022_pCO2(:,1);
+      EtL_Auzoux2022_pCO2(EtL_Auzoux2022_pCO2==t(1)) = EtL(1);
+      EtL_Auzoux2022_pCO2(EtL_Auzoux2022_pCO2==t(2)) = EtL(2);
+      EtL_Auzoux2022_pCO2(EtL_Auzoux2022_pCO2==t(3)) = EtL(3);
+      EtL_Auzoux2022_pCO2(EtL_Auzoux2022_pCO2==t(4)) = EtL(4);
+  else % we are doing plotting (the inbuilt plotting always uses 100 time steps)
+      EtL_Auzoux2022_pCO2 = EtL;
+  end
+%
 % Chauvaud (2019)
 % Length (cm) ~ total weight (g)
 EWw_Chauvaud = (LW_chauvaud(:,1) * del_M).^3 * (1 + f * w);  % g, expected total wet-weights (shell included)
@@ -177,7 +194,8 @@ prdData.LWw_pp_female   = EWw_pp_female;
 prdData.LGw_ee_female   = ELGw_ee_female;
 prdData.LWw_ee_female   = EWw_ee_female;
 prdData.tL_auzoux2021   = EtL_Auzoux;
-prdData.tL_auzoux2022   = EtL_Auzoux2022;
+prdData.tL_auzoux2022        = EtL_Auzoux2022;
+prdData.tL_auzoux2022_pCO2   = EtL_Auzoux2022_pCO2;
 prdData.LW_chauvaud     = EWw_Chauvaud;
   
 end
@@ -239,7 +257,7 @@ function dEVHR = dget_EVHR_pH(t, EVHR, pars_EVHR, q_adult, q_larva, CML_adult, C
 % DEB Fluxes
 if E_H < E_Hj % pre-metamorphosis, Larva
     pX = f  * (s_M * p_AmT / kap_X) * V^(2/3);                                        % feeding
-    pA = kap_X * pX; % * TC;                                                             % assimilation (eq. 2.3 p.35)
+    pA = kap_X * pX; % * TC;                                                          % assimilation (eq. 2.3 p.35)
     pM = (p_M * V + q_larva * min(max(pCO2 - CML_larva, 0), (CMH_larva -  CML_larva)) * V^(2/3)) * TC; % somatic mnaintenace               
     pJ = kT_J * E_H;                                                                  % Maturiry maintenance(eq.2.19 p.47)
     pC = (E / V) * ((E_G * s_M * v * V^(2/3) + p_M * V) / (kap * E / V + E_G)) * TC;  % Reserve mobilization
@@ -252,7 +270,7 @@ else % Post-metamorphosis, Juvenile and adults
     pA = kap_X * pX; % * TC;                                                           % Assimilation (eq.2.3 page 36)
     pM = (p_M * V + q_adult * min(max(pCO2 - CML_adult, 0), (CMH_adult -  CML_adult)) * V^(2/3)) * TC;  % somatic mnaintenace                                                           
     pJ = kT_J * E_H;                                                                 % Maturiry maintenance(eq.2.19 p.47)  
-    pC = (E / V) * ((E_G * s_M * v * V^(2/3) + p_M * V) / (kap * E / V + E_G)) * TC;       % Reserve mobilization
+    pC = (E / V) * ((E_G * s_M * v * V^(2/3) + p_M * V) / (kap * E / V + E_G)) * TC; % Reserve mobilization
     pG = kap * pC - pM;                                                              % Growth
     pR = (1 - kap) * pC - pJ;                                                        % Reproduction (eq.2.18 p.47)
     pD = pM + pJ + (1 - kap_R) * pR;                                                 % Dissipation

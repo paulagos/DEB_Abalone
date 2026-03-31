@@ -5,8 +5,8 @@ pets = {'Haliotis_tuberculata'};
 check_my_pet(pets); 
 
 estim_options('default'); 
-estim_options('max_step_number',1000); 
-estim_options('max_fun_evals',1000); 
+estim_options('max_step_number',9e2); 
+estim_options('max_fun_evals',1e4); 
 
 %sb - symmetric bounded (default)
 %su - symmetric unbounded
@@ -26,7 +26,7 @@ estim_options('pars_init_method', 1);
 %   4, -4 - like 3 (or -3), but also prints html with implied traits
 %   5, -5 - like 4 (or -4), but includes related species in the implied traits
 %   6     - like 5, but also prints html with population traits
-estim_options('results_output', 1);
+estim_options('results_output', -2);
 
 % 'method':
 %   'nm' - use Nelder-Mead method;

@@ -7,66 +7,63 @@ metaData.order      = 'Vetigastropoda';
 metaData.family     = 'Haliotidae';
 metaData.species    = 'Haliotis_tuberculata'; 
 metaData.species_en = 'European abalone'; 
+
+metaData.ecoCode.climate = {'MB','MC'};
+metaData.ecoCode.ecozone = {'MAE','MANE','MAm'};
+metaData.ecoCode.habitat = {'0jMp', 'jiMb'};
+metaData.ecoCode.embryo  = {'Mp'};
+metaData.ecoCode.migrate = {};
+metaData.ecoCode.food    = {'bjPp', 'jiHa'};
+metaData.ecoCode.gender  = {'D'};
+metaData.ecoCode.reprod  = {'O'};
+
 metaData.T_typical  = C2K(20); % K, body temp
-metaData.data_0     = {'am';'ab';'ap';'Lp'; 'Li'; 'Wwb'; 'Wwi'}; 
-metaData.data_1     = {'tW'; 'tL'; 'LWw_f';'LWw_m'}; 
+metaData.data_0     = {'ab'; 'ap'; 'am'; 'Lb'; 'Lj'; 'Lp'; 'Li'; 'Ww0'; 'Wwi'}; 
+metaData.data_1     = {'t-Ww'; 't-L'; 'L-Ww'; 'L-N'; 'L-WwR'}; 
 
-metaData.COMPLETE = 2.4; % using criteria of LikaKear2011
+metaData.COMPLETE = 2.8; % using criteria of LikaKear2011
 
-metaData.author   = {'Paulo F. Lagos'};    
-metaData.date_subm = [2022 12 14];              
+metaData.author   = {'Paulo F. Lagos','Alva Curtsdotter','Sabine Roussel','Jonathan Flye-Sainte-Maire','Stephanie Auzoux-Bordenave','Sophie Martin','Laure Pecquerie'};    
+metaData.date_subm = [2026 02 17];              
 metaData.email    = {'pau.lagosj@gmail.com'};            
 metaData.address  = {'LEMAR'};   
 
-metaData.curator     = {'Starrlight Augustine'};
-metaData.email_cur   = {'sta@akvaplan.niva.no'}; 
-metaData.date_acc    = [2019 01 09]; 
-%
+metaData.curator     = {'Bas Kooijman'};
+metaData.email_cur   = {'bas.kooijman@vu.nl'}; 
+metaData.date_acc    = [2026 02 17]; 
+
 %% Zero-variate data
 data.ab = 0.91;     units.ab = 'd';    label.ab = 'age at birth';               bibkey.ab = 'Wessel2018';
-temp.ab = C2K(17);  units.temp.ab = 'K'; label.temp.ab = 'temperature';
-comment.ab = 'We asusme feeding beginning at late trocophore stage (19hpf to 24hpf). However, larva might not need to eat until metamorphosis has occured (9 dpf approx)';
-
-data.am = 365*15; units.am = 'd';   label.am = 'life span';                     bibkey.am = 'Basu1997';
-temp.am = C2K(18);  units.temp.am = 'K'; label.temp.am = 'temperature';
-
-data.aj = 3.9;      units.aj = 'd';    label.aj = 'age at metamorphosis'; bibkey.aj = 'Azoux2022';
-temp.aj = C2K(15);  units.temp.aj = 'K'; label.temp.aj = 'temperature';
-comment.aj = 'veliger larva at end of planktonic phase 94hpf ';
-
+  temp.ab = C2K(17);  units.temp.ab = 'K'; label.temp.ab = 'temperature';
+  comment.ab = 'We assume feeding beginning at late trochophore stage (19hpf to 24hpf). However, larva might not need to eat until metamorphosis has occured (9 dpf approx)';
+data.aj = 3.9;      units.aj = 'd';    label.aj = 'age at metamorphosis'; bibkey.aj = 'Auzoux2022';
+  temp.aj = C2K(15);  units.temp.aj = 'K'; label.temp.aj = 'temperature';
+  comment.aj = 'veliger larva at end of planktonic phase 94hpf ';
 data.ap = 365*1.2;  units.ap = 'd';     label.ap = 'age since birth at puberty'; bibkey.ap = 'Coch1980';
-temp.ap = C2K(17);   units.temp.ap = 'K'; label.temp.ap = 'temperature';
-comment.ap = 'females mature at ~1 years with variations depending on locations';
+  temp.ap = C2K(17);   units.temp.ap = 'K'; label.temp.ap = 'temperature';
+  comment.ap = 'females mature at ~1 years with variations depending on locations';
+data.am = 365*15; units.am = 'd';   label.am = 'life span';                bibkey.am = 'Basu1997';
+  temp.am = C2K(18);  units.temp.am = 'K'; label.temp.am = 'temperature';
 
-data.Lb = 0.0099; units.Lb = 'cm';  label.Lb = 'lenght at birth';               bibkey.Lb = 'Wessel2018';
-temp.Lb = C2K(17);  units.temp.Lb = 'K'; label.temp.Lb = 'temperature';
-comment.Lb = 'Minimiun lenght for a larvae at 40hpf from experiments at 17deg C';
+data.Lb = 0.0099; units.Lb = 'cm';  label.Lb = 'length at birth';          bibkey.Lb = 'Wessel2018';
+  comment.Lb = 'Minimiun length for a larvae at 40hpf from experiments at 17deg C';
+data.Lj = 0.0268;  units.Lj = 'cm'; label.Lj = 'length at metamorphosis';   bibkey.Lj = 'Auzoux2022';
+  comment.Lj = 'Average length of 200 pre-metamorphic larva (96hph) at ph8.0 ';
+data.Lp  = 3.0;  units.Lp  = 'cm';  label.Lp  = 'length at puberty';        bibkey.Lp  = 'Basu1997';
+  comment.Lp = 'range from 30mm to 49mm';
+data.Li  = 14; units.Li  = 'cm';  label.Li  = 'ultimate total lenght';     bibkey.Li  = 'Basu1997';
+  comment.Li = 'based on one individual found on Nord-West of Cotentin (Author personal note)';
 
-data.Lj = 0.0268;  units.Lj = 'cm'; label.Lj = 'length at metamorphosis';   bibkey.Lj = 'Azoux2022';
-temp.Lj = C2K(15.4);   units.temp.Lj = 'K'; label.temp.Lj = 'temperature';
-comment.Lj = 'Average lenght of 200 pre-metamorphic larva (96hph) at ph8.0 ';
+data.Ww0 = 1.77e-6;  units.Ww0 = 'g'; label.Ww0 = 'initial wet-weight';    bibkey.Ww0 = 'Bilbao2010';
+  comment.Ww0 = 'based on mature oocyte size of 90-190 mum: pi/6*0.015^3';
 
-data.Lp  = 3.0;  units.Lp  = 'cm';  label.Lp  = 'lenght at puberty';        bibkey.Lp  = 'Basu1997';
-comment.Lp = 'range from 30mm to 49mm';
-
-data.Li  = 14; units.Li  = 'cm';  label.Li  = 'ultimate total lenght';       bibkey.Li  = 'Basu1997';
-temp.Li = C2K(14);   units.temp.Li = 'K'; label.temp.Li= 'temperature';
-comment.Li = 'based on one individual found on Nord-Ouestdu du Cotentin (Author personal note), average temperature';
-
-data.Wm = 450 * 0.73;  units.Wm = 'g'; label.Wm = 'maximum shell free wet-weight';        bibkey.Wm = 'Basu1997';
-temp.Wm = C2K(14);   units.temp.Wm = 'K'; label.temp.Wm = 'temperature';
-comment.Wm = 'based on one individual found on Nord-Ouestdu du Cotentin (Author personal note), 27% of the total wet-weight is the shell';
-
-data.Lw0 = 0.0150;    units.Lw0 = 'cm';     label.Lw0 = 'egg diameter';  bibkey.Lw0 = 'Bilbao2010';
-temp.Lw0 = C2K(18);  units.temp.Lw0 = 'K'; label.temp.Lw0 = 'temperature';
-comment.Lw0 = 'Mean mature oocyte size. Sizes range from 90-190 um';
-
+data.Wwi = 450 * 0.73;  units.Wwi = 'g'; label.Wwi = 'maximum shell free wet-weight'; bibkey.Wwi = 'Basu1997';
+  comment.Wwi = 'based on one individual found on Nord-West of Cotentin (Author personal note), 27% of the total wet-weight is the shell';
 
 %% Uni-variate data
 %
-% Basu (1997)
 % time ~ total wet-weight
-data.tW = [ ... % age (days), total wet-weight (g)
+data.tW = [ ... % age (d), total wet-weight (g)
 163   0.318
 193   0.644
 225   3.157
@@ -77,17 +74,14 @@ data.tW = [ ... % age (days), total wet-weight (g)
 702   36.478
 797   44.329
 892   49.056
-987   52.533
-];
-
+987   52.533];
 data.tW(:,2) = data.tW(:,2) * 0.73; % substract 27% of the weight to account for the pressence of shell in the data
 units.tW   = {'d', 'g'}; label.tW = {'Time', 'Total wet-weight'};  
 temp.tW    = C2K(18); units.temp.tW = 'K'; label.temp.tW = 'temperature';
 bibkey.tW  = 'Basu1997';
 comment.tW = 'Age of adult abalone from the bay of Brest in months converted to days (2.7  years in total)';
 %
-% Bilbao (2010) 
-% Data for Females: lenght ~ total wet-weight (including shell)
+% Data for Females: length ~ total wet-weight (including shell)
 data.LWw_f = [ ... % total lenght (mm), total body wet-weight (g)
 30.00	 3.56
 30.56	 3.56
@@ -210,12 +204,11 @@ data.LWw_f = [ ... % total lenght (mm), total body wet-weight (g)
 64.98	 39.66
 66.01	 39.66
 71.98	 52.99
-71.42	 58.05
-];
+71.42	 58.05];
 data.LWw_f(:,1) = sort(data.LWw_f(:,1)/10); %convert length from mm to cm
 data.LWw_f(:,2) = data.LWw_f(:,2) * 0.73; % the weight of the shell is 27% of total wet-weight
 units.LWw_f   = {'cm', 'g'};  label.LWw_f = {'Total length', 'Total wet-weight'};  
-temp.LWw_f    = C2K(20);  units.temp.LWw_f = 'K'; label.temp.LWw_f = 'temperature';
+%temp.LWw_f    = C2K(20);  units.temp.LWw_f = 'K'; label.temp.LWw_f = 'temperature';
 bibkey.LWw_f = 'Bilbao2010';
 comment.LWw_f = 'Data of abalone females from the canary islands, total body weight including shell';
 %
@@ -234,15 +227,14 @@ data.LN = [...
 57.01	507037.04
 59.03	595185.19
 59.08	634074.07
-62.04	691111.11
-];
+62.04	691111.11];
 data.LN(:,1) = data.LN(:,1)/10; % Convert length from mm to cm
 units.LN   = {'cm', '#'};  label.LN = {'Lenght', 'Fecundity'};  
 temp.LN    = C2K(20);  units.temp.LN = 'K'; label.temp.LN = 'temperature';
 bibkey.LN  = 'Bilbao2010';
-comment.LN = 'Batch fecundity for animals from the Canary islands estimated by conting the number of stage III and IV eggs in wild females';
+comment.LN = 'Batch fecundity for animals from the Canary islands estimated by counting the number of stage III and IV eggs in wild females';
 %
-% Roussel (2019) ~ Total lenght (mm) - Total weight (g)
+% Total lenght (mm) - Total weight (g)
 data_LWw_Roussel2019 = readmatrix('data_LWw_Roussel2019.txt');
 data_LWw_Roussel2019(:,1) =  data_LWw_Roussel2019(:,1) / 10;  % convert length from mm to cm
 data_LWw_Roussel2019(:,2) = data_LWw_Roussel2019(:,2) * 0.73;  % loss 1/3 of the weight to account for the pressence of shell in the data
@@ -256,10 +248,10 @@ for i = 1:maxci
 end
 data.LWw_Roussel2019 = [L, Ww_mean]; %data  Total lenght (cm) - Total weight (g)
 units.LWw_Roussel2019 = {'cm', 'g'};  label.LWw_Roussel2019 = {'Total length', 'Total weight'};  
-temp.LWw_Roussel2019 = C2K(21);  units.temp.LWw_Roussel2019 = 'K'; label.temp.LWw_Roussel2019 = 'temperature';
+%temp.LWw_Roussel2019 = C2K(21);  units.temp.LWw_Roussel2019 = 'K'; label.temp.LWw_Roussel2019 = 'temperature';
 stdev.LWw_Roussel2019 = Ww_sd ; units.stdev.LWw_Roussel2019 = 'cm'; label.stdev.LWw_Roussel2019 = 'standard deviation';
 bibkey.LWw_Roussel2019 = 'Roussel2019';
-comment.LWw_Roussel2019 = '10 to 34 months old abalone from france Haliotis';
+comment.LWw_Roussel2019 = '10 to 34 months old farmed abalone from france Haliotis';
 %
 % Roussel (2019)
 % Data for females under a diet of Saccorhiza polyschides
@@ -295,8 +287,7 @@ Roussel2019_sl = [... % (1)total lenght(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 3.35	M	0.39	6.86
 3.20	M	0.28	5.76
 3.40	M	0.46	7.61
-3.00	M	0.31	5.01
-];
+3.00	M	0.31	5.01];
 % Subtract 1/3 of the total weight (4th column) to account for the shell
 Roussel2019_sl(:,4) = Roussel2019_sl(:,4) * 0.73;
 
@@ -311,7 +302,7 @@ comment.LGw_sl_female = 'one year old adult female abalone fed for 11 months wit
 %
 data.LWw_sl_female = sort(female_data_sl(:,[1 4])); % Female total length(cm) ~ total weight(g)
 units.LWw_sl_female = {'cm', 'g'}; label.LWw_sl_female = {'total length', 'wet-weight'};  
-temp.LWw_sl_female = C2K(14.4); units.temp.LWw_sl_female = 'K'; label.temp.LWw_sl_female = 'temperature';
+%temp.LWw_sl_female = C2K(14.4); units.temp.LWw_sl_female = 'K'; label.temp.LWw_sl_female = 'temperature';
 bibkey.LWw_sl_female = 'Roussel2019';
 comment.LWw_sl_female = 'one year old adult female abalone fed for 11 months with a diet of Saccorhiza polyschides';
 %
@@ -352,8 +343,7 @@ Roussel2019_pp = [... % (1)total length(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 4.10	F	1.06	16.78
 4.10	F	1.33	15.24
 4.70	M	1.76	19.35
-3.83	M	0.83	13.00
-];
+3.83	M	0.83	13.00];
 % Subtract 1/3 of the total weight (4th column) to account for the shell
 Roussel2019_pp(:,4) = Roussel2019_pp(:,4) * 0.73;
 
@@ -406,8 +396,7 @@ Roussel2019_ee = [... % (1)total length(cm)~ (2)sex ~ (3)gonad weight(g) ~ (4) t
 3.20	M	0.35	5.46
 2.84	F	0.29	4.02
 2.86	M	0.30	3.93
-2.95	M	0.39	4.42
-];
+2.95	M	0.39	4.42];
 % Subtract 1/3 of the total weight (4th column) to account for the shell
 Roussel2019_ee(:,4) = Roussel2019_ee(:,4) * 0.73;
 
@@ -418,7 +407,7 @@ data.LGw_ee_female = sort(female_data_ee(:,[1 3])); % total length(cm) ~ gonad w
 units.LGw_ee_female = {'cm', 'g'}; label.LGw_ee_female = {'total length', 'gonad weight'};  
 temp.LGw_ee_female = C2K(14.4); units.temp.LGw_ee_female = 'K'; label.temp.LGw_ee_female = 'temperature';
 bibkey.LGw_ee_female = 'Roussel2019';
-comment.LGw_e_female = 'one year old juveniles female abalone fed for 11 months with a diet of Enteromorpha sp.';
+comment.LGw_ee_female = 'one year old juveniles female abalone fed for 11 months with a diet of Enteromorpha sp.';
 %
 data.LWw_ee_female = sort(female_data_ee(:,[1 4])); % total length(cm) ~ total weight(g)
 units.LWw_ee_female = {'cm', 'g'}; label.LWw_ee_female = {'total length', 'wet-weight'};  
@@ -426,8 +415,8 @@ temp.LWw_ee_female = C2K(14.4); units.temp.LWw_ee_female = 'K'; label.temp.LWw_e
 bibkey.LWw_ee_female = 'Roussel2019';
 comment.LWw_ee_female = 'one year old juveniles female abalone fed for 11 months with a diet of Enteromorpha sp.';
 %
-% % Auzoux-Bordenave(2021) temperatures at 3mt depth for 15 days starting the 9th of November 2021. Obtained from the COAST-HF-Iroise buoy time series for the Bay of Brest
-tT = [...% time (days), temperature (°C)
+% temperatures at 3mt depth for 15 days starting the 9th of November 2021. Obtained from the COAST-HF-Iroise buoy time series for the Bay of Brest
+tT = [...% time (d), temperature (°C)
 0	14.04
 1	13.96
 2	13.95
@@ -442,15 +431,14 @@ tT = [...% time (days), temperature (°C)
 11	13.48
 12	13.25
 13	13.01
-14	13.87
-];
+14	13.87];
 tT(:,1) = tT(:,1) + 1096; % convert days to match experimental time 
 tT = [0, 14.04; ...
       tT; ...
       15 + 1096, 13.87];
 tT(:,2) = C2K(tT(:,2)); % convert temperatute from (°C) to (°K)
 %
-% Auzoux-Bordenave(2021): time (days) ~ total length (mm)
+% time (d) ~ total length (mm)
 data_tL_Auzoux2021 = readmatrix("data_tL_Auzoux2021.txt");
 data_tL_Auzoux2021(:,2) = data_tL_Auzoux2021(:,2) / 10; % convert mm to cm
 [t,~,ci] = unique(data_tL_Auzoux2021(:,1));
@@ -461,7 +449,6 @@ for i = 1:maxci
     Lmean(i) = mean(data_tL_Auzoux2021 (ci == i,2));
     Lsd(i)   = std(data_tL_Auzoux2021 (ci == i,2)); 
 end
-
 data.tL_auzoux2021 = [t, Lmean];
 units.tL_auzoux2021 = {'d', 'cm'}; label.tL_auzoux2021 = {'time', 'total length'};  
 temp.tL_auzoux2021 = tT; units.temp.tL_auzoux2021 = {'d','K'}; label.temp.tL_auzoux2021 = {'days','temperature'};
@@ -470,7 +457,7 @@ stdev.tL_auzoux2021 = Lsd ; units.stdev.tL_auzoux2021 = 'cm'; label.stdev.tL_auz
 bibkey.tL_auzoux2021 = 'Auzoux2021';
 comment.tL_auzoux2021 = 'Control treatment ambient pCO2 = 567μatm (pH = 7.9) three year old adult abalone fed ad libidum for 15 days from France Haliotis sea cages';
 
-% Auzoux-Bordenave(2022): time (days) ~ larva length (mm)
+% Control: time (d) ~ larva length (mm)
 data_tL_Auzoux2022 = readmatrix("data_tL_azoux2022.txt");
 data_tL_Auzoux2022(:,1) = data_tL_Auzoux2022(:,1) / 24; % convert hpf to days
 data_tL_Auzoux2022(:,2) = data_tL_Auzoux2022(:,2) / 10; % convert mm to cm
@@ -490,7 +477,27 @@ stdev.tL_auzoux2022 = Lsd ; units.stdev.tL_auzoux2022 = 'cm'; label.stdev.tL_auz
 bibkey.tL_auzoux2022 = 'Auzoux2022';
 comment.tL_auzoux2022 = 'Control treatment for larval growth experiments at pCO2 = 439 μatm (pH = 8.01)';
 %    
-% Chauvaud (2019): Shell lenght (cm) ~ total wet-weight (g) 
+% Experimental: time (d) ~ larva length (mm)
+data_tL_Auzoux2022_exp = readmatrix("PCO2_Auzoux2022.txt");
+data_tL_Auzoux2022_exp(:,1) = data_tL_Auzoux2022_exp(:,1) / 24; % convert hpf to days
+data_tL_Auzoux2022_exp(:,2) = data_tL_Auzoux2022_exp(:,2) / 10; % convert mm to cm
+[t,~,ci] = unique(data_tL_Auzoux2022_exp(:,1));
+maxci     = max(ci);
+Lmean     = zeros(size(t,1),1);
+Lsd       = zeros(size(t,1),1);
+for i = 1:maxci
+    Lmean(i) = mean(data_tL_Auzoux2022_exp (ci == i,2));
+    Lsd(i)   = std(data_tL_Auzoux2022_exp (ci == i,2)); 
+end
+data.tL_auzoux2022_pCO2 = [t, Lmean];
+units.tL_auzoux2022_pCO2 = {'d', 'cm'}; label.tL_auzoux2022_pCO2 = {'time', 'Larval length'};  
+temp.tL_auzoux2022_pCO2 = C2K(19.2); units.temp.tL_auzoux2022_pCO2 = {'d','K'}; label.temp.tL_auzoux2022_pCO2 = {'days','temperature'};
+pCO2.tL_auzoux2022_pCO2 = 951; units.pCO2.tL_auzoux2022_pCO2 = 'μatm'; label.pCO2.tL_auzoux2022_pCO2 = 'pCO2';
+stdev.tL_auzoux2022_pCO2 = Lsd ; units.stdev.tL_auzoux2022_pCO2 = 'cm'; label.stdev.tL_auzoux2022_pCO2 = 'standard deviation';
+bibkey.tL_auzoux2022_pCO2 = 'Auzoux2022';
+comment.tL_auzoux2022_pCO2 = 'High PCO2 treatment for larval growth experiments';
+
+% Shell lenght (cm) ~ total wet-weight (g) 
 data_LW_Chavaud2019 = readmatrix('data_LWw_Chavaud2019.txt');
 data_LW_Chavaud2019(:,1) = sort(data_LW_Chavaud2019(:,1));
 data_LW_Chavaud2019(:,2) = data_LW_Chavaud2019(:,2) * 0.73; % loss 1/3 of the weight to account for the pressence of shell in the data
@@ -500,13 +507,13 @@ temp.LW_chauvaud = C2K(11.5); units.temp.LW_chauvaud = {'K'}; label.temp.LW_chau
 pCO2.LW_chauvaud = 400; units.pCO2.LW_chauvaud = 'μatm'; label.pCO2.LW_chauvaud = 'pCO2';
 bibkey.LW_chauvaud = 'Chauvaud2022';
 comment.LW_chauvaud = 'Wild abalone from the bay of Brest from march 2018';
-%
+
 %% set weights for all real data
 weights = setweights(data, []);
-weights.tW    = 1 * weights.tW;
 
 %% set pseudodata and respective weights
 [data, units, label, weights] = addpseudodata(data, units, label, weights);
+weights.psd.k_J = 0; weights.psd.k = 0.1;
 
 %% pack auxData and txtData for output
 auxData.temp    = temp;
@@ -518,21 +525,17 @@ txtData.bibkey  = bibkey;
 txtData.comment = comment;
 %
 %% Group plots 
-set1 = {'LGw_ee_female','LGw_pp_female','LGw_sl_female'};
-comment1 = {'Gonad weight at several diets for female abalone'};
-set2 = {'LWw_sl_female','LWw_pp_female','LWw_ee_female'};
-comment2 = {'Lenght~weigth at several diets for female abalone'};
-metaData.grp.sets = {set1, set2};            
-metaData.grp.comment = {comment1, comment2};
-% metaData.grp.subtitle = {subtitle1};
-%
+set1 = {'LGw_ee_female','LGw_pp_female','LGw_sl_female'}; subtitle1 = {'Gonad weight at several diets for female abalone'};
+set2 = {'LWw_sl_female','LWw_pp_female','LWw_ee_female'}; subtitle2 = {'Lenght~weigth at several diets for female abalone'};
+set3 ={'tL_auzoux2022','tL_auzoux2022_pCO2'}; subtitle3 = {'Control and experimantal pCO2 data'};
+metaData.grp.sets = {set1, set2, set3};            
+metaData.grp.subtitle = {subtitle1,subtitle2,subtitle3};
+
 %% Discussion points
 D1 = 'We assumed that the weight of the shell is 25% of the total wet-weight of the animals, based on calculations done on 150 abalone of aprox 2 years of age';
-metaData.discussion = struct('D1', D1);
-
-D2 = 'Larval stages do not need to eat and feeding start after metamorphosis';
+D2 = 'Larval stages can eat with feeding starting after metamorphosis';
 metaData.discussion = struct('D2', D2);
-%
+
 %% Links
 metaData.links.id_CoL   = '6KZCH'; % Catalogue of Life
 metaData.links.id_ITIS  = '69508'; % ITIS
@@ -544,7 +547,7 @@ metaData.links.id_molluscabase = '140059'; % molluscabase
 
 %% References
 bibkey = 'Wiki'; type = 'Misc'; bib = ...
-'howpublished = {\url{https://en.wikipedia.org/wiki/Haliotis_rubra}}';
+'howpublished = {\url{https://en.wikipedia.org/wiki/Haliotis_tuberculata}}';
 metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 %
 bibkey = 'Kooy2010'; type = 'Book'; bib = [ ...  % used in setting of chemical parameters and pseudodata
@@ -556,10 +559,18 @@ bibkey = 'Kooy2010'; type = 'Book'; bib = [ ...  % used in setting of chemical p
 'howpublished = {\url{../../../bib/Kooy2010.html}}'];
 metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 %
-bibkey = 'Azoux2022'; type = 'Article'; bib = [ ... 
-'author = {﻿Auzoux-Bordenave, S., Ledoux, A., Martin, S., Di Poi, C.,  Suquet, M., Badou, A., Gaillard, F., Servili, A., Le Goïc, N., Huchette, S. and Roussel, S.},'...
+bibkey = 'Coch1980'; type = 'phdthesis'; bib = [ ...
+'author = {Cochard, J}, ' ...
+'year = {1980}, ' ...
+'title  = {Recherches sur les facteurs determinant al sexualit\''{e} et la reproduction chez \emph{Haliotis tuberculata} {L}}, ' ...
+'school = {Universit\''{e} de Bretagne Occidentale}, ' ...
+'pages = {1-163},'];
+metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
+%
+bibkey = 'Auzoux2022'; type = 'Article'; bib = [ ... 
+'author = {﻿Auzoux-Bordenave, S. and Ledoux, A. and Martin, S. and Di Poi, C. and  Suquet, M. and Badou, A. and Gaillard, F. and Servili, A. and Le Goïc, N. and Huchette, S. and Roussel, S.},'...
 'year = {2022},' ...
-'title = {Responses of early life stages of European abalone (Haliotis tuberculata) to ocean acidification after parental conditioning: Insights from a transgenerational experiment}, '...
+'title = {Responses of early life stages of {E}uropean abalone (\emph{Haliotis tuberculata}) to ocean acidification after parental conditioning: {I}nsights from a transgenerational experiment}, '...
 'journal = {Marine Environmental Research}, ' ...
 'volume = {181}, ' ...
 'pages = {1-14}'];
@@ -568,7 +579,7 @@ metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 bibkey = 'Basu1997'; type = 'Article'; bib = [ ... 
 'author = {Olivier Basuyaux}, ' ... 
 'year = {1997}, ' ...
-'title = {Etude et modélisation des paramètres physico-chemiques sur la croissance de l´ormeau (Haliotis tuberculata) en élevage en circuit semilogx-fermé}, '...
+'title = {Etude et mod\''{e}lisation des param\`{e}tres physico-chemiques sur la croissance de l''ormeau (\emph{Haliotis tuberculata}) en \''{e}levage en circuit semilogx-ferm\''{e}}, '...
 'journal = {Fisheries Research}, ' ...
 'volume = {112}, ' ...
 'pages = {13-21}'];
@@ -577,56 +588,47 @@ metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 bibkey = 'Bilbao2010'; type = 'Article'; bib = [... 
 'author = {Haywood, G.J. and Burns, C.W.},'...
 'year = {2010},'...
-'title = {Reproduction, Fecundity, and Growth of Abalone Haliotis Tuberculata Coccinea, Reeve 1846 in the Canary Islands},'...
+'title = {Reproduction, Fecundity, and Growth of Abalone \emph{Haliotis Tuberculata Coccinea}, {R}eeve 1846 in the {C}anary {I}slands},'...
 'journal = {Journal of Shellfish Research},'...
 'pages = {959-967},'...
 'volume = {29}'];
 metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 %
 bibkey = 'Roussel2019'; type = 'Aricle'; bib = [... 
-'author = {Roussel, S., Bisch, T., Lachambre, S., Boudry, P., Gervois, J., Lambert, C., Huchette, S., Day, R.},'...
+'author = {Roussel, S. and Bisch, T. and Lachambre, S. and Boudry, P. and Gervois, J. and Lambert, C. and Huchette, S. and Day, R.},'...
 'year = {2019},'...
-'title = {Anti-predator response of Haliotis tuberculata is modified after only one generation of domestication},'...
+'title = {Anti-predator response of \emph{Haliotis tuberculata} is modified after only one generation of domestication},'...
 'journal = {Aquaculture Environment Interactions},'...
 'volume = {11},'...
 'pages = {129-142}'];
 metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 %
 bibkey = 'Wessel2018'; type = 'Article'; bib = [... 
-'author = {Wessel, N., Martin, S., Badou, A., Dubois, P., Huchette, S., Julia, V., Nunes, F., Harney, E., Paillard, C. and Auzoux-Bordenave, S.},'...
+'author = {Wessel, N. and Martin, S. and Badou, A. and Dubois, P. and Huchette, S. and Julia, V. and Nunes, F. and Harney, E. and Paillard, C. and Auzoux-Bordenave, S.},'...
 'year = {2018},'...
-'title = {Effect of CO2–induced ocean acidification on the early development and shell mineralization of the European abalone (Haliotis tuberculata)},'...
+'title = {Effect of {C}{O}2–induced ocean acidification on the early development and shell mineralization of the {E}uropean abalone (\emph{Haliotis tuberculata})},'...
 'journal = {Journal of Experimental Marine Biology and Ecology},'...
 'volume = {508},'...
 'pages = {52-63}'];
 metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 %
-bibkey = 'Avignon2020'; type = 'Article'; bib = [... 
-'author = {﻿Avignon, S., Auzoux-Bordenave, S., Martin, S., ﻿Dubois, P., ﻿Badou, Aïcha., ﻿Coheleach, M., Richard, N., ﻿Di Giglio, S., ﻿Malet, L., Servili, A., Gaillard, F., ﻿Huchette, S. and Rousell, S.},'...
-'year = {2020},'...  
-'title = {An integrated investigation of the effects of ocean acidification on adult abalone (Haliotis tuberculata)},'...
-'journal = {ICES Journal of Marine Science},'...
-'volume = {77},'...
-'pages = {757-772}'];
-metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
-%
-bibkey = 'Chauvaud2022'; type = 'Thesis'; bib = [... 
+bibkey = 'Chauvaud2022'; type = 'phdthesis'; bib = [... 
 'author = {Chauvaud, P.},'...
 'year = {2022},'...  
-'title = {Semer l ormeau dans le milieu naturel : rôles du milieu et des caractéristiques biologiques d Haliotis tuberculata dans la réussite du repeuplement},'...
-'school = {Laboratoire des Sciences de l Environnement Marin (LEMAR)}'];
+'title = {Semer l'' ormeau dans le milieu naturel : r\^{o}les du milieu et des caract\''{e}ristiques biologiques d'' \emph{Haliotis tuberculata} dans la r\''{e}ussite du repeuplement},'...
+'school = {Laboratoire des Sciences de l'' Environnement Marin (LEMAR)}'];
 metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 %
 bibkey = 'Auzoux2021'; type = 'Article'; bib = [... 
-'author = {Auzoux-Bordenave, S., Chevret, S., Badou., A., Martin, S., Di Giglio, S. and Dubois, P.},'...
+'author = {Auzoux-Bordenave, S. and Chevret, S. and Badou., A. and Martin, S. and Di Giglio, S. and Dubois, P.},'...
 'year = {2021},'...  
-'title = {Acid–base balance in the hæmolymph of European abalone (Haliotis tuberculata) exposed to CO2-induced ocean acidification},'...
+'title = {Acid–base balance in the h{\ae}molymph of {E}uropean abalone (\emph{Haliotis tuberculata}) exposed to {C}{O}2-induced ocean acidification},'...
 'journal = {Comparative Biochemestry and Physiology, Part A},'...
 'volume = {259},'...
 'pages = {1-9}'];
 metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 %
 bibkey = 'sealifebase'; type = 'Misc'; bib = ...
-'howpublished = {\url{https://www.sealifebase.ca/summary/Haliotis-rubra.html}}';
+'howpublished = {\url{https://www.sealifebase.ca/summary/Haliotis-tuberculata.html}}';
 metaData.biblist.(bibkey) = ['''@', type, '{', bibkey, ', ' bib, '}'';'];
 
